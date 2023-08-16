@@ -1,0 +1,65 @@
+<div class="d-flex align-items-center py-4 h-100">
+  <main class="form-signin w-100 m-auto">
+    <img src="./../../../../../assets/ggau-logo.png" />
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <h1 class="h3 mb-3 fw-normal">Вход</h1>
+
+      <div class="input-group has-validation">
+        <div class="form-floating">
+          <input
+            type="text"
+            formControlName="login"
+            class="form-control"
+            placeholder="Логин"
+            autocomplete="new-password"
+          />
+
+          <div
+            *ngIf="
+              form.controls['login'].invalid &&
+              (form.controls['login'].dirty || form.controls['login'].touched)
+            "
+            class="text-danger"
+          >
+            <div *ngIf="form.controls['login'].errors?.['required']">
+              Введите логин
+            </div>
+            <div *ngIf="form.controls['login'].errors?.['pattern']">
+              Логин должен включать только латинские буквы и цифры
+            </div>
+          </div>
+
+          <label>Логин</label>
+        </div>
+      </div>
+
+      <div class="form-floating">
+        <input
+          type="password"
+          formControlName="password"
+          class="form-control"
+          placeholder="Пароль"
+          autocomplete="new-password"
+        />
+        <label>Пароль</label>
+        <div
+          *ngIf="
+            form.controls['password'].invalid &&
+            form.controls['password'].touched
+          "
+          class="text-danger"
+        >
+          <div *ngIf="form.controls['password'].errors?.['required']">
+            Введите пароль
+          </div>
+          <div *ngIf="form.controls['password'].errors?.['minlength']">
+            Пароль минимум 8 символов
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary w-100 py-2" type="submit">Войти</button>
+      <p class="mt-5 mb-3 text-body-secondary">© 2023 Алексей Лосевич</p>
+    </form>
+  </main>
+</div>

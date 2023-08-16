@@ -30,9 +30,10 @@
               "src/assets"
             ],
             "styles": [
+              "src/assets/bootstrap.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": ["src/assets/bootstrap.bundle.js"]
           },
           "configurations": {
             "production": {
@@ -93,6 +94,7 @@
               "src/assets"
             ],
             "styles": [
+              "src/assets/bootstrap.css",
               "src/styles.scss"
             ],
             "scripts": []
