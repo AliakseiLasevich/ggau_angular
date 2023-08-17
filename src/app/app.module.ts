@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { AuthModule } from './modules/auth/auth.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PlannerModule } from './modules/planner/planner.module';
+import { StoreModule } from '@ngrx/store';
 
 @NgModule({
   declarations: [AppComponent],
@@ -15,6 +16,7 @@ import { PlannerModule } from './modules/planner/planner.module';
     AppRoutingModule,
     BrowserAnimationsModule,
     PlannerModule,
+    StoreModule.forRoot({}, {}),
   ],
   providers: [],
   bootstrap: [AppComponent],
