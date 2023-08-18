@@ -1,12 +1,17 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthModule } from './modules/auth/auth.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AuthEffects } from './modules/auth/store/auth.effect';
+import { authReducer } from './modules/auth/store/auth.reducer';
 import { PlannerModule } from './modules/planner/planner.module';
-import { StoreModule } from '@ngrx/store';
 
 @NgModule({
   declarations: [AppComponent],
@@ -15,8 +20,14 @@ import { StoreModule } from '@ngrx/store';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    EffectsModule.forRoot([AuthEffects]),
+    HttpClientModule,
     PlannerModule,
-    StoreModule.forRoot({}, {}),
+    StoreModule.forRoot({ auth: authReducer }),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      // logOnly: environment.production,
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent],
