@@ -1,8 +1,8 @@
-import { HeaderModule } from './../header/header.module';
 import { NgModule } from '@angular/core';
-import { SharedModule } from 'src/app/shared/shared/shared.module';
-import { PlannerComponent } from './planner/planner.component';
 import { RouterModule, Routes } from '@angular/router';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { HeaderModule } from './../header/header.module';
+import { PlannerComponent } from './planner/planner.component';
 
 const routes: Routes = [{ path: 'planner', component: PlannerComponent }];
 

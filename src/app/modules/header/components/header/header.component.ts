@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { selectNameLastname } from 'src/app/modules/auth/store/auth.selectors';
@@ -11,5 +12,5 @@ import { selectNameLastname } from 'src/app/modules/auth/store/auth.selectors';
 export class HeaderComponent {
   userName$: Observable<string> = this.store.select(selectNameLastname);
 
-  constructor(private store: Store<{ auth: string }>) {}
+  constructor(private router: Router, private store: Store<{ auth: string }>) {}
 }

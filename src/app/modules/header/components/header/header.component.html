@@ -1,2 +1,19 @@
-<p>header:</p>
-<p>{{ userName$ | async }}</p>
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span class="menu-spacer"></span>
+
+    <div>
+      <a mat-button [routerLink]="'/planner'"> Планировщик </a>
+    </div>
+
+    <span class="menu-spacer"></span>
+
+    <div class="username">{{ userName$ | async }}</div>
+
+    <div>
+      <button mat-raised-button color="warn" [routerLink]="'/logout'">
+        Выход
+      </button>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>

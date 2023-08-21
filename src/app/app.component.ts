@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { loginSuccess } from './modules/auth/store/auth.actions';
 import {
   selectIsLoading,
   selectIsLoggedIn,
@@ -24,5 +25,61 @@ export class AppComponent implements OnInit {
         ? this.router.navigate(['/planner'])
         : this.router.navigate(['/login'])
     );
+
+    this.getStoredToken();
+  }
+
+  private getStoredToken() {
+    const {
+      token,
+      tokenExpiresIn,
+      name,
+      lastname,
+      refreshToken,
+      refreshExpiresIn,
+    }: {
+      token: string;
+      tokenExpiresIn: string;
+      name: string;
+      lastname: string;
+      refreshToken: string;
+      refreshExpiresIn: string;
+    } = this.getLocalStorageData();
+
+    if (token && tokenExpiresIn && +tokenExpiresIn > Date.now()) {
+      this.store.dispatch(
+        loginSuccess({
+          name: name,
+          lastname: lastname,
+          refresh_token: {
+            token: refreshToken,
+            expires_in: parseInt(refreshExpiresIn),
+          },
+          access_token: {
+            token: token,
+            expires_in: parseInt(tokenExpiresIn),
+          },
+        })
+      );
+    }
+  }
+
+  private getLocalStorageData() {
+    const token: string = localStorage.getItem('token') || '';
+    const tokenExpiresIn: string =
+      localStorage.getItem('token_expiresIn') || '';
+    const refreshToken: string = localStorage.getItem('refresh_token') || '';
+    const refreshExpiresIn: string =
+      localStorage.getItem('refresh_expires_in') || '';
+    const name: string = localStorage.getItem('name') || '';
+    const lastname: string = localStorage.getItem('lastname') || '';
+    return {
+      token,
+      tokenExpiresIn,
+      name,
+      lastname,
+      refreshToken,
+      refreshExpiresIn,
+    };
   }
 }

@@ -26,9 +26,9 @@ export const authReducer = createReducer(
     ...state,
     loading: false,
     loggedIn: true,
-    accessToken: payload.accessToken,
-    refreshToken: payload.refreshToken,
+    accessToken: payload.access_token.token,
+    refreshToken: payload.refresh_token.token,
     name: payload.name,
-    lastname : payload.lastname
+    lastname: payload.lastname,
   }))
 );

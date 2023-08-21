@@ -4,8 +4,13 @@ export interface AuthRequestInterface {
 }
 
 export interface AuthResponseInterface {
-  accessToken: string;
-  refreshToken: string;
+  access_token: TokenInterface;
+  refresh_token: TokenInterface;
   name: string;
   lastname: string;
+}
+
+export interface TokenInterface {
+  token: string;
+  expires_in: number;
 }
