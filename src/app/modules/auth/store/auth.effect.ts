@@ -4,7 +4,7 @@ import { AuthResponseInterface } from '../interfaces/auth.interfaces';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { AuthService } from '../services/auth.service';
-import { ActionTypes } from './actionTypes';
+import { ActionTypes } from './auth.actionTypes';
 import { loginFailure, loginSuccess } from './auth.actions';
 
 @Injectable()

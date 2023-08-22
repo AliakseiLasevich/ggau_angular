@@ -1,0 +1,104 @@
+<div class="toolbar-wrapper">
+  <mat-toolbar color="accent">
+    <mat-toolbar-row>
+      <mat-form-field>
+        <mat-label>Выбрать дату</mat-label>
+        <input matInput [matDatepicker]="picker" />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- //TODO change to the autocomplete -->
+      <mat-form-field>
+        <mat-label>Преподаватель</mat-label>
+        <mat-select>
+          <mat-option
+            *ngFor="let teacher of teachers$ | async"
+            [value]="teacher.publicId"
+          >
+            {{ teacher.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- //TODO change to the autocomplete -->
+      <mat-form-field>
+        <mat-label>Предмет</mat-label>
+        <mat-select>
+          <mat-option
+            *ngFor="let discipline of disciplines$ | async"
+            [value]="discipline.publicId"
+          >
+            {{ discipline.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Тип занятия</mat-label>
+        <mat-select>
+          <mat-option
+            *ngFor="let lessonType of lessonTypes"
+            [value]="lessonType"
+          >
+            {{ lessonType }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Факультет</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let faculty of faculties" [value]="faculty">
+            {{ faculty }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Курс</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let course of courses" [value]="course">
+            {{ course }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Группа</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let group of groups" [value]="group.groupNumber">
+            {{ group.groupNumber }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Подгруппы</mat-label>
+        <mat-select [formControl]="subgroups" multiple>
+          <mat-option *ngFor="let topping of subgroupsList" [value]="topping">{{
+            topping
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <span class="menu-spacer"></span>
+      <button mat-raised-button color="accent">✔</button>
+
+      <button mat-raised-button color="warn">X</button>
+    </mat-toolbar-row>
+
+    <mat-toolbar-row>
+      <mat-form-field>
+        <mat-label>Время пары</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let pairOrder of pairOrders" [value]="pairOrder">
+            {{ pairOrder }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</div>

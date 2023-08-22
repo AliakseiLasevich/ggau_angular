@@ -3,9 +3,11 @@
     <span class="menu-spacer"></span>
 
     <div>
-      <a mat-button [routerLink]="'/planner'"> Планировщик </a>
+      <a mat-raised-button [routerLink]="'/planner'" class="header-button"> Планировщик </a>
     </div>
-
+    <div>
+      <a mat-raised-button [routerLink]="'/schedule'" class="header-button"> Расписание </a>
+    </div>
     <span class="menu-spacer"></span>
 
     <div class="username">{{ userName$ | async }}</div>

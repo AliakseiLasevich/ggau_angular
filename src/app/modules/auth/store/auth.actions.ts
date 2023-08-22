@@ -3,7 +3,7 @@ import {
   AuthRequestInterface,
   AuthResponseInterface,
 } from '../interfaces/auth.interfaces';
-import { ActionTypes } from './actionTypes';
+import { ActionTypes } from './auth.actionTypes';
 
 export const loginAction = createAction(
   ActionTypes.LOGIN,
