@@ -41,19 +41,37 @@
         <mat-label>Тип занятия</mat-label>
         <mat-select>
           <mat-option
-            *ngFor="let lessonType of lessonTypes"
-            [value]="lessonType"
+            *ngFor="let lessonType of lessonTypes | keyvalue"
+            [value]="lessonType.key"
           >
-            {{ lessonType }}
+            {{ lessonType.value }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-toolbar-row>
+
+    <mat-toolbar-row>
+      <mat-form-field>
+        <mat-label>Факультет</mat-label>
+        <mat-select  (selectionChange)="updateFormSpecialties($event)">
+          <mat-option
+            *ngFor="let faculty of faculties$ | async"
+            [value]="faculty.publicId"
+          
+          >
+            {{ faculty.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>Факультет</mat-label>
-        <mat-select>
-          <mat-option *ngFor="let faculty of faculties" [value]="faculty">
-            {{ faculty }}
+        <mat-label>Специальность</mat-label>
+        <mat-select [disabled]="!selectedFaculty">
+          <mat-option
+            *ngFor="let specialty of specialties$ | async"
+            [value]="specialty.publicId"
+          >
+            {{ specialty.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>

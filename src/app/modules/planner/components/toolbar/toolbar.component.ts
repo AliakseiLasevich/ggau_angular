@@ -1,21 +1,44 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { TeacherResponseInterface } from '../../interfaces/teachers.interfaces';
+import { MatSelectChange } from '@angular/material/select';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { DisciplineResponseInterface } from '../../interfaces/disciplines.interfaces';
+import { FacultyResponseInterface } from '../../interfaces/faculties.interfaces';
+import { SpecialtyResponseInterface } from '../../interfaces/specialty.interfaces';
+import { TeacherResponseInterface } from '../../interfaces/teachers.interfaces';
+import { getSpecialtiesAction } from '../../store/planner.actions';
+import { PlannerState } from '../../store/planner.reducer';
+import { selectSpecialties } from '../../store/planner.selectors';
+import { LessonTypes } from './../../../../shared/enums/lesson-types.enum';
 
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
 })
-export class ToolbarComponent {
+export class ToolbarComponent implements OnInit {
   @Input() teachers$: Observable<TeacherResponseInterface[]>;
   @Input() disciplines$: Observable<DisciplineResponseInterface[]>;
+  @Input() faculties$: Observable<FacultyResponseInterface[]>;
+  specialties$: Observable<SpecialtyResponseInterface[]>;
 
-  // teachers: string[] = ['Иванов', 'Петров'];
+  constructor(private store: Store<PlannerState>) {}
 
-  faculties: string[] = ['Экономический', 'Агрономический'];
+  ngOnInit(): void {
+    this.specialties$ = this.store.select(selectSpecialties);
+  }
+
+  selectedFaculty: string;
+
+  updateFormSpecialties(selectedFaculty: MatSelectChange) {
+    this.selectedFaculty = selectedFaculty.value;
+    this.store.dispatch(
+      getSpecialtiesAction({ publicId: selectedFaculty.value })
+    );
+  }
+
+  lessonTypes = LessonTypes;
 
   courses: string[] = ['1', '2', '3', '4', '5'];
 
@@ -26,9 +49,6 @@ export class ToolbarComponent {
 
   subgroups = new FormControl('');
   subgroupsList: string[] = ['А', 'Б', 'В'];
-
-  lessons: string[] = ['Экономика', 'Агрохимия', 'Растениеводство'];
-  lessonTypes: string[] = ['Лекция', 'Практика', 'Лабораторная'];
 
   pairOrders: string[] = ['1', '2', '3', '4', '5'];
 }

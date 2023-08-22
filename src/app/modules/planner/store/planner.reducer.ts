@@ -1,9 +1,15 @@
 import { createReducer, on } from '@ngrx/store';
 import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
+import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
+import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import {
   getDisciplinesAction,
   getDisciplinesSuccess,
+  getFacultiesAction,
+  getFacutiesSuccess,
+  getSpecialtiesAction,
+  getSpecialtiesSuccess,
   getTeachersAction,
   getTeachersActionSuccess,
 } from './planner.actions';
@@ -12,12 +18,16 @@ export interface PlannerState {
   isLoading: boolean;
   teachers: TeacherResponseInterface[];
   disciplines: DisciplineResponseInterface[];
+  faculties: FacultyResponseInterface[];
+  specialties: SpecialtyResponseInterface[];
 }
 
 const initialState: PlannerState = {
   isLoading: false,
   teachers: [],
   disciplines: [],
+  faculties: [],
+  specialties: [],
 };
 
 export const plannerReducer = createReducer(
@@ -35,6 +45,23 @@ export const plannerReducer = createReducer(
     return {
       ...state,
       disciplines: payload.disciplines,
+      isLoading: false,
+    };
+  }),
+  on(getFacultiesAction, (state) => ({ ...state, isLoading: true })),
+  on(getFacutiesSuccess, (state, payload) => {
+    return {
+      ...state,
+      faculties: payload.faculties,
+      specialties: [],
+      isLoading: false,
+    };
+  }),
+  on(getSpecialtiesAction, (state) => ({ ...state, isLoading: true })),
+  on(getSpecialtiesSuccess, (state, payload) => {
+    return {
+      ...state,
+      specialties: payload.specialties,
       isLoading: false,
     };
   })

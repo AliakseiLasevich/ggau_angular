@@ -17,3 +17,13 @@ export const selectDisciplines = createSelector(
   selectPlannerState,
   (state: PlannerState) => state.disciplines
 );
+
+export const selectFaculties = createSelector(
+  selectPlannerState,
+  (state: PlannerState) => state.faculties
+);
+
+export const selectSpecialties = createSelector(
+  selectPlannerState,
+  (state: PlannerState) => state.specialties
+);

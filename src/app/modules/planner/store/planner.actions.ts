@@ -1,6 +1,8 @@
 import { createAction, props } from '@ngrx/store';
 
 import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
+import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
+import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import { ActionTypes } from './planner.actionTypes';
 
@@ -27,5 +29,34 @@ export const getDisciplinesSuccess = createAction(
 
 export const getDisciplinesFailure = createAction(
   ActionTypes.GET_DISCIPLINES_FAILURE,
+  props<{ payload: string }>()
+);
+
+// FACULTIES
+export const getFacultiesAction = createAction(ActionTypes.GET_FACULTIES);
+
+export const getFacutiesSuccess = createAction(
+  ActionTypes.GET_FACULTIES_SUCCESS,
+  props<{ faculties: FacultyResponseInterface[] }>()
+);
+
+export const getFacutiesFailure = createAction(
+  ActionTypes.GET_FACULTIES_FAILURE,
+  props<{ payload: string }>()
+);
+
+// SPECIALTIES
+export const getSpecialtiesAction = createAction(
+  ActionTypes.GET_SPECIALTIES,
+  props<{ publicId: string }>()
+);
+
+export const getSpecialtiesSuccess = createAction(
+  ActionTypes.GET_SPECIALTIES_SUCCESS,
+  props<{ specialties: SpecialtyResponseInterface[] }>()
+);
+
+export const getSpecialtiesFailure = createAction(
+  ActionTypes.GET_SPECIALTIESS_FAILURE,
   props<{ payload: string }>()
 );
