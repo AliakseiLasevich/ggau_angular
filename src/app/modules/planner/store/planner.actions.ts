@@ -46,10 +46,7 @@ export const getFacutiesFailure = createAction(
 );
 
 // SPECIALTIES
-export const getSpecialtiesAction = createAction(
-  ActionTypes.GET_SPECIALTIES,
-  props<{ publicId: string }>()
-);
+export const getSpecialtiesAction = createAction(ActionTypes.GET_SPECIALTIES);
 
 export const getSpecialtiesSuccess = createAction(
   ActionTypes.GET_SPECIALTIES_SUCCESS,

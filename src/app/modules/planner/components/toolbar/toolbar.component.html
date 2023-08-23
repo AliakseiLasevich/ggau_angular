@@ -1,122 +1,147 @@
-<div class="toolbar-wrapper">
-  <mat-toolbar color="accent">
-    <mat-toolbar-row>
-      <mat-form-field>
-        <mat-label>Выбрать дату</mat-label>
-        <input matInput [matDatepicker]="picker" />
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="picker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
+<form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
+  <!-- Static fields -->
+  <mat-toolbar>
+    <!-- Date picker -->
+    <mat-form-field>
+      <mat-label>Выбрать дату</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="selectedDate" />
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
 
-      <!-- //TODO change to the autocomplete -->
-      <mat-form-field>
-        <mat-label>Преподаватель</mat-label>
-        <mat-select>
-          <mat-option
-            *ngFor="let teacher of teachers$ | async"
-            [value]="teacher.publicId"
-          >
-            {{ teacher.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+    <!-- //TODO change to the autocomplete -->
+    <mat-form-field>
+      <mat-label>Преподаватель</mat-label>
+      <mat-select formControlName="selectedTeacher">
+        <mat-option
+          *ngFor="let teacher of teachers$ | async"
+          [value]="teacher.publicId"
+        >
+          {{ teacher.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-      <!-- //TODO change to the autocomplete -->
-      <mat-form-field>
-        <mat-label>Предмет</mat-label>
-        <mat-select>
-          <mat-option
-            *ngFor="let discipline of disciplines$ | async"
-            [value]="discipline.publicId"
-          >
-            {{ discipline.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+    <!-- //TODO change to the autocomplete -->
+    <mat-form-field>
+      <mat-label>Предмет</mat-label>
+      <mat-select formControlName="selectedDiscipline">
+        <mat-option
+          *ngFor="let discipline of disciplines$ | async"
+          [value]="discipline.publicId"
+        >
+          {{ discipline.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>Тип занятия</mat-label>
-        <mat-select>
-          <mat-option
-            *ngFor="let lessonType of lessonTypes | keyvalue"
-            [value]="lessonType.key"
-          >
-            {{ lessonType.value }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </mat-toolbar-row>
-
-    <mat-toolbar-row>
-      <mat-form-field>
-        <mat-label>Факультет</mat-label>
-        <mat-select  (selectionChange)="updateFormSpecialties($event)">
-          <mat-option
-            *ngFor="let faculty of faculties$ | async"
-            [value]="faculty.publicId"
-          
-          >
-            {{ faculty.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>Специальность</mat-label>
-        <mat-select [disabled]="!selectedFaculty">
-          <mat-option
-            *ngFor="let specialty of specialties$ | async"
-            [value]="specialty.publicId"
-          >
-            {{ specialty.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>Курс</mat-label>
-        <mat-select>
-          <mat-option *ngFor="let course of courses" [value]="course">
-            {{ course }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>Группа</mat-label>
-        <mat-select>
-          <mat-option *ngFor="let group of groups" [value]="group.groupNumber">
-            {{ group.groupNumber }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Подгруппы</mat-label>
-        <mat-select [formControl]="subgroups" multiple>
-          <mat-option *ngFor="let topping of subgroupsList" [value]="topping">{{
-            topping
-          }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <span class="menu-spacer"></span>
-      <button mat-raised-button color="accent">✔</button>
-
-      <button mat-raised-button color="warn">X</button>
-    </mat-toolbar-row>
-
-    <mat-toolbar-row>
-      <mat-form-field>
-        <mat-label>Время пары</mat-label>
-        <mat-select>
-          <mat-option *ngFor="let pairOrder of pairOrders" [value]="pairOrder">
-            {{ pairOrder }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </mat-toolbar-row>
+    <mat-form-field>
+      <mat-label>Тип занятия</mat-label>
+      <mat-select formControlName="selectedLessonType">
+        <mat-option
+          *ngFor="let lessonType of lessonTypes | keyvalue"
+          [value]="lessonType.key"
+        >
+          {{ lessonType.value }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   </mat-toolbar>
-</div>
+
+  <!-- Dynamic fields -->
+  <div formArrayName="dynamicGroups">
+    <div *ngFor="let group of dynamicGroups.controls; let i = index">
+      <div [formGroupName]="i" class="dynamic-group">
+        <mat-form-field>
+          <mat-label>Факультет</mat-label>
+          <mat-select
+            formControlName="facultyId"
+            (selectionChange)="updateFormSpecialties($event, i)"
+          >
+            <mat-option
+              *ngFor="let faculty of faculties$ | async"
+              [value]="faculty.publicId"
+            >
+              {{ faculty.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Специальность</mat-label>
+          <mat-select
+            formControlName="specialtyId"
+            [disabled]="!dynamicGroups.controls[i].get('facultyId')?.value"
+          >
+            <mat-option
+              *ngFor="
+                let specialty of filterSpecialtiesByFaculty(
+                  dynamicGroups.controls[i]?.get('facultyId')?.value
+                ) | async
+              "
+              [value]="specialty.publicId"
+            >
+              {{ specialty.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Курс</mat-label>
+          <mat-select formControlName="courseNumber">
+            <mat-option *ngFor="let course of courses" [value]="course">
+              {{ course }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Группа</mat-label>
+          <mat-select formControlName="groupId">
+            <mat-option
+              *ngFor="let group of groups"
+              [value]="group.groupNumber"
+            >
+              {{ group.groupNumber }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Подгруппы</mat-label>
+          <mat-select formControlName="subgroupIds" multiple>
+            <mat-option
+              *ngFor="let subgroup of subgroupsList"
+              [value]="subgroup"
+              >{{ subgroup }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="warn"
+          (click)="removeDynamicGroup(i)"
+          *ngIf="dynamicGroups.length > 1"
+        >
+          X
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <button mat-raised-button color="warn" (click)="addDynamicGroup()">
+    Добавить группу
+  </button>
+  <button
+    mat-raised-button
+    color="accent"
+    type="submit"
+    [disabled]="!dynamicForm.valid"
+  >
+    Применить фильтр
+  </button>
+</form>

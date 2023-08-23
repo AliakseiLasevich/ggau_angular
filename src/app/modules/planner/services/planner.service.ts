@@ -31,7 +31,7 @@ export class PlannerService {
     facultyId: string
   ): Observable<SpecialtyResponseInterface[]> {
     return this.http.get<SpecialtyResponseInterface[]>(
-      this.url + 'specialties/faculties/' + facultyId
+      this.url + 'specialties'
     );
   }
 

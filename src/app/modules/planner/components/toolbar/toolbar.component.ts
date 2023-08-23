@@ -1,8 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { DisciplineResponseInterface } from '../../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../../interfaces/faculties.interfaces';
 import { SpecialtyResponseInterface } from '../../interfaces/specialty.interfaces';
@@ -21,21 +27,83 @@ export class ToolbarComponent implements OnInit {
   @Input() teachers$: Observable<TeacherResponseInterface[]>;
   @Input() disciplines$: Observable<DisciplineResponseInterface[]>;
   @Input() faculties$: Observable<FacultyResponseInterface[]>;
-  specialties$: Observable<SpecialtyResponseInterface[]>;
 
-  constructor(private store: Store<PlannerState>) {}
+  specialties$: Observable<SpecialtyResponseInterface[]>;
+  dynamicForm: FormGroup;
+
+  constructor(
+    private store: Store<PlannerState>,
+    private formBuilder: FormBuilder
+  ) {
+    this.initForms();
+  }
+
+  private initForms() {
+    this.dynamicForm = this.formBuilder.group({
+      selectedDate: ['', [Validators.required]],
+      selectedTeacher: ['', [Validators.required]],
+      selectedDiscipline: ['', [Validators.required]],
+      selectedLessonType: ['', [Validators.required]],
+      dynamicGroups: this.formBuilder.array([this.createDynamicGroup()]),
+    });
+  }
 
   ngOnInit(): void {
+    this.store.dispatch(getSpecialtiesAction());
     this.specialties$ = this.store.select(selectSpecialties);
   }
 
-  selectedFaculty: string;
+  updateFormSpecialties(selectedFaculty: MatSelectChange, index: number) {
+    console.log(selectedFaculty, index);
+    const facultyControl = this.dynamicGroups.at(index).get('facultyId');
+    if (facultyControl) {
+      facultyControl.setValue(selectedFaculty.value);
+    }
+  }
 
-  updateFormSpecialties(selectedFaculty: MatSelectChange) {
-    this.selectedFaculty = selectedFaculty.value;
-    this.store.dispatch(
-      getSpecialtiesAction({ publicId: selectedFaculty.value })
+  filterSpecialtiesByFaculty(
+    facultyId: string
+  ): Observable<SpecialtyResponseInterface[]> {
+    return this.specialties$.pipe(
+      map((specialties) =>
+        specialties.filter((specialty) => specialty.facultyId === facultyId)
+      )
     );
+  }
+
+  convertDate(selectedDate: string): string {
+    const jsDate = new Date(selectedDate);
+    const formattedDate = jsDate.toISOString().split('T')[0];
+    return formattedDate;
+  }
+
+  createDynamicGroup() {
+    return this.formBuilder.group({
+      facultyId: ['', [Validators.required]],
+      specialtyId: ['', [Validators.required]],
+      courseNumber: ['', [Validators.required]],
+      groupId: ['', [Validators.required]],
+      subgroupIds: ['', [Validators.required]],
+    });
+  }
+
+  get dynamicGroups() {
+    return this.dynamicForm.get('dynamicGroups') as FormArray;
+  }
+
+  addDynamicGroup() {
+    this.dynamicGroups.push(this.createDynamicGroup());
+  }
+
+  removeDynamicGroup(index: number) {
+    if (this.dynamicGroups.length > 1) {
+      // Ensure at least one group remains
+      this.dynamicGroups.removeAt(index);
+    }
+  }
+
+  onSubmit() {
+    console.log(this.dynamicForm.value);
   }
 
   lessonTypes = LessonTypes;
