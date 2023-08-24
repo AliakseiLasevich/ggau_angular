@@ -11,6 +11,8 @@ import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { PlannerService } from './services/planner.service';
 import { PlannerEffects } from './store/planner.effect';
 import { plannerReducer } from './store/planner.reducer';
+import { MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';
+import { FiveDayRangeSelectionStrategy } from 'src/app/shared/features/date-range-selection-strategy';
 
 const routes: Routes = [{ path: 'planner', component: PlannerComponent }];
 
@@ -28,6 +30,12 @@ const routes: Routes = [{ path: 'planner', component: PlannerComponent }];
     StoreModule.forFeature('planner', plannerReducer),
     EffectsModule.forFeature(PlannerEffects),
   ],
-  providers: [PlannerService],
+  providers: [
+    PlannerService,
+    {
+      provide: MAT_DATE_RANGE_SELECTION_STRATEGY,
+      useClass: FiveDayRangeSelectionStrategy,
+    },
+  ],
 })
 export class PlannerModule {}

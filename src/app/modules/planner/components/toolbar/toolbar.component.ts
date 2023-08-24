@@ -1,10 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  Validators
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { Store } from '@ngrx/store';
 import { Observable, map } from 'rxjs';
@@ -61,12 +56,27 @@ export class ToolbarComponent implements OnInit {
 
   private initForms() {
     this.dynamicForm = this.formBuilder.group({
-      selectedDate: ['', [Validators.required]],
+      fromDate: ['', [Validators.required]],
+      toDate: ['', [Validators.required]],
       selectedTeacher: ['', [Validators.required]],
       selectedDiscipline: ['', [Validators.required]],
       selectedLessonType: ['', [Validators.required]],
       dynamicGroups: this.formBuilder.array([this.createDynamicGroup()]),
     });
+  }
+
+  createDynamicGroup() {
+    const dynamicFormGroup: FormGroup = this.formBuilder.group({
+      facultyId: ['', [Validators.required]],
+      specialtyId: ['', [Validators.required]],
+      studentCourse: ['', [Validators.required]],
+      groupId: ['', [Validators.required]],
+      subgroupIds: ['', [Validators.required]],
+    });
+
+    this.declareFieldsErasingStrategy(dynamicFormGroup);
+
+    return dynamicFormGroup;
   }
 
   getStudentCoursesBySpecialty(
@@ -118,20 +128,6 @@ export class ToolbarComponent implements OnInit {
     const jsDate = new Date(selectedDate);
     const formattedDate = jsDate.toISOString().split('T')[0];
     return formattedDate;
-  }
-
-  createDynamicGroup() {
-    const dynamicFormGroup: FormGroup = this.formBuilder.group({
-      facultyId: ['', [Validators.required]],
-      specialtyId: ['', [Validators.required]],
-      studentCourse: ['', [Validators.required]],
-      groupId: ['', [Validators.required]],
-      subgroupIds: ['', [Validators.required]],
-    });
-
-    this.declareFieldsErasingStrategy(dynamicFormGroup);
-
-    return dynamicFormGroup;
   }
 
   private declareFieldsErasingStrategy(dynamicFormGroup: FormGroup<any>) {
