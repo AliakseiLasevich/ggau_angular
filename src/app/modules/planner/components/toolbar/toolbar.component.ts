@@ -13,6 +13,7 @@ import { DisciplineResponseInterface } from '../../interfaces/disciplines.interf
 import { FacultyResponseInterface } from '../../interfaces/faculties.interfaces';
 import { SpecialtyResponseInterface } from '../../interfaces/specialty.interfaces';
 import { StudentCourseResponseInterface } from '../../interfaces/studentCourse.interfaces';
+import { StudentGroupResponseInterface } from '../../interfaces/studentGroup.interfaces';
 import { TeacherResponseInterface } from '../../interfaces/teachers.interfaces';
 import {
   getCoursesAction,
@@ -21,10 +22,13 @@ import {
 import { PlannerState } from '../../store/planner.reducer';
 import {
   selectSpecialties,
+  selectStudentCourseBySpecialty,
   selectStudentCourses,
+  selectStudentGroupByCourse,
+  selectStudentSubgroupByGroup,
 } from '../../store/planner.selectors';
 import { LessonTypes } from './../../../../shared/enums/lesson-types.enum';
-import { StudentGroupResponseInterface } from '../../interfaces/studentGroup.interfaces';
+import { StudentSubgroupResponseInterface } from '../../interfaces/studentSubgroup.interfaces';
 
 @Component({
   selector: 'app-toolbar',
@@ -66,6 +70,18 @@ export class ToolbarComponent implements OnInit {
     });
   }
 
+  getStudentCoursesBySpecialty(specialtyId: string): Observable<StudentCourseResponseInterface[]> {
+    return this.store.select(selectStudentCourseBySpecialty(specialtyId));
+  }
+
+  getStudentGroupByCourse(courseId: string): Observable<StudentGroupResponseInterface[]> {
+    return this.store.select(selectStudentGroupByCourse(courseId));
+  }
+
+  getStudentSubgroupByGroup(groupId: string): Observable<StudentSubgroupResponseInterface[]> {
+    return this.store.select(selectStudentSubgroupByGroup(groupId));
+  }
+
   updateFormSpecialties(selectedFaculty: MatSelectChange, index: number) {
     const facultyControl = this.dynamicGroups.at(index).get('facultyId');
     if (facultyControl) {
@@ -93,32 +109,6 @@ export class ToolbarComponent implements OnInit {
     );
   }
 
-  filterCoursesBySpecialty(
-    specialtyId: string
-  ): Observable<StudentCourseResponseInterface[]> {
-    return this.studentCourses$.pipe(
-      map((courses) => {
-        return courses.filter(
-          (course) => course.specialtyPublicId === specialtyId
-        );
-      })
-    );
-  }
-
-  filterGroupsByCourse(
-    courseId: string
-  ): Observable<StudentGroupResponseInterface[]> {
-    if (courseId) {
-      return this.studentCourses$.pipe(
-        map((courses) => {
-          return courses.filter((course) => course.publicId === courseId);
-        }),
-        map((course) => course[0]?.studentGroups)
-      );
-    }
-    return of([]);
-  }
-
   convertDate(selectedDate: string): string {
     const jsDate = new Date(selectedDate);
     const formattedDate = jsDate.toISOString().split('T')[0];
@@ -135,6 +125,7 @@ export class ToolbarComponent implements OnInit {
     });
 
     this.declareFieldsErasingStrategy(dynamicFormGroup);
+
     return dynamicFormGroup;
   }
 
@@ -184,9 +175,4 @@ export class ToolbarComponent implements OnInit {
   }
 
   lessonTypes = LessonTypes;
-
-  subgroups = new FormControl('');
-  subgroupsList: string[] = ['А', 'Б', 'В'];
-
-  pairOrders: string[] = ['1', '2', '3', '4', '5'];
 }

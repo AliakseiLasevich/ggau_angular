@@ -37,6 +37,7 @@ const initialState: PlannerState = {
 
 export const plannerReducer = createReducer(
   initialState,
+  
   on(getTeachersAction, (state) => ({ ...state, isLoading: true })),
   on(getTeachersActionSuccess, (state, payload) => {
     return {
@@ -45,6 +46,7 @@ export const plannerReducer = createReducer(
       isLoading: false,
     };
   }),
+
   on(getDisciplinesAction, (state) => ({ ...state, isLoading: true })),
   on(getDisciplinesSuccess, (state, payload) => {
     return {
@@ -58,15 +60,21 @@ export const plannerReducer = createReducer(
     return {
       ...state,
       faculties: payload.faculties,
-      specialties: [],
       isLoading: false,
     };
   }),
+  
   on(getSpecialtiesAction, (state) => ({ ...state, isLoading: true })),
-  on(getSpecialtiesSuccess, (state, payload) => {
+  on(getSpecialtiesSuccess, (state, { specialties }) => {
+    const existingSpecialties = new Set(
+      state.specialties.map((specialty) => specialty.publicId)
+    );
+    const newSpecialties = specialties.filter(
+      (specialty) => !existingSpecialties.has(specialty.publicId)
+    );
     return {
       ...state,
-      specialties: payload.specialties,
+      specialties: [...state.specialties, ...newSpecialties],
       isLoading: false,
     };
   }),

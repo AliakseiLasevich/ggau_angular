@@ -55,7 +55,6 @@
   <div formArrayName="dynamicGroups">
     <div *ngFor="let group of dynamicGroups.controls; let i = index">
       <div [formGroupName]="i" class="dynamic-group">
-        
         <mat-form-field>
           <mat-label>Факультет</mat-label>
           <mat-select
@@ -96,7 +95,7 @@
           <mat-select formControlName="studentCourse">
             <mat-option
               *ngFor="
-                let course of filterCoursesBySpecialty(
+                let course of getStudentCoursesBySpecialty(
                   dynamicGroups.controls[i]?.get('specialtyId')?.value
                 ) | async
               "
@@ -111,27 +110,31 @@
           <mat-label>Группа</mat-label>
           <mat-select formControlName="groupId">
             <mat-option
-            *ngFor="
-              let group of filterGroupsByCourse(
-                dynamicGroups.controls[i]?.get('studentCourse')?.value
-              ) | async
-            "
-            [value]="group.publicId"
-          >
-            {{ group.publicId }}
-          </mat-option>
-
+              *ngFor="
+                let group of getStudentGroupByCourse(
+                  dynamicGroups.controls[i]?.get('studentCourse')?.value
+                ) | async
+              "
+              [value]="group.publicId"
+            >
+              {{ group.number }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field appearance="fill">
+        <mat-form-field>
           <mat-label>Подгруппы</mat-label>
           <mat-select formControlName="subgroupIds" multiple>
             <mat-option
-              *ngFor="let subgroup of subgroupsList"
-              [value]="subgroup"
-              >{{ subgroup }}</mat-option
+              *ngFor="
+                let subgroup of getStudentSubgroupByGroup(
+                  dynamicGroups.controls[i]?.get('groupId')?.value
+                ) | async
+              "
+              [value]="subgroup.publicId"
             >
+              {{ subgroup.name }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
 

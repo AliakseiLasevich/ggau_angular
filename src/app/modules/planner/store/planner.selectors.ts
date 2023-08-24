@@ -32,3 +32,25 @@ export const selectStudentCourses = createSelector(
   selectPlannerState,
   (state: PlannerState) => state.studentCourses
 );
+
+export const selectStudentCourseBySpecialty = (specialtyId: string) =>
+  createSelector(selectPlannerState, (state: PlannerState) =>
+    state.studentCourses.filter(
+      (course) => course.specialtyPublicId === specialtyId
+    )
+  );
+
+export const selectStudentGroupByCourse = (courseId: string) =>
+  createSelector(selectPlannerState, (state: PlannerState) =>
+    state.studentCourses
+      .filter((course) => course.publicId === courseId)
+      .flatMap((course) => course.studentGroups)
+  );
+
+export const selectStudentSubgroupByGroup = (groupId: string) =>
+  createSelector(selectPlannerState, (state: PlannerState) =>
+    state.studentCourses
+      .flatMap((course) => course.studentGroups)
+      .filter((group) => group.publicId === groupId)
+      .flatMap((group) => group.studentSubgroups)
+  );
