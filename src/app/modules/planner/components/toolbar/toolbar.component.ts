@@ -2,18 +2,18 @@ import { Component, Input, OnInit } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
-  FormControl,
   FormGroup,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { Store } from '@ngrx/store';
-import { Observable, map, of } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { DisciplineResponseInterface } from '../../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../../interfaces/faculties.interfaces';
 import { SpecialtyResponseInterface } from '../../interfaces/specialty.interfaces';
 import { StudentCourseResponseInterface } from '../../interfaces/studentCourse.interfaces';
 import { StudentGroupResponseInterface } from '../../interfaces/studentGroup.interfaces';
+import { StudentSubgroupResponseInterface } from '../../interfaces/studentSubgroup.interfaces';
 import { TeacherResponseInterface } from '../../interfaces/teachers.interfaces';
 import {
   getCoursesAction,
@@ -28,7 +28,6 @@ import {
   selectStudentSubgroupByGroup,
 } from '../../store/planner.selectors';
 import { LessonTypes } from './../../../../shared/enums/lesson-types.enum';
-import { StudentSubgroupResponseInterface } from '../../interfaces/studentSubgroup.interfaces';
 
 @Component({
   selector: 'app-toolbar',
@@ -70,15 +69,21 @@ export class ToolbarComponent implements OnInit {
     });
   }
 
-  getStudentCoursesBySpecialty(specialtyId: string): Observable<StudentCourseResponseInterface[]> {
+  getStudentCoursesBySpecialty(
+    specialtyId: string
+  ): Observable<StudentCourseResponseInterface[]> {
     return this.store.select(selectStudentCourseBySpecialty(specialtyId));
   }
 
-  getStudentGroupByCourse(courseId: string): Observable<StudentGroupResponseInterface[]> {
+  getStudentGroupByCourse(
+    courseId: string
+  ): Observable<StudentGroupResponseInterface[]> {
     return this.store.select(selectStudentGroupByCourse(courseId));
   }
 
-  getStudentSubgroupByGroup(groupId: string): Observable<StudentSubgroupResponseInterface[]> {
+  getStudentSubgroupByGroup(
+    groupId: string
+  ): Observable<StudentSubgroupResponseInterface[]> {
     return this.store.select(selectStudentSubgroupByGroup(groupId));
   }
 
@@ -148,11 +153,9 @@ export class ToolbarComponent implements OnInit {
       });
 
     //Занулять подгруппы при смене группы
-    dynamicFormGroup
-      .get('studentCourse')
-      ?.valueChanges.subscribe((newValue) => {
-        dynamicFormGroup.get('subgroupIds')?.setValue([]);
-      });
+    dynamicFormGroup.get('groupId')?.valueChanges.subscribe((newValue) => {
+      dynamicFormGroup.get('subgroupIds')?.setValue([]);
+    });
   }
 
   get dynamicGroups() {
