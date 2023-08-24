@@ -55,6 +55,7 @@
   <div formArrayName="dynamicGroups">
     <div *ngFor="let group of dynamicGroups.controls; let i = index">
       <div [formGroupName]="i" class="dynamic-group">
+        
         <mat-form-field>
           <mat-label>Факультет</mat-label>
           <mat-select
@@ -75,6 +76,7 @@
           <mat-select
             formControlName="specialtyId"
             [disabled]="!dynamicGroups.controls[i].get('facultyId')?.value"
+            (selectionChange)="updateFormStudentCourses($event, i)"
           >
             <mat-option
               *ngFor="
@@ -91,9 +93,16 @@
 
         <mat-form-field>
           <mat-label>Курс</mat-label>
-          <mat-select formControlName="courseNumber">
-            <mat-option *ngFor="let course of courses" [value]="course">
-              {{ course }}
+          <mat-select formControlName="studentCourse">
+            <mat-option
+              *ngFor="
+                let course of filterCoursesBySpecialty(
+                  dynamicGroups.controls[i]?.get('specialtyId')?.value
+                ) | async
+              "
+              [value]="course.publicId"
+            >
+              {{ course.courseNumber }}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -102,11 +111,16 @@
           <mat-label>Группа</mat-label>
           <mat-select formControlName="groupId">
             <mat-option
-              *ngFor="let group of groups"
-              [value]="group.groupNumber"
-            >
-              {{ group.groupNumber }}
-            </mat-option>
+            *ngFor="
+              let group of filterGroupsByCourse(
+                dynamicGroups.controls[i]?.get('studentCourse')?.value
+              ) | async
+            "
+            [value]="group.publicId"
+          >
+            {{ group.publicId }}
+          </mat-option>
+
           </mat-select>
         </mat-form-field>
 

@@ -8,15 +8,23 @@ import {
 } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { Store } from '@ngrx/store';
-import { Observable, map } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import { DisciplineResponseInterface } from '../../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../../interfaces/faculties.interfaces';
 import { SpecialtyResponseInterface } from '../../interfaces/specialty.interfaces';
+import { StudentCourseResponseInterface } from '../../interfaces/studentCourse.interfaces';
 import { TeacherResponseInterface } from '../../interfaces/teachers.interfaces';
-import { getSpecialtiesAction } from '../../store/planner.actions';
+import {
+  getCoursesAction,
+  getSpecialtiesAction,
+} from '../../store/planner.actions';
 import { PlannerState } from '../../store/planner.reducer';
-import { selectSpecialties } from '../../store/planner.selectors';
+import {
+  selectSpecialties,
+  selectStudentCourses,
+} from '../../store/planner.selectors';
 import { LessonTypes } from './../../../../shared/enums/lesson-types.enum';
+import { StudentGroupResponseInterface } from '../../interfaces/studentGroup.interfaces';
 
 @Component({
   selector: 'app-toolbar',
@@ -29,13 +37,23 @@ export class ToolbarComponent implements OnInit {
   @Input() faculties$: Observable<FacultyResponseInterface[]>;
 
   specialties$: Observable<SpecialtyResponseInterface[]>;
+  studentCourses$: Observable<StudentCourseResponseInterface[]>;
   dynamicForm: FormGroup;
 
   constructor(
     private store: Store<PlannerState>,
     private formBuilder: FormBuilder
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     this.initForms();
+    this.initValues();
+  }
+
+  private initValues() {
+    this.store.dispatch(getSpecialtiesAction());
+    this.specialties$ = this.store.select(selectSpecialties);
+    this.studentCourses$ = this.store.select(selectStudentCourses);
   }
 
   private initForms() {
@@ -48,16 +66,20 @@ export class ToolbarComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    this.store.dispatch(getSpecialtiesAction());
-    this.specialties$ = this.store.select(selectSpecialties);
-  }
-
   updateFormSpecialties(selectedFaculty: MatSelectChange, index: number) {
-    console.log(selectedFaculty, index);
     const facultyControl = this.dynamicGroups.at(index).get('facultyId');
     if (facultyControl) {
       facultyControl.setValue(selectedFaculty.value);
+    }
+  }
+
+  updateFormStudentCourses(selectedSpecialty: MatSelectChange, index: number) {
+    this.store.dispatch(
+      getCoursesAction({ specialtyId: selectedSpecialty.value })
+    );
+    const specialtyControl = this.dynamicGroups.at(index).get('specialtyId');
+    if (specialtyControl) {
+      specialtyControl.setValue(selectedSpecialty.value);
     }
   }
 
@@ -71,6 +93,32 @@ export class ToolbarComponent implements OnInit {
     );
   }
 
+  filterCoursesBySpecialty(
+    specialtyId: string
+  ): Observable<StudentCourseResponseInterface[]> {
+    return this.studentCourses$.pipe(
+      map((courses) => {
+        return courses.filter(
+          (course) => course.specialtyPublicId === specialtyId
+        );
+      })
+    );
+  }
+
+  filterGroupsByCourse(
+    courseId: string
+  ): Observable<StudentGroupResponseInterface[]> {
+    if (courseId) {
+      return this.studentCourses$.pipe(
+        map((courses) => {
+          return courses.filter((course) => course.publicId === courseId);
+        }),
+        map((course) => course[0]?.studentGroups)
+      );
+    }
+    return of([]);
+  }
+
   convertDate(selectedDate: string): string {
     const jsDate = new Date(selectedDate);
     const formattedDate = jsDate.toISOString().split('T')[0];
@@ -78,13 +126,42 @@ export class ToolbarComponent implements OnInit {
   }
 
   createDynamicGroup() {
-    return this.formBuilder.group({
+    const dynamicFormGroup: FormGroup = this.formBuilder.group({
       facultyId: ['', [Validators.required]],
       specialtyId: ['', [Validators.required]],
-      courseNumber: ['', [Validators.required]],
+      studentCourse: ['', [Validators.required]],
       groupId: ['', [Validators.required]],
       subgroupIds: ['', [Validators.required]],
     });
+
+    this.declareFieldsErasingStrategy(dynamicFormGroup);
+    return dynamicFormGroup;
+  }
+
+  private declareFieldsErasingStrategy(dynamicFormGroup: FormGroup<any>) {
+    //Занулять специальность при смене факультета и далее по цепочке
+    dynamicFormGroup.get('facultyId')?.valueChanges.subscribe((newValue) => {
+      dynamicFormGroup.get('specialtyId')?.setValue(null);
+    });
+
+    //Занулять курс при смене специальности
+    dynamicFormGroup.get('specialtyId')?.valueChanges.subscribe((newValue) => {
+      dynamicFormGroup.get('studentCourse')?.setValue(null);
+    });
+
+    //Занулять группу при смене курса
+    dynamicFormGroup
+      .get('studentCourse')
+      ?.valueChanges.subscribe((newValue) => {
+        dynamicFormGroup.get('groupId')?.setValue(null);
+      });
+
+    //Занулять подгруппы при смене группы
+    dynamicFormGroup
+      .get('studentCourse')
+      ?.valueChanges.subscribe((newValue) => {
+        dynamicFormGroup.get('subgroupIds')?.setValue([]);
+      });
   }
 
   get dynamicGroups() {
@@ -107,13 +184,6 @@ export class ToolbarComponent implements OnInit {
   }
 
   lessonTypes = LessonTypes;
-
-  courses: string[] = ['1', '2', '3', '4', '5'];
-
-  groups: { groupNumber: number; subgroups: string[] }[] = [
-    { groupNumber: 1, subgroups: ['a', 'b'] },
-    { groupNumber: 2, subgroups: ['a', 'b', 'c'] },
-  ];
 
   subgroups = new FormControl('');
   subgroupsList: string[] = ['А', 'Б', 'В'];

@@ -27,3 +27,8 @@ export const selectSpecialties = createSelector(
   selectPlannerState,
   (state: PlannerState) => state.specialties
 );
+
+export const selectStudentCourses = createSelector(
+  selectPlannerState,
+  (state: PlannerState) => state.studentCourses
+);

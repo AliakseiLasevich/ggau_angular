@@ -2,8 +2,11 @@ import { createReducer, on } from '@ngrx/store';
 import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
 import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
+import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import {
+  getCoursesAction,
+  getCoursesSuccess,
   getDisciplinesAction,
   getDisciplinesSuccess,
   getFacultiesAction,
@@ -20,6 +23,7 @@ export interface PlannerState {
   disciplines: DisciplineResponseInterface[];
   faculties: FacultyResponseInterface[];
   specialties: SpecialtyResponseInterface[];
+  studentCourses: StudentCourseResponseInterface[];
 }
 
 const initialState: PlannerState = {
@@ -28,6 +32,7 @@ const initialState: PlannerState = {
   disciplines: [],
   faculties: [],
   specialties: [],
+  studentCourses: [],
 };
 
 export const plannerReducer = createReducer(
@@ -62,6 +67,21 @@ export const plannerReducer = createReducer(
     return {
       ...state,
       specialties: payload.specialties,
+      isLoading: false,
+    };
+  }),
+
+  on(getCoursesAction, (state) => ({ ...state, isLoading: true })),
+  on(getCoursesSuccess, (state, { courses }) => {
+    const existingCourseIds = new Set(
+      state.studentCourses.map((course) => course.publicId)
+    );
+    const newCourses = courses.filter(
+      (course) => !existingCourseIds.has(course.publicId)
+    );
+    return {
+      ...state,
+      studentCourses: [...state.studentCourses, ...newCourses],
       isLoading: false,
     };
   })

@@ -9,6 +9,7 @@ import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import { PlannerService } from '../services/planner.service';
 import { ActionTypes } from './planner.actionTypes';
 import {
+  getCoursesSuccess,
   getDisciplinesFailure,
   getDisciplinesSuccess,
   getFacutiesSuccess,
@@ -16,6 +17,7 @@ import {
   getTeachersActionFailure,
   getTeachersActionSuccess,
 } from './planner.actions';
+import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
 
 @Injectable()
 export class PlannerEffects {
@@ -91,4 +93,21 @@ export class PlannerEffects {
       })
     )
   );
+
+  getStudentCourses$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(ActionTypes.GET_COURSES),
+    switchMap(({specialtyId}) => {
+      return this.plannerService.getCoursesBySpecialty(specialtyId).pipe(
+        map((response: StudentCourseResponseInterface[]) =>
+          getCoursesSuccess({ courses: response })
+        ),
+        catchError((error) => {
+          this.plannerService.handleFailure(error);
+          return of(getDisciplinesFailure(error.message));
+        })
+      );
+    })
+  )
+);
 }

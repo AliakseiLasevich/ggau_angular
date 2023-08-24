@@ -14,4 +14,8 @@ export enum ActionTypes {
   GET_SPECIALTIES = '[GET_SPECIALTIES] Get specialties',
   GET_SPECIALTIES_SUCCESS = '[GET_SPECIALTIES] Get specialties success',
   GET_SPECIALTIESS_FAILURE = '[GET_SPECIALTIES] Get specialties failure',
+
+  GET_COURSES = '[GET_COURSES] Get courses',
+  GET_COURSES_SUCCESS = '[GET_COURSES] Get courses success',
+  GET_COURSES_FAILURE = '[GET_COURSES] Get courses failure',
 }
