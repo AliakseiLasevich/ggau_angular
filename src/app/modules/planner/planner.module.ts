@@ -9,7 +9,7 @@ import { CustomRangeSelectionStrategy } from 'src/app/shared/features/date-range
 import { SharedModule } from 'src/app/shared/shared.module';
 import { HeaderModule } from './../header/header.module';
 import { PlannerComponent } from './components/planner/planner.component';
-import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import { FilterComponent } from './components/filter/filter.component';
 import { WeekComponent } from './components/week/week.component';
 import { PlannerService } from './services/planner.service';
 import { PlannerEffects } from './store/planner.effect';
@@ -18,7 +18,7 @@ import { plannerReducer } from './store/planner.reducer';
 const routes: Routes = [{ path: 'planner', component: PlannerComponent }];
 
 @NgModule({
-  declarations: [PlannerComponent, ToolbarComponent, WeekComponent],
+  declarations: [PlannerComponent, FilterComponent, WeekComponent],
   imports: [
     HeaderModule,
     SharedModule,

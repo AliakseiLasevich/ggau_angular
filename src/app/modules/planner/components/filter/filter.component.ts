@@ -23,18 +23,17 @@ import {
   selectStudentGroupByCourse,
   selectStudentSubgroupByGroup,
 } from '../../store/planner.selectors';
-import { LessonTypes } from './../../../../shared/enums/lesson-types.enum';
+import { LessonTypes } from '../../../../shared/enums/lesson-types.enum';
 
 @Component({
-  selector: 'app-toolbar',
-  templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss'],
+  selector: 'app-filter',
+  templateUrl: './filter.component.html',
+  styleUrls: ['./filter.component.scss'],
 })
-export class ToolbarComponent implements OnInit {
+export class FilterComponent implements OnInit {
   @Input() teachers$: Observable<TeacherResponseInterface[]>;
   @Input() disciplines$: Observable<DisciplineResponseInterface[]>;
   @Input() faculties$: Observable<FacultyResponseInterface[]>;
-
   @Input() filter$: Subject<PlannerFilterInterface>;
 
   specialties$: Observable<SpecialtyResponseInterface[]>;
