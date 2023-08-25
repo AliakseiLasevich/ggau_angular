@@ -1,10 +1,14 @@
 import { createReducer, on } from '@ngrx/store';
+import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
 import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
+import { LessonResponseInterface } from '../interfaces/lesson.interface';
 import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
 import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import {
+  getBuildingsAction,
+  getBuildingsSuccess,
   getCoursesAction,
   getCoursesSuccess,
   getDisciplinesAction,
@@ -18,8 +22,6 @@ import {
   getTeachersAction,
   getTeachersActionSuccess,
 } from './planner.actions';
-import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
-import { LessonResponseInterface } from '../interfaces/lesson.interface';
 
 export interface PlannerState {
   isLoading: boolean;
@@ -30,6 +32,8 @@ export interface PlannerState {
   studentCourses: StudentCourseResponseInterface[];
   buildings: BuildingResponseInterface[];
   lessons: LessonResponseInterface[];
+  dateFrom: Date | null;
+  dateTo: Date | null;
 }
 
 const initialState: PlannerState = {
@@ -41,6 +45,8 @@ const initialState: PlannerState = {
   studentCourses: [],
   buildings: [],
   lessons: [],
+  dateFrom: null,
+  dateTo: null,
 };
 
 export const plannerReducer = createReducer(
@@ -103,11 +109,21 @@ export const plannerReducer = createReducer(
   }),
 
   on(getLessonsAction, (state) => ({ ...state, isLoading: true })),
-  on(getLessonsSuccess, (state, {lessons}) => {
-    console.log(lessons)
+  on(getLessonsSuccess, (state, { lessons }) => {
+    console.log(lessons);
     return {
       ...state,
       lessons: lessons,
+      isLoading: false,
+    };
+  }),
+
+  on(getBuildingsAction, (state) => ({ ...state, isLoading: true })),
+  on(getBuildingsSuccess, (state, { buildings }) => {
+    console.log(buildings);
+    return {
+      ...state,
+      buildings: buildings,
       isLoading: false,
     };
   })

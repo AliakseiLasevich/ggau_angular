@@ -1,12 +1,13 @@
 import { createAction, props } from '@ngrx/store';
 
+import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
 import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
+import { LessonResponseInterface } from '../interfaces/lesson.interface';
 import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
 import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import { ActionTypes } from './planner.actionTypes';
-import { LessonResponseInterface } from '../interfaces/lesson.interface';
 
 // TEACHERS
 export const getTeachersAction = createAction(ActionTypes.GET_TEACHERS);
@@ -78,15 +79,27 @@ export const getCoursesFailure = createAction(
 
 export const getLessonsAction = createAction(
   ActionTypes.GET_LESSONS,
-  props<{ dateFrom: Date, dateTo: Date }>()
+  props<{ dateFrom: Date; dateTo: Date }>()
 );
 
 export const getLessonsSuccess = createAction(
   ActionTypes.GET_LESSONS_SUCCESS,
-  props<{ lessons: LessonResponseInterface[]}>()
+  props<{ lessons: LessonResponseInterface[] }>()
 );
 
 export const getLessonsFailure = createAction(
   ActionTypes.GET_LESSONS_FAILURE,
+  props<{ payload: string }>()
+);
+
+export const getBuildingsAction = createAction(ActionTypes.GET_BUILDINGS);
+
+export const getBuildingsSuccess = createAction(
+  ActionTypes.GET_BUILDINGS_SUCCESS,
+  props<{ buildings: BuildingResponseInterface[] }>()
+);
+
+export const getBuildingsFailure = createAction(
+  ActionTypes.GET_BUILDINGS_FAILURE,
   props<{ payload: string }>()
 );

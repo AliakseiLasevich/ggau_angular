@@ -147,7 +147,7 @@ export class ToolbarComponent implements OnInit {
     );
     return utcDate.toISOString().split('T')[0];
   }
-  
+
   private declareFieldsErasingStrategy(dynamicFormGroup: FormGroup<any>) {
     //Занулять специальность при смене факультета и далее по цепочке
     dynamicFormGroup.get('facultyId')?.valueChanges.subscribe((newValue) => {

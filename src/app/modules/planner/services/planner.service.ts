@@ -7,6 +7,7 @@ import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
 import { LessonResponseInterface } from '../interfaces/lesson.interface';
+import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
 
 @Injectable()
 export class PlannerService {
@@ -52,6 +53,10 @@ export class PlannerService {
     return this.http.get<LessonResponseInterface[]>(
       this.url + 'lessons', { params: {dateFrom: from.toString(), dateTo: to.toString()}}
     );
+  }
+
+  getBuildings(): Observable<BuildingResponseInterface[]> {
+    return this.http.get<BuildingResponseInterface[]>(this.url + 'buildings');
   }
 
   handleFailure(error: string) {

@@ -7,6 +7,7 @@ import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfac
 import { SpecialtyResponseInterface } from '../../interfaces/specialty.interfaces';
 import { TeacherResponseInterface } from '../../interfaces/teachers.interfaces';
 import {
+  getBuildingsAction,
   getDisciplinesAction,
   getFacultiesAction,
   getLessonsAction,
@@ -31,6 +32,8 @@ export class PlannerComponent implements OnInit {
   specialties$: Observable<SpecialtyResponseInterface[]>;
 
   filter$: Subject<PlannerFilterInterface> = new Subject();
+  dateFrom: Date;
+  dateTo: Date;
 
   constructor(private store: Store<PlannerState>) {}
 
@@ -43,10 +46,17 @@ export class PlannerComponent implements OnInit {
     this.store.dispatch(getDisciplinesAction());
     this.store.dispatch(getFacultiesAction());
 
-    this.filter$.subscribe((value) =>
-      this.store.dispatch(
-        getLessonsAction({ dateFrom: value.fromDate, dateTo: value.toDate })
-      )
-    );
+    this.filter$.subscribe((filter) => {
+      filter &&
+        this.store.dispatch(
+          getLessonsAction({
+            dateFrom: filter?.fromDate,
+            dateTo: filter.toDate,
+          })
+        );
+      this.store.dispatch(getBuildingsAction());
+      this.dateFrom = filter.fromDate;
+      this.dateTo = filter.toDate;
+    });
   }
 }

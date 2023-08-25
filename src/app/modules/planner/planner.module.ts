@@ -8,10 +8,9 @@ import { CustomDateAdapter } from 'src/app/shared/features/date-adapter';
 import { CustomRangeSelectionStrategy } from 'src/app/shared/features/date-range-selection-strategy';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { HeaderModule } from './../header/header.module';
-import { BuildingsComponent } from './components/buildings/buildings.component';
-import { CabinetsComponent } from './components/cabinets/cabinets.component';
 import { PlannerComponent } from './components/planner/planner.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import { WeekComponent } from './components/week/week.component';
 import { PlannerService } from './services/planner.service';
 import { PlannerEffects } from './store/planner.effect';
 import { plannerReducer } from './store/planner.reducer';
@@ -19,12 +18,7 @@ import { plannerReducer } from './store/planner.reducer';
 const routes: Routes = [{ path: 'planner', component: PlannerComponent }];
 
 @NgModule({
-  declarations: [
-    PlannerComponent,
-    ToolbarComponent,
-    CabinetsComponent,
-    BuildingsComponent,
-  ],
+  declarations: [PlannerComponent, ToolbarComponent, WeekComponent],
   imports: [
     HeaderModule,
     SharedModule,
@@ -38,7 +32,7 @@ const routes: Routes = [{ path: 'planner', component: PlannerComponent }];
       provide: MAT_DATE_RANGE_SELECTION_STRATEGY,
       useClass: CustomRangeSelectionStrategy,
     },
-    { provide: DateAdapter, useClass: CustomDateAdapter}
+    { provide: DateAdapter, useClass: CustomDateAdapter },
   ],
 })
 export class PlannerModule {}

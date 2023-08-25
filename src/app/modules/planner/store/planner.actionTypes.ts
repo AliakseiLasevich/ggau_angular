@@ -22,4 +22,8 @@ export enum ActionTypes {
   GET_LESSONS = '[GET_LESSONS] Get lessons',
   GET_LESSONS_SUCCESS = '[GET_LESSONS] Get lessons success',
   GET_LESSONS_FAILURE = '[GET_LESSONS] Get lessons failure',
+
+  GET_BUILDINGS = '[GET_BUILDINGS] Get buildings',
+  GET_BUILDINGS_SUCCESS = '[GET_BUILDINGS] Get buildings success',
+  GET_BUILDINGS_FAILURE = '[GET_BUILDINGS] Get buildings failure',
 }

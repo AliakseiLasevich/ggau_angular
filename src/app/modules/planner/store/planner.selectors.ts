@@ -54,3 +54,8 @@ export const selectStudentSubgroupByGroup = (groupId: string) =>
       .filter((group) => group.publicId === groupId)
       .flatMap((group) => group.studentSubgroups)
   );
+
+export const selectAllBuildings = createSelector(
+  selectPlannerState,
+  (state: PlannerState) => state.buildings
+);

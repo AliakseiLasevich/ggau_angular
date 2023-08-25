@@ -2,13 +2,17 @@ import { Injectable } from '@angular/core';
 
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, of, switchMap } from 'rxjs';
+import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
 import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
+import { LessonResponseInterface } from '../interfaces/lesson.interface';
 import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
+import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import { PlannerService } from '../services/planner.service';
 import { ActionTypes } from './planner.actionTypes';
 import {
+  getBuildingsSuccess,
   getCoursesSuccess,
   getDisciplinesFailure,
   getDisciplinesSuccess,
@@ -19,8 +23,6 @@ import {
   getTeachersActionFailure,
   getTeachersActionSuccess,
 } from './planner.actions';
-import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
-import { LessonResponseInterface } from '../interfaces/lesson.interface';
 
 @Injectable()
 export class PlannerEffects {
@@ -114,38 +116,37 @@ export class PlannerEffects {
     )
   );
 
-  // getLessons$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(ActionTypes.GET_LESSONS),
-  //     switchMap(({ dateFrom, dateTo }) => {
-  //       return this.plannerService.getLessonsByDateRange(dateFrom, dateTo).pipe(
-  //         map((response: LessonResponseInterface[]) => {
-  //           console.log(response);
-  //           return getLessonsSuccess({lessons: response});
-  //         }),
-  //         catchError((error) => {
-  //           this.plannerService.handleFailure(error);
-  //           return of(getLessonsFailure(error.message));
-  //         })
-  //       );
-  //     })
-  //   )
-  // );
-
   getLessons$ = createEffect(() =>
-  this.actions$.pipe(
-    ofType(ActionTypes.GET_LESSONS),
-    switchMap(({ dateFrom, dateTo}) => {
-      return this.plannerService.getLessonsByDateRange(dateFrom, dateTo).pipe(
-        map((response: LessonResponseInterface[]) =>
-          getLessonsSuccess({ lessons: response })
-        ),
-        catchError((error) => {
-          this.plannerService.handleFailure(error);
-          return of(getLessonsFailure(error.message));
-        })
-      );
-    })
-  )
-);
+    this.actions$.pipe(
+      ofType(ActionTypes.GET_LESSONS),
+      switchMap(({ dateFrom, dateTo }) => {
+        return this.plannerService.getLessonsByDateRange(dateFrom, dateTo).pipe(
+          map((response: LessonResponseInterface[]) =>
+            getLessonsSuccess({ lessons: response })
+          ),
+          catchError((error) => {
+            this.plannerService.handleFailure(error);
+            return of(getLessonsFailure(error.message));
+          })
+        );
+      })
+    )
+  );
+
+  getBuildings$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ActionTypes.GET_BUILDINGS),
+      switchMap(() => {
+        return this.plannerService.getBuildings().pipe(
+          map((response: BuildingResponseInterface[]) =>
+            getBuildingsSuccess({ buildings: response })
+          ),
+          catchError((error) => {
+            this.plannerService.handleFailure(error);
+            return of(getLessonsFailure(error.message));
+          })
+        );
+      })
+    )
+  );
 }
