@@ -11,11 +11,15 @@ import {
   getDisciplinesSuccess,
   getFacultiesAction,
   getFacutiesSuccess,
+  getLessonsAction,
+  getLessonsSuccess,
   getSpecialtiesAction,
   getSpecialtiesSuccess,
   getTeachersAction,
   getTeachersActionSuccess,
 } from './planner.actions';
+import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
+import { LessonResponseInterface } from '../interfaces/lesson.interface';
 
 export interface PlannerState {
   isLoading: boolean;
@@ -24,6 +28,8 @@ export interface PlannerState {
   faculties: FacultyResponseInterface[];
   specialties: SpecialtyResponseInterface[];
   studentCourses: StudentCourseResponseInterface[];
+  buildings: BuildingResponseInterface[];
+  lessons: LessonResponseInterface[];
 }
 
 const initialState: PlannerState = {
@@ -33,11 +39,13 @@ const initialState: PlannerState = {
   faculties: [],
   specialties: [],
   studentCourses: [],
+  buildings: [],
+  lessons: [],
 };
 
 export const plannerReducer = createReducer(
   initialState,
-  
+
   on(getTeachersAction, (state) => ({ ...state, isLoading: true })),
   on(getTeachersActionSuccess, (state, payload) => {
     return {
@@ -63,7 +71,7 @@ export const plannerReducer = createReducer(
       isLoading: false,
     };
   }),
-  
+
   on(getSpecialtiesAction, (state) => ({ ...state, isLoading: true })),
   on(getSpecialtiesSuccess, (state, { specialties }) => {
     const existingSpecialties = new Set(
@@ -90,6 +98,16 @@ export const plannerReducer = createReducer(
     return {
       ...state,
       studentCourses: [...state.studentCourses, ...newCourses],
+      isLoading: false,
+    };
+  }),
+
+  on(getLessonsAction, (state) => ({ ...state, isLoading: true })),
+  on(getLessonsSuccess, (state, {lessons}) => {
+    console.log(lessons)
+    return {
+      ...state,
+      lessons: lessons,
       isLoading: false,
     };
   })

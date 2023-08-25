@@ -6,6 +6,7 @@ import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
 import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import { ActionTypes } from './planner.actionTypes';
+import { LessonResponseInterface } from '../interfaces/lesson.interface';
 
 // TEACHERS
 export const getTeachersAction = createAction(ActionTypes.GET_TEACHERS);
@@ -72,5 +73,20 @@ export const getCoursesSuccess = createAction(
 
 export const getCoursesFailure = createAction(
   ActionTypes.GET_COURSES_FAILURE,
+  props<{ payload: string }>()
+);
+
+export const getLessonsAction = createAction(
+  ActionTypes.GET_LESSONS,
+  props<{ dateFrom: Date, dateTo: Date }>()
+);
+
+export const getLessonsSuccess = createAction(
+  ActionTypes.GET_LESSONS_SUCCESS,
+  props<{ lessons: LessonResponseInterface[]}>()
+);
+
+export const getLessonsFailure = createAction(
+  ActionTypes.GET_LESSONS_FAILURE,
   props<{ payload: string }>()
 );

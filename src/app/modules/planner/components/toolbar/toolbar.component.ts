@@ -2,9 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { Store } from '@ngrx/store';
-import { Observable, map } from 'rxjs';
+import { Observable, Subject, map } from 'rxjs';
 import { DisciplineResponseInterface } from '../../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../../interfaces/faculties.interfaces';
+import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
 import { SpecialtyResponseInterface } from '../../interfaces/specialty.interfaces';
 import { StudentCourseResponseInterface } from '../../interfaces/studentCourse.interfaces';
 import { StudentGroupResponseInterface } from '../../interfaces/studentGroup.interfaces';
@@ -33,6 +34,8 @@ export class ToolbarComponent implements OnInit {
   @Input() teachers$: Observable<TeacherResponseInterface[]>;
   @Input() disciplines$: Observable<DisciplineResponseInterface[]>;
   @Input() faculties$: Observable<FacultyResponseInterface[]>;
+
+  @Input() filter$: Subject<PlannerFilterInterface>;
 
   specialties$: Observable<SpecialtyResponseInterface[]>;
   studentCourses$: Observable<StudentCourseResponseInterface[]>;
@@ -124,12 +127,27 @@ export class ToolbarComponent implements OnInit {
     );
   }
 
+  // convertDate(selectedDate: string): string {
+  //   const jsDate = new Date(selectedDate);
+  //   const formattedDate = jsDate.toISOString().split('T')[0];
+  //   return formattedDate;
+  // }
   convertDate(selectedDate: string): string {
-    const jsDate = new Date(selectedDate);
-    const formattedDate = jsDate.toISOString().split('T')[0];
-    return formattedDate;
+    const localDate = new Date(selectedDate);
+    const utcDate = new Date(
+      Date.UTC(
+        localDate.getFullYear(),
+        localDate.getMonth(),
+        localDate.getDate(),
+        localDate.getHours(),
+        localDate.getMinutes(),
+        localDate.getSeconds(),
+        localDate.getMilliseconds()
+      )
+    );
+    return utcDate.toISOString().split('T')[0];
   }
-
+  
   private declareFieldsErasingStrategy(dynamicFormGroup: FormGroup<any>) {
     //Занулять специальность при смене факультета и далее по цепочке
     dynamicFormGroup.get('facultyId')?.valueChanges.subscribe((newValue) => {
@@ -170,7 +188,15 @@ export class ToolbarComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.dynamicForm.value);
+    //TODO убрать костыль
+    this.dynamicForm
+      .get('fromDate')
+      ?.setValue(this.convertDate(this.dynamicForm.get('fromDate')?.value));
+    this.dynamicForm
+      .get('toDate')
+      ?.setValue(this.convertDate(this.dynamicForm.get('toDate')?.value));
+
+    this.filter$.next(this.dynamicForm.value);
   }
 
   lessonTypes = LessonTypes;

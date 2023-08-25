@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { DisciplineResponseInterface } from '../../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../../interfaces/faculties.interfaces';
+import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
 import { SpecialtyResponseInterface } from '../../interfaces/specialty.interfaces';
 import { TeacherResponseInterface } from '../../interfaces/teachers.interfaces';
 import {
   getDisciplinesAction,
   getFacultiesAction,
+  getLessonsAction,
   getTeachersAction,
 } from '../../store/planner.actions';
 import { PlannerState } from '../../store/planner.reducer';
@@ -28,6 +30,8 @@ export class PlannerComponent implements OnInit {
   faculties$: Observable<FacultyResponseInterface[]>;
   specialties$: Observable<SpecialtyResponseInterface[]>;
 
+  filter$: Subject<PlannerFilterInterface> = new Subject();
+
   constructor(private store: Store<PlannerState>) {}
 
   ngOnInit(): void {
@@ -38,5 +42,11 @@ export class PlannerComponent implements OnInit {
     this.store.dispatch(getTeachersAction());
     this.store.dispatch(getDisciplinesAction());
     this.store.dispatch(getFacultiesAction());
+
+    this.filter$.subscribe((value) =>
+      this.store.dispatch(
+        getLessonsAction({ dateFrom: value.fromDate, dateTo: value.toDate })
+      )
+    );
   }
 }

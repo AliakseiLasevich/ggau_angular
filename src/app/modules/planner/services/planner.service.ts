@@ -6,6 +6,7 @@ import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
 import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
+import { LessonResponseInterface } from '../interfaces/lesson.interface';
 
 @Injectable()
 export class PlannerService {
@@ -40,7 +41,16 @@ export class PlannerService {
     specialtyId: string
   ): Observable<StudentCourseResponseInterface[]> {
     return this.http.get<StudentCourseResponseInterface[]>(
-      this.url + 'student_courses/specialties/'+ specialtyId
+      this.url + 'student_courses/specialties/' + specialtyId
+    );
+  }
+
+  getLessonsByDateRange(
+    from: Date,
+    to: Date
+  ): Observable<LessonResponseInterface[]> {
+    return this.http.get<LessonResponseInterface[]>(
+      this.url + 'lessons', { params: {dateFrom: from.toString(), dateTo: to.toString()}}
     );
   }
 

@@ -6,29 +6,37 @@ import {
 } from '@angular/material/datepicker';
 
 @Injectable()
-export class FiveDayRangeSelectionStrategy
-  implements MatDateRangeSelectionStrategy<string>
+export class CustomRangeSelectionStrategy
+  implements MatDateRangeSelectionStrategy<Date>
 {
-  constructor(private _dateAdapter: DateAdapter<string>) {}
+  constructor(private _dateAdapter: DateAdapter<Date>) {}
 
-  selectionFinished(date: string | null): DateRange<string> {
-    return this._createFiveDayRange(date);
+  selectionFinished(date: Date | null): DateRange<Date> {
+    return this._createCustomRange(date);
   }
 
-  createPreview(activeDate: string | null): DateRange<string> {
-    return this._createFiveDayRange(activeDate);
+  createPreview(activeDate: Date | null): DateRange<Date> {
+    return this._createCustomRange(activeDate);
   }
 
-  private _createFiveDayRange(date: string | null): DateRange<any> {
+  private _createCustomRange(date: Date | null): DateRange<Date> {
     if (date) {
-      const d = new Date(date);
-      const day = d.getDay();
-      const diff = d.getDate() - day + (day == 0 ? -6 : 1);
-      const start = new Date(d.setDate(diff));
-      const end = new Date(d.setDate(diff + 6));
-      return new DateRange<any>(start, end);
+      const selectedDate = this._dateAdapter.deserialize(date) || new Date();
+      const startOfWeek = this._getStartOfWeek(selectedDate);
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+      return new DateRange<Date>(startOfWeek, endOfWeek);
     }
 
-    return new DateRange<string>(null, null);
+    return new DateRange<Date>(null, null);
+  }
+
+  private _getStartOfWeek(date: Date): Date {
+    const day = date.getDay();
+    const daysToSubtract = day === 0 ? 6 : day - 1;
+    const startOfWeek = new Date(date);
+    startOfWeek.setDate(date.getDate() - daysToSubtract);
+    return startOfWeek;
   }
 }
