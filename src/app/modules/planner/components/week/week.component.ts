@@ -1,19 +1,16 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { MatTableDataSource } from '@angular/material/table';
 import { Store } from '@ngrx/store';
 import { BuildingResponseInterface } from '../../interfaces/buildings.interfaces';
 import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
-import {
-  getBuildingsAction,
-  getLessonsAction,
-} from '../../store/planner.actions';
+import { getLessonsAction } from '../../store/planner.actions';
 import { PlannerState } from '../../store/planner.reducer';
-import { selectAllBuildings } from '../../store/planner.selectors';
 
 export interface OneDayData {
   date: string;
+  buildings: BuildingResponseInterface[];
   // lesson: LessonResponseInterface;
 }
 
@@ -24,39 +21,53 @@ export interface OneDayData {
 })
 export class WeekComponent implements OnChanges {
   @Input() filter: PlannerFilterInterface;
+  @Input() buildings: BuildingResponseInterface[] | null;
+  dateRange: string[];
+  dateRange$: Observable<string[]>;
 
-  dataSource: MatTableDataSource<OneDayData>;
-  buildings$: Observable<BuildingResponseInterface[]>;
-  displayedColumns: string[];
+  dataSource: MatTableDataSource<any>;
+  displayedColumns: string[] = [];
 
   constructor(private store: Store<PlannerState>) {
-    this.buildings$ = this.store.select(selectAllBuildings);
+    this.dateRange = [];
+    this.calculateDateRange();
+    this.dateRange$ = of(this.calculateDateRange());
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.store.dispatch(
       getLessonsAction({
-        dateFrom: this.filter.fromDate,
-        dateTo: this.filter.toDate,
+        dateFrom: this.filter?.fromDate,
+        dateTo: this.filter?.toDate,
       })
     );
 
-    this.store.dispatch(getBuildingsAction());
-
-    console.log(changes);
-    const dateRange = this.dateRange();
-    this.displayedColumns = dateRange; // Include 'date' and the rest of the dates in columns
-    const data: OneDayData[] = dateRange.map((date) => ({ date: date }));
-    this.dataSource = new MatTableDataSource(data);
+    this.calculateDateRange();
+    this.drawTable();
   }
 
-  dateRange(): string[] {
+  drawTable() {
+    const result: any[] = [];
+    this.buildings?.forEach((building) => {
+      const buildingEntries: { [key: string]: string } = {};
+      this.dateRange.forEach((date) => {
+        buildingEntries[date] = building.name;
+      });
+
+      result.push(buildingEntries);
+    });
+
+    this.dataSource = new MatTableDataSource(result);
+  }
+
+  calculateDateRange() {
     const range: string[] = [];
-    const currentDate = new Date(this.filter.fromDate);
-    while (currentDate <= new Date(this.filter.toDate)) {
+    const currentDate = new Date(this.filter?.fromDate);
+    while (currentDate <= new Date(this.filter?.toDate)) {
       range.push(new Date(currentDate).toDateString());
       currentDate.setDate(currentDate.getDate() + 1);
     }
+    this.dateRange = range;
     return range;
   }
 
