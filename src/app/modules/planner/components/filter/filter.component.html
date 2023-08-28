@@ -20,10 +20,7 @@
     <mat-form-field>
       <mat-label>Преподаватель</mat-label>
       <mat-select formControlName="selectedTeacher">
-        <mat-option
-          *ngFor="let teacher of teachers$ | async"
-          [value]="teacher.publicId"
-        >
+        <mat-option *ngFor="let teacher of teachers" [value]="teacher.publicId">
           {{ teacher.name }}
         </mat-option>
       </mat-select>
@@ -34,7 +31,7 @@
       <mat-label>Предмет</mat-label>
       <mat-select formControlName="selectedDiscipline">
         <mat-option
-          *ngFor="let discipline of disciplines$ | async"
+          *ngFor="let discipline of disciplines"
           [value]="discipline.publicId"
         >
           {{ discipline.name }}
@@ -66,7 +63,7 @@
             (selectionChange)="updateFormSpecialties($event, i)"
           >
             <mat-option
-              *ngFor="let faculty of faculties$ | async"
+              *ngFor="let faculty of faculties"
               [value]="faculty.publicId"
             >
               {{ faculty.name }}
@@ -83,7 +80,7 @@
           >
             <mat-option
               *ngFor="
-                let specialty of filterSpecialtiesByFaculty(
+                let specialty of getSpecialtiesByFaculty(
                   dynamicGroups.controls[i]?.get('facultyId')?.value
                 ) | async
               "

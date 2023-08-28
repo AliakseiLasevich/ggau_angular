@@ -1,12 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { Store } from '@ngrx/store';
-import { Observable, Subject, map } from 'rxjs';
+import { Observable } from 'rxjs';
+import { LessonTypes } from '../../../../shared/enums/lesson-types.enum';
 import { DisciplineResponseInterface } from '../../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../../interfaces/faculties.interfaces';
 import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
-import { SpecialtyResponseInterface } from '../../interfaces/specialty.interfaces';
 import { StudentCourseResponseInterface } from '../../interfaces/studentCourse.interfaces';
 import { StudentGroupResponseInterface } from '../../interfaces/studentGroup.interfaces';
 import { StudentSubgroupResponseInterface } from '../../interfaces/studentSubgroup.interfaces';
@@ -17,13 +17,11 @@ import {
 } from '../../store/planner.actions';
 import { PlannerState } from '../../store/planner.reducer';
 import {
-  selectSpecialties,
+  selectSpecialtiesByFaculty,
   selectStudentCourseBySpecialty,
-  selectStudentCourses,
   selectStudentGroupByCourse,
   selectStudentSubgroupByGroup,
 } from '../../store/planner.selectors';
-import { LessonTypes } from '../../../../shared/enums/lesson-types.enum';
 
 @Component({
   selector: 'app-filter',
@@ -31,13 +29,11 @@ import { LessonTypes } from '../../../../shared/enums/lesson-types.enum';
   styleUrls: ['./filter.component.scss'],
 })
 export class FilterComponent implements OnInit {
-  @Input() teachers$: Observable<TeacherResponseInterface[]>;
-  @Input() disciplines$: Observable<DisciplineResponseInterface[]>;
-  @Input() faculties$: Observable<FacultyResponseInterface[]>;
-  @Input() filter$: Subject<PlannerFilterInterface>;
+  @Input() teachers: TeacherResponseInterface[] | null;
+  @Input() disciplines: DisciplineResponseInterface[] | null;
+  @Input() faculties: FacultyResponseInterface[] | null;
+  @Output() filterSubmittedEvent = new EventEmitter<PlannerFilterInterface>();
 
-  specialties$: Observable<SpecialtyResponseInterface[]>;
-  studentCourses$: Observable<StudentCourseResponseInterface[]>;
   dynamicForm: FormGroup;
 
   constructor(
@@ -52,8 +48,6 @@ export class FilterComponent implements OnInit {
 
   private initValues() {
     this.store.dispatch(getSpecialtiesAction());
-    this.specialties$ = this.store.select(selectSpecialties);
-    this.studentCourses$ = this.store.select(selectStudentCourses);
   }
 
   private initForms() {
@@ -80,25 +74,6 @@ export class FilterComponent implements OnInit {
 
     return dynamicFormGroup;
   }
-
-  getStudentCoursesBySpecialty(
-    specialtyId: string
-  ): Observable<StudentCourseResponseInterface[]> {
-    return this.store.select(selectStudentCourseBySpecialty(specialtyId));
-  }
-
-  getStudentGroupByCourse(
-    courseId: string
-  ): Observable<StudentGroupResponseInterface[]> {
-    return this.store.select(selectStudentGroupByCourse(courseId));
-  }
-
-  getStudentSubgroupByGroup(
-    groupId: string
-  ): Observable<StudentSubgroupResponseInterface[]> {
-    return this.store.select(selectStudentSubgroupByGroup(groupId));
-  }
-
   updateFormSpecialties(selectedFaculty: MatSelectChange, index: number) {
     const facultyControl = this.dynamicGroups.at(index).get('facultyId');
     if (facultyControl) {
@@ -116,21 +91,6 @@ export class FilterComponent implements OnInit {
     }
   }
 
-  filterSpecialtiesByFaculty(
-    facultyId: string
-  ): Observable<SpecialtyResponseInterface[]> {
-    return this.specialties$.pipe(
-      map((specialties) =>
-        specialties.filter((specialty) => specialty.facultyId === facultyId)
-      )
-    );
-  }
-
-  // convertDate(selectedDate: string): string {
-  //   const jsDate = new Date(selectedDate);
-  //   const formattedDate = jsDate.toISOString().split('T')[0];
-  //   return formattedDate;
-  // }
   convertDate(selectedDate: string): string {
     const localDate = new Date(selectedDate);
     const utcDate = new Date(
@@ -186,6 +146,28 @@ export class FilterComponent implements OnInit {
     }
   }
 
+  getSpecialtiesByFaculty(facultyId: string) {
+    return this.store.select(selectSpecialtiesByFaculty(facultyId));
+  }
+
+  getStudentCoursesBySpecialty(
+    specialtyId: string
+  ): Observable<StudentCourseResponseInterface[]> {
+    return this.store.select(selectStudentCourseBySpecialty(specialtyId));
+  }
+
+  getStudentGroupByCourse(
+    courseId: string
+  ): Observable<StudentGroupResponseInterface[]> {
+    return this.store.select(selectStudentGroupByCourse(courseId));
+  }
+
+  getStudentSubgroupByGroup(
+    groupId: string
+  ): Observable<StudentSubgroupResponseInterface[]> {
+    return this.store.select(selectStudentSubgroupByGroup(groupId));
+  }
+
   onSubmit() {
     //TODO убрать костыль
     this.dynamicForm
@@ -195,7 +177,7 @@ export class FilterComponent implements OnInit {
       .get('toDate')
       ?.setValue(this.convertDate(this.dynamicForm.get('toDate')?.value));
 
-    this.filter$.next(this.dynamicForm.value);
+    this.filterSubmittedEvent.emit(this.dynamicForm.value);
   }
 
   lessonTypes = LessonTypes;

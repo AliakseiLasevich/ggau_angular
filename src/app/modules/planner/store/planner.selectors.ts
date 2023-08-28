@@ -28,6 +28,11 @@ export const selectSpecialties = createSelector(
   (state: PlannerState) => state.specialties
 );
 
+export const selectSpecialtiesByFaculty = (facultyId: string) =>
+  createSelector(selectSpecialties, (specialties) =>
+    specialties.filter((specialty) => specialty.facultyId === facultyId)
+  );
+
 export const selectStudentCourses = createSelector(
   selectPlannerState,
   (state: PlannerState) => state.studentCourses

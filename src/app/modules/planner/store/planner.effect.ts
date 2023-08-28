@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, exhaustMap, map, of, switchMap } from 'rxjs';
 import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
 import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
@@ -24,6 +24,11 @@ import {
   getTeachersActionSuccess,
 } from './planner.actions';
 
+// mergeMap - при удалении
+// concatMap - при создании или апдейте
+// exhaustMap - для запросов без параметров
+// switchMap - для параметризованных запросов
+
 @Injectable()
 export class PlannerEffects {
   constructor(
@@ -34,7 +39,7 @@ export class PlannerEffects {
   getTeachers$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ActionTypes.GET_TEACHERS),
-      switchMap(() => {
+      exhaustMap(() => {
         return this.plannerService.getTeachers().pipe(
           map((response: TeacherResponseInterface[]) =>
             getTeachersActionSuccess({ teachers: response })
@@ -51,7 +56,7 @@ export class PlannerEffects {
   getDisciplines$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ActionTypes.GET_DISCIPLINES),
-      switchMap(() => {
+      exhaustMap(() => {
         return this.plannerService.getDisciplines().pipe(
           map((response: DisciplineResponseInterface[]) =>
             getDisciplinesSuccess({ disciplines: response })
@@ -68,7 +73,7 @@ export class PlannerEffects {
   getFaculties$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ActionTypes.GET_FACULTIES),
-      switchMap(() => {
+      exhaustMap(() => {
         return this.plannerService.getFaculties().pipe(
           map((response: FacultyResponseInterface[]) =>
             getFacutiesSuccess({ faculties: response })
@@ -136,7 +141,7 @@ export class PlannerEffects {
   getBuildings$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ActionTypes.GET_BUILDINGS),
-      switchMap(() => {
+      exhaustMap(() => {
         return this.plannerService.getBuildings().pipe(
           map((response: BuildingResponseInterface[]) =>
             getBuildingsSuccess({ buildings: response })

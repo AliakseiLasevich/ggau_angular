@@ -1,9 +1,9 @@
 <app-header></app-header>
 <app-filter
-  [teachers$]="teachers$"
-  [disciplines$]="disciplines$"
-  [faculties$]="faculties$"
-  [filter$]="filter$"
+  [teachers]="teachers$ | async"
+  [disciplines]="disciplines$ | async"
+  [faculties]="faculties$ | async"
+  (filterSubmittedEvent)="filterSubmittedEvent($event)"
 ></app-filter>
 
-<app-week [dateFrom]="dateFrom" [dateTo]="dateTo"></app-week>
+<app-week [filter]="filter"></app-week>

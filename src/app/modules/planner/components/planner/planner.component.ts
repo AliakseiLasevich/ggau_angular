@@ -1,17 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { DisciplineResponseInterface } from '../../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../../interfaces/faculties.interfaces';
 import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
 import { SpecialtyResponseInterface } from '../../interfaces/specialty.interfaces';
 import { TeacherResponseInterface } from '../../interfaces/teachers.interfaces';
 import {
-  getBuildingsAction,
   getDisciplinesAction,
   getFacultiesAction,
-  getLessonsAction,
-  getTeachersAction,
+  getTeachersAction
 } from '../../store/planner.actions';
 import { PlannerState } from '../../store/planner.reducer';
 import {
@@ -31,9 +29,7 @@ export class PlannerComponent implements OnInit {
   faculties$: Observable<FacultyResponseInterface[]>;
   specialties$: Observable<SpecialtyResponseInterface[]>;
 
-  filter$: Subject<PlannerFilterInterface> = new Subject();
-  dateFrom: Date;
-  dateTo: Date;
+  filter: PlannerFilterInterface;
 
   constructor(private store: Store<PlannerState>) {}
 
@@ -45,18 +41,9 @@ export class PlannerComponent implements OnInit {
     this.store.dispatch(getTeachersAction());
     this.store.dispatch(getDisciplinesAction());
     this.store.dispatch(getFacultiesAction());
+  }
 
-    this.filter$.subscribe((filter) => {
-      filter &&
-        this.store.dispatch(
-          getLessonsAction({
-            dateFrom: filter?.fromDate,
-            dateTo: filter.toDate,
-          })
-        );
-      this.store.dispatch(getBuildingsAction());
-      this.dateFrom = filter.fromDate;
-      this.dateTo = filter.toDate;
-    });
+  filterSubmittedEvent(filter: PlannerFilterInterface) {
+    this.filter = filter;
   }
 }
