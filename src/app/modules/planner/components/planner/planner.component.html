@@ -6,4 +6,8 @@
   (filterSubmittedEvent)="filterSubmittedEvent($event)"
 ></app-filter>
 
-<app-week [filter]="filter" [buildings]="buildings$ | async"></app-week>
+<app-week
+  [filter]="filter"
+  [lessons]="lessons$ | async"
+  [buildings]="buildings$ | async"
+></app-week>

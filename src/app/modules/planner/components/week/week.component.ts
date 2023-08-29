@@ -1,19 +1,16 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { Observable, of } from 'rxjs';
 
 import { MatTableDataSource } from '@angular/material/table';
 import { Store } from '@ngrx/store';
 import { BuildingResponseInterface } from '../../interfaces/buildings.interfaces';
-import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
-import { getLessonsAction } from '../../store/planner.actions';
-import { PlannerState } from '../../store/planner.reducer';
 import { CabinetResponseInterface } from '../../interfaces/cabinet.interfaces';
 import { LessonResponseInterface } from '../../interfaces/lesson.interface';
-import { selectLessons } from '../../store/planner.selectors';
+import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
+import { PlannerState } from '../../store/planner.reducer';
 
 export interface PlannerCellDto {
   date: string;
-  cabinet: CabinetResponseInterface[];
+  cabinet: CabinetResponseInterface;
   lesson: LessonResponseInterface | null;
 }
 
@@ -25,7 +22,7 @@ export interface PlannerCellDto {
 export class WeekComponent implements OnChanges {
   @Input() filter: PlannerFilterInterface;
   @Input() buildings: BuildingResponseInterface[] | null;
-  lessons: Observable<LessonResponseInterface[]> = this.store.select(selectLessons);
+  @Input() lessons: LessonResponseInterface[] | null;
 
   dateRange: string[] = [];
   dataSource: MatTableDataSource<any>;
@@ -33,15 +30,6 @@ export class WeekComponent implements OnChanges {
   constructor(private store: Store<PlannerState>) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.filter?.fromDate && this.filter?.toDate) {
-      this.store.dispatch(
-        getLessonsAction({
-          dateFrom: this.filter.fromDate,
-          dateTo: this.filter.toDate,
-        })
-      );
-    }
-
     this.calculateDateRange();
     this.generateDataSource();
   }
@@ -64,14 +52,37 @@ export class WeekComponent implements OnChanges {
     result: any[]
   ) {
     building.cabinets.forEach((cabinet) => {
-      const row: { [key: string]: CabinetResponseInterface } = {};
+      const row: { [key: string]: PlannerCellDto } = {};
 
       this.dateRange.forEach((date) => {
-        row[date] = cabinet;
-      });
+        const filtered = this.lessons
+          ?.filter((lesson) => lesson.cabinet.publicId === cabinet.publicId)
+          .filter((lesson) => this.areDatesEqual(lesson.date, date));
 
+        if (filtered) {
+          const lessonForCabinet = filtered.length > 0 ? filtered[0] : null;
+          const cell: PlannerCellDto = {
+            date,
+            cabinet,
+            lesson: lessonForCabinet,
+          };
+          row[date] = cell;
+        }
+
+        // const row: { [key: string]: PlannerCellDto } = {};
+      });
       result.push(row);
     });
+  }
+
+  areDatesEqual(date1: number[], date2: string): boolean {
+    const [year1, month1, day1] = date1;
+    const [day2, month2, year2] = date2.split('.').map(Number);
+
+    const jsDate1 = new Date(year1, month1 - 1, day1);
+    const jsDate2 = new Date(year2, month2 - 1, day2);
+
+    return jsDate1.getTime() === jsDate2.getTime();
   }
 
   isGroup(index: any, item: any): boolean {
@@ -92,5 +103,17 @@ export class WeekComponent implements OnChanges {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  generateTooltip(row: PlannerCellDto): string {
+    const date = row.date;
+    const name = row.lesson?.teacher.name;
+    const subgroups = row.lesson?.studentSubgroups
+      .map((subgroup) => subgroup.name)
+      .join(',');
+    if (date && name && subgroups) {
+      return `${date} /  ${name} /  ${subgroups}`;
+    }
+    return '';
   }
 }

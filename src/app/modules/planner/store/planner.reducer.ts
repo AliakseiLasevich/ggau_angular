@@ -120,7 +120,6 @@ export const plannerReducer = createReducer(
 
   on(getBuildingsAction, (state) => ({ ...state, isLoading: true })),
   on(getBuildingsSuccess, (state, { buildings }) => {
-    console.log(buildings);
     return {
       ...state,
       buildings: buildings,

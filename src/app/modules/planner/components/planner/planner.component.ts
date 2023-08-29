@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { BuildingResponseInterface } from '../../interfaces/buildings.interfaces';
 import { DisciplineResponseInterface } from '../../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../../interfaces/faculties.interfaces';
+import { LessonResponseInterface } from '../../interfaces/lesson.interface';
 import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
 import { SpecialtyResponseInterface } from '../../interfaces/specialty.interfaces';
 import { TeacherResponseInterface } from '../../interfaces/teachers.interfaces';
@@ -10,16 +12,17 @@ import {
   getBuildingsAction,
   getDisciplinesAction,
   getFacultiesAction,
-  getTeachersAction
+  getLessonsAction,
+  getTeachersAction,
 } from '../../store/planner.actions';
 import { PlannerState } from '../../store/planner.reducer';
 import {
   selectAllBuildings,
   selectDisciplines,
   selectFaculties,
+  selectLessons,
   selectTeachers,
 } from '../../store/planner.selectors';
-import { BuildingResponseInterface } from '../../interfaces/buildings.interfaces';
 
 @Component({
   selector: 'app-planner',
@@ -32,7 +35,7 @@ export class PlannerComponent implements OnInit {
   faculties$: Observable<FacultyResponseInterface[]>;
   specialties$: Observable<SpecialtyResponseInterface[]>;
   buildings$: Observable<BuildingResponseInterface[]>;
-
+  lessons$: Observable<LessonResponseInterface[]>;
   filter: PlannerFilterInterface;
 
   constructor(private store: Store<PlannerState>) {}
@@ -51,5 +54,12 @@ export class PlannerComponent implements OnInit {
 
   filterSubmittedEvent(filter: PlannerFilterInterface) {
     this.filter = filter;
+    this.store.dispatch(
+      getLessonsAction({
+        dateFrom: this.filter.fromDate,
+        dateTo: this.filter.toDate,
+      })
+    );
+    this.lessons$ = this.store.select(selectLessons);
   }
 }
