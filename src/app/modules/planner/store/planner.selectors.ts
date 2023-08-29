@@ -66,6 +66,7 @@ export const selectStudentCountBySubgroups = (groupIds: string[]) =>
     state.studentCourses
       .flatMap((course) => course.studentGroups)
       .flatMap((group) => group.studentSubgroups)
+      .filter(subgroup => groupIds.includes(subgroup.publicId))
       .map((subgroup) => subgroup.studentsCount)
       .reduce((sum, current) => sum + current, 0)
   );
