@@ -7,6 +7,7 @@ import { CabinetResponseInterface } from '../../interfaces/cabinet.interfaces';
 import { LessonResponseInterface } from '../../interfaces/lesson.interface';
 import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
 import { PlannerState } from '../../store/planner.reducer';
+import { selectStudentCountBySubgroups } from '../../store/planner.selectors';
 
 export interface PlannerCellDto {
   date: string;
@@ -68,8 +69,6 @@ export class WeekComponent implements OnChanges {
           };
           row[date] = cell;
         }
-
-        // const row: { [key: string]: PlannerCellDto } = {};
       });
       result.push(row);
     });
@@ -115,5 +114,17 @@ export class WeekComponent implements OnChanges {
       return `${date} /  ${name} /  ${subgroups}`;
     }
     return '';
+  }
+  studentsSummary: number;
+
+  matchCabinetToFilter(lesson: CabinetResponseInterface) {
+    const subgrouIds: string[] = this.filter.dynamicGroups.flatMap(
+      (group) => group.subgroupIds
+    );
+    this.store
+      .select(selectStudentCountBySubgroups(subgrouIds))
+      .subscribe((students) => (this.studentsSummary = students));
+
+    return this.studentsSummary < lesson.maxStudents ? 'success' : 'accent';
   }
 }

@@ -13,4 +13,26 @@ body {
 body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+
+
+  .mdc-button.mat-success,
+  .mat-mdc-stroked-button.mat-success {
+    color: #155724;
+  }
+  .mat-mdc-unelevated-button.mat-success:hover,
+  .mat-mdc-raised-button.mat-success:hover {
+    color: #f0fff3;
+    background-color: #26963e;
+  }
+
+  .mat-mdc-unelevated-button:not(:disabled, :hover).mat-success,
+  .mat-mdc-raised-button.mat-success,
+  .mat-mdc-fab.mat-success,
+  .mat-mdc-mini-fab.mat-success {
+    color: #f0fff3;
+    background-color: #26963e;
+  }
+  .mat-mdc-icon-button.mat-success {
+    color: #26963e;
+  }
 }

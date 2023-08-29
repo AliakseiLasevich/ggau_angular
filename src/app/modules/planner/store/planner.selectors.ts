@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { PlannerState } from './planner.reducer';
+import { group } from '@angular/animations';
 
 const selectPlannerState = createFeatureSelector<PlannerState>('planner');
 
@@ -60,6 +61,15 @@ export const selectStudentSubgroupByGroup = (groupId: string) =>
       .flatMap((group) => group.studentSubgroups)
   );
 
+export const selectStudentCountBySubgroups = (groupIds: string[]) =>
+  createSelector(selectPlannerState, (state: PlannerState) =>
+    state.studentCourses
+      .flatMap((course) => course.studentGroups)
+      .flatMap((group) => group.studentSubgroups)
+      .map((subgroup) => subgroup.studentsCount)
+      .reduce((sum, current) => sum + current, 0)
+  );
+
 export const selectAllBuildings = createSelector(
   selectPlannerState,
   (state: PlannerState) => state.buildings
@@ -78,16 +88,17 @@ export const selectLessonsByCabinetAndDateAndOrder = (
   createSelector(selectPlannerState, (state: PlannerState) =>
     state.lessons
       .filter((lesson) => lesson.cabinet.publicId === cabinetId)
-      .filter((lesson) =>  areDatesEqual(lesson.date, date))
+      .filter((lesson) => areDatesEqual(lesson.date, date))
       .filter((lesson) => lesson.orderNumber === order)
   );
 
-  function areDatesEqual(date1: number[], date2: string): boolean {
-    const [year1, month1, day1] = date1;
-    const [day2, month2, year2] = date2.split('.').map(Number);
+//TODO remove hack
+function areDatesEqual(date1: number[], date2: string): boolean {
+  const [year1, month1, day1] = date1;
+  const [day2, month2, year2] = date2.split('.').map(Number);
 
-    const jsDate1 = new Date(year1, month1 - 1, day1);
-    const jsDate2 = new Date(year2, month2 - 1, day2);
+  const jsDate1 = new Date(year1, month1 - 1, day1);
+  const jsDate2 = new Date(year2, month2 - 1, day2);
 
-    return jsDate1.getTime() === jsDate2.getTime();
+  return jsDate1.getTime() === jsDate2.getTime();
 }
