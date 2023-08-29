@@ -8,8 +8,9 @@ import { CustomDateAdapter } from 'src/app/shared/features/date-adapter';
 import { CustomRangeSelectionStrategy } from 'src/app/shared/features/date-range-selection-strategy';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { HeaderModule } from './../header/header.module';
-import { PlannerComponent } from './components/planner/planner.component';
 import { FilterComponent } from './components/filter/filter.component';
+import { LessonInfoComponent } from './components/lesson-info/lesson-info.component';
+import { PlannerComponent } from './components/planner/planner.component';
 import { WeekComponent } from './components/week/week.component';
 import { PlannerService } from './services/planner.service';
 import { PlannerEffects } from './store/planner.effect';
@@ -18,7 +19,12 @@ import { plannerReducer } from './store/planner.reducer';
 const routes: Routes = [{ path: 'planner', component: PlannerComponent }];
 
 @NgModule({
-  declarations: [PlannerComponent, FilterComponent, WeekComponent],
+  declarations: [
+    PlannerComponent,
+    FilterComponent,
+    WeekComponent,
+    LessonInfoComponent,
+  ],
   imports: [
     HeaderModule,
     SharedModule,

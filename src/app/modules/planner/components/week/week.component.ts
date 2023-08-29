@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Store } from '@ngrx/store';
 import { BuildingResponseInterface } from '../../interfaces/buildings.interfaces';
@@ -8,6 +9,7 @@ import { LessonResponseInterface } from '../../interfaces/lesson.interface';
 import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
 import { PlannerState } from '../../store/planner.reducer';
 import { selectStudentCountBySubgroups } from '../../store/planner.selectors';
+import { LessonInfoComponent } from '../lesson-info/lesson-info.component';
 
 export interface PlannerCellDto {
   date: string;
@@ -28,7 +30,7 @@ export class WeekComponent implements OnChanges {
   dateRange: string[] = [];
   dataSource: MatTableDataSource<any>;
 
-  constructor(private store: Store<PlannerState>) {}
+  constructor(private store: Store<PlannerState>, public dialog: MatDialog) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     this.calculateDateRange();
@@ -99,11 +101,6 @@ export class WeekComponent implements OnChanges {
     return range;
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
   generateTooltip(row: PlannerCellDto): string {
     const date = row.date;
     const name = row.lesson?.teacher.name;
@@ -126,5 +123,11 @@ export class WeekComponent implements OnChanges {
       .subscribe((students) => (this.studentsSummary = students));
 
     return this.studentsSummary < lesson.maxStudents ? 'success' : 'accent';
+  }
+
+  openLessonDetailsDialog(lesson: LessonResponseInterface): void {
+    const dialogRef = this.dialog.open(LessonInfoComponent, {
+      data: { lesson: lesson },
+    });
   }
 }

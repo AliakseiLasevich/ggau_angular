@@ -1,13 +1,4 @@
 <div *ngIf="filter">
-  <mat-form-field>
-    <mat-label>Фильтр</mat-label>
-    <input
-      matInput
-      (keyup)="applyFilter($event)"
-      placeholder="Введите параметр для поиска"
-      #input
-    />
-  </mat-form-field>
 
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <ng-container *ngFor="let date of dateRange" [matColumnDef]="date">
@@ -31,6 +22,7 @@
           mat-raised-button
           color="warn"
           [matTooltip]="generateTooltip(row[date])"
+          (click)="openLessonDetailsDialog(row[date].lesson)"
         >
           Занят
         </button>
