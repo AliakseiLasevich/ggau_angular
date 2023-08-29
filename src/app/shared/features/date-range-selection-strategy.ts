@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import {
-    DateRange,
-    MatDateRangeSelectionStrategy,
+  DateRange,
+  MatDateRangeSelectionStrategy,
 } from '@angular/material/datepicker';
 
 @Injectable()
@@ -24,7 +24,7 @@ export class CustomRangeSelectionStrategy
       const selectedDate = this._dateAdapter.deserialize(date) || new Date();
       const startOfWeek = this._getStartOfWeek(selectedDate);
       const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      endOfWeek.setDate(startOfWeek.getDate() + 5); // Change this line to add 5 days (Mon to Sat)
 
       return new DateRange<Date>(startOfWeek, endOfWeek);
     }

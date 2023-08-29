@@ -7,6 +7,7 @@ import { BuildingResponseInterface } from '../../interfaces/buildings.interfaces
 import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
 import { getLessonsAction } from '../../store/planner.actions';
 import { PlannerState } from '../../store/planner.reducer';
+import { CabinetResponseInterface } from '../../interfaces/cabinet.interfaces';
 
 export interface OneDayData {
   date: string;
@@ -22,42 +23,47 @@ export interface OneDayData {
 export class WeekComponent implements OnChanges {
   @Input() filter: PlannerFilterInterface;
   @Input() buildings: BuildingResponseInterface[] | null;
-  dateRange: string[];
-  dateRange$: Observable<string[]>;
-
+  dateRange: string[] = [];
   dataSource: MatTableDataSource<any>;
-  displayedColumns: string[] = [];
 
-  constructor(private store: Store<PlannerState>) {
-    this.dateRange = [];
-    this.calculateDateRange();
-    this.dateRange$ = of(this.calculateDateRange());
-  }
+  constructor(private store: Store<PlannerState>) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     this.store.dispatch(
       getLessonsAction({
-        dateFrom: this.filter?.fromDate,
-        dateTo: this.filter?.toDate,
+        dateFrom: this.filter.fromDate,
+        dateTo: this.filter.toDate,
       })
     );
 
     this.calculateDateRange();
-    this.drawTable();
+    this.generateDataSource();
   }
 
-  drawTable() {
+  generateDataSource() {
     const result: any[] = [];
-    this.buildings?.forEach((building) => {
-      const buildingEntries: { [key: string]: string } = {};
-      this.dateRange.forEach((date) => {
-        buildingEntries[date] = building.name;
-      });
 
-      result.push(buildingEntries);
-    });
+    if (this.buildings) {
+      for (const building of this.buildings) {
+        result.push(building);
+
+        building.cabinets.forEach((cabinet) => {
+          const row: { [key: string]: CabinetResponseInterface } = {};
+
+          this.dateRange.forEach((date) => {
+            row[date] = cabinet;
+          });
+
+          result.push(row);
+        });
+      }
+    }
 
     this.dataSource = new MatTableDataSource(result);
+  }
+
+  isGroup(index: any, item: any): boolean {
+    return item.name != null || item.name;
   }
 
   calculateDateRange() {
