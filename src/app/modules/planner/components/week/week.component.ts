@@ -8,11 +8,13 @@ import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfac
 import { getLessonsAction } from '../../store/planner.actions';
 import { PlannerState } from '../../store/planner.reducer';
 import { CabinetResponseInterface } from '../../interfaces/cabinet.interfaces';
+import { LessonResponseInterface } from '../../interfaces/lesson.interface';
+import { selectLessons } from '../../store/planner.selectors';
 
-export interface OneDayData {
+export interface PlannerCellDto {
   date: string;
-  buildings: BuildingResponseInterface[];
-  // lesson: LessonResponseInterface;
+  cabinet: CabinetResponseInterface[];
+  lesson: LessonResponseInterface | null;
 }
 
 @Component({
@@ -23,18 +25,22 @@ export interface OneDayData {
 export class WeekComponent implements OnChanges {
   @Input() filter: PlannerFilterInterface;
   @Input() buildings: BuildingResponseInterface[] | null;
+  lessons: Observable<LessonResponseInterface[]> = this.store.select(selectLessons);
+
   dateRange: string[] = [];
   dataSource: MatTableDataSource<any>;
 
   constructor(private store: Store<PlannerState>) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.store.dispatch(
-      getLessonsAction({
-        dateFrom: this.filter.fromDate,
-        dateTo: this.filter.toDate,
-      })
-    );
+    if (this.filter?.fromDate && this.filter?.toDate) {
+      this.store.dispatch(
+        getLessonsAction({
+          dateFrom: this.filter.fromDate,
+          dateTo: this.filter.toDate,
+        })
+      );
+    }
 
     this.calculateDateRange();
     this.generateDataSource();
@@ -46,20 +52,26 @@ export class WeekComponent implements OnChanges {
     if (this.buildings) {
       for (const building of this.buildings) {
         result.push(building);
-
-        building.cabinets.forEach((cabinet) => {
-          const row: { [key: string]: CabinetResponseInterface } = {};
-
-          this.dateRange.forEach((date) => {
-            row[date] = cabinet;
-          });
-
-          result.push(row);
-        });
+        this.addCabinetsToDataSource(building, result);
       }
     }
 
     this.dataSource = new MatTableDataSource(result);
+  }
+
+  private addCabinetsToDataSource(
+    building: BuildingResponseInterface,
+    result: any[]
+  ) {
+    building.cabinets.forEach((cabinet) => {
+      const row: { [key: string]: CabinetResponseInterface } = {};
+
+      this.dateRange.forEach((date) => {
+        row[date] = cabinet;
+      });
+
+      result.push(row);
+    });
   }
 
   isGroup(index: any, item: any): boolean {
@@ -70,7 +82,7 @@ export class WeekComponent implements OnChanges {
     const range: string[] = [];
     const currentDate = new Date(this.filter?.fromDate);
     while (currentDate <= new Date(this.filter?.toDate)) {
-      range.push(new Date(currentDate).toDateString());
+      range.push(new Date(currentDate).toLocaleDateString('ru-RU'));
       currentDate.setDate(currentDate.getDate() + 1);
     }
     this.dateRange = range;

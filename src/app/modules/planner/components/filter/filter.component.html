@@ -75,7 +75,6 @@
           <mat-label>Специальность</mat-label>
           <mat-select
             formControlName="specialtyId"
-            [disabled]="!dynamicGroups.controls[i].get('facultyId')?.value"
             (selectionChange)="updateFormStudentCourses($event, i)"
           >
             <mat-option

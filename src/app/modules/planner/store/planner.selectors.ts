@@ -64,3 +64,20 @@ export const selectAllBuildings = createSelector(
   selectPlannerState,
   (state: PlannerState) => state.buildings
 );
+
+export const selectLessons = createSelector(
+  selectPlannerState,
+  (state: PlannerState) => state.lessons
+);
+
+export const selectLessonsByCabinetAndDateAndOrder = (
+  cabinetId: string,
+  date: string,
+  order: number
+) =>
+  createSelector(selectPlannerState, (state: PlannerState) =>
+    state.lessons
+      .filter((lesson) => lesson.cabinet.publicId === cabinetId)
+      .filter((lesson) => lesson.date === date)
+      .filter((lesson) => lesson.orderNumber === order)
+  );

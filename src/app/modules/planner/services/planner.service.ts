@@ -51,7 +51,7 @@ export class PlannerService {
     to: Date
   ): Observable<LessonResponseInterface[]> {
     return this.http.get<LessonResponseInterface[]>(
-      this.url + 'lessons', { params: {dateFrom: from.toString(), dateTo: to.toString()}}
+      this.url + 'lessons', { params: {dateFrom: from?.toString(), dateTo: to?.toString()}}
     );
   }
 
