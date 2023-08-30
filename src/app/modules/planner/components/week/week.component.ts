@@ -31,6 +31,7 @@ export class WeekComponent implements OnChanges {
   dateRange: string[] = [];
   dataSource: MatTableDataSource<any>;
   orderNumbers = LessonOrder;
+  filterStudentsCount: number;
 
   constructor(private store: Store<PlannerState>, public dialog: MatDialog) {}
 
@@ -152,20 +153,60 @@ export class WeekComponent implements OnChanges {
       (group) => group.subgroupIds || []
     );
 
+    this.store
+      .select(selectStudentCountBySubgroups(filterSubgroupIds))
+      .subscribe((count) => (this.filterStudentsCount = count));
+
     const isOneOfSubgroupsBooked = this.hasCommonValue(
       lessonSubgroupIds,
       filterSubgroupIds
     );
 
-    const logo = this.generateLogo(isTeacherBooked, isOneOfSubgroupsBooked);
+    const isNotEnoughSittingPlaces =
+      row.cabinet.maxStudents <= this.filterStudentsCount;
+
+    let cabinetBookedBySomeone = false;
+    if (row.lesson) {
+      cabinetBookedBySomeone =
+        row.lesson.teacher.publicId !== this.filter.selectedTeacher &&
+        row.lesson.orderNumber === parseInt(order);
+    }
+
+    const logo = this.generateLogo(
+      isTeacherBooked,
+      isOneOfSubgroupsBooked,
+      cabinetBookedBySomeone
+    );
 
     return {
-      color: isTeacherBooked || isOneOfSubgroupsBooked ? 'warn' : 'success',
+      color: this.calculateColor(
+        isTeacherBooked,
+        isOneOfSubgroupsBooked,
+        isNotEnoughSittingPlaces,
+        cabinetBookedBySomeone
+      ),
       logo: logo,
-      disabled: isTeacherBooked || isOneOfSubgroupsBooked,
       description: 'some',
       onClickFunction: this.voidFunction,
     };
+  }
+  calculateColor(
+    isTeacherBooked: boolean | undefined,
+    isOneOfSubgroupsBooked: boolean,
+    isNotEnoughSittingPlaces: boolean,
+    cabinetBookedBySomeone: boolean
+  ) {
+    if (isTeacherBooked || isOneOfSubgroupsBooked) {
+      return 'warn';
+    }
+    if (cabinetBookedBySomeone) {
+      return 'primary';
+    }
+    if (isNotEnoughSittingPlaces) {
+      return 'accent';
+    }
+
+    return 'success';
   }
 
   hasCommonValue(array1: any[], array2: any[]): boolean {
@@ -181,7 +222,8 @@ export class WeekComponent implements OnChanges {
 
   generateLogo(
     isTeacherBooked: boolean | undefined,
-    isOneOfSubgroupsBooked: boolean
+    isOneOfSubgroupsBooked: boolean,
+    cabinetBookedBySomeone: boolean
   ): string {
     if (isTeacherBooked && isOneOfSubgroupsBooked) {
       return 'П/С';
@@ -191,6 +233,9 @@ export class WeekComponent implements OnChanges {
     }
     if (isOneOfSubgroupsBooked) {
       return 'С';
+    }
+    if (cabinetBookedBySomeone) {
+      return 'X';
     }
     return '✔';
   }

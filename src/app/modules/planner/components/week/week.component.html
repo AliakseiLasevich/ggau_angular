@@ -1,10 +1,17 @@
 <div *ngIf="filter">
   <div>
     <p>
-      На сером фоне - значит у предподавателя или какой-то подгруппы уже есть
-      занятие в это время
+      <button mat-raised-button color="success">✔</button> - Можно бронировать
     </p>
-    <p>Жёлтая кнопка - значит кабинет не подходит по количеству мест</p>
+    <p>
+      <button mat-raised-button color="accent">✔</button> Кабинет свободен, но
+      не хватает мест
+    </p>
+    <p>
+      <button mat-raised-button color="warn">П/С</button> Преподаватель или
+      Студенты в это время уже заняты
+    </p>
+    <p><button mat-raised-button color="primary">X</button> Кабинет занят</p>
   </div>
 
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">

@@ -10,7 +10,6 @@ export class PlannerButtonComponent {
 }
 
 export interface PlannerButtonDto {
-  disabled: boolean;
   color: string;
   logo: string;
   description: string;
