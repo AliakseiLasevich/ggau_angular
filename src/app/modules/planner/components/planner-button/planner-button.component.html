@@ -1,0 +1,11 @@
+<div class="buttons-wrapper">
+  <button
+    mat-raised-button
+    class="small-button"
+    [color]="dto.color"
+    (click)="dto.onClickFunction()"
+    [ngClass]="{'disabled-button': dto.disabled}"
+  >
+    {{dto.logo}}
+  </button>
+</div>

@@ -110,7 +110,6 @@ export const plannerReducer = createReducer(
 
   on(getLessonsAction, (state) => ({ ...state, isLoading: true })),
   on(getLessonsSuccess, (state, { lessons }) => {
-    console.log(lessons);
     return {
       ...state,
       lessons: lessons,

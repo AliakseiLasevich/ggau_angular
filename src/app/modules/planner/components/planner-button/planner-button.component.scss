@@ -1,0 +1,15 @@
+.buttons-wrapper {
+  display: inline;
+}
+
+.small-button {
+  width: 10px !important;
+  min-width: unset !important;
+  padding: 0 13px;
+  margin-right: 3px;
+}
+
+.disabled-button {
+    pointer-events: none; /* Disable interactions */
+    opacity: 0.5;
+  }

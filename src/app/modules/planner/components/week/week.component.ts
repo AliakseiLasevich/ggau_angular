@@ -3,6 +3,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Store } from '@ngrx/store';
+import { LessonOrder } from 'src/app/shared/enums/lesson-order.enum';
 import { BuildingResponseInterface } from '../../interfaces/buildings.interfaces';
 import { CabinetResponseInterface } from '../../interfaces/cabinet.interfaces';
 import { LessonResponseInterface } from '../../interfaces/lesson.interface';
@@ -29,6 +30,7 @@ export class WeekComponent implements OnChanges {
 
   dateRange: string[] = [];
   dataSource: MatTableDataSource<any>;
+  orderNumbers = LessonOrder;
 
   constructor(private store: Store<PlannerState>, public dialog: MatDialog) {}
 
@@ -60,9 +62,7 @@ export class WeekComponent implements OnChanges {
       this.dateRange.forEach((date) => {
         const filtered = this.lessons
           ?.filter((lesson) => lesson.cabinet.publicId === cabinet.publicId)
-          .filter((lesson) => this.areDatesEqual(lesson.date, date))
-          .filter(lesson => lesson.orderNumber === parseInt(this.filter.orderNumber)); 
-
+          .filter((lesson) => this.areDatesEqual(lesson.date, date));
         if (filtered) {
           const lessonForCabinet = filtered.length > 0 ? filtered[0] : null;
           const cell: PlannerCellDto = {
@@ -130,5 +130,68 @@ export class WeekComponent implements OnChanges {
     const dialogRef = this.dialog.open(LessonInfoComponent, {
       data: { lesson: lesson },
     });
+  }
+
+  generateButtonDto(date: string, row: any, order: string) {
+    const dayLessons = this.lessons
+      ?.filter((lesson: LessonResponseInterface) =>
+        this.areDatesEqual(lesson.date, date)
+      )
+      .filter((lesson) => lesson.orderNumber === parseInt(order));
+
+    const isTeacherBooked = dayLessons?.some(
+      (lesson) => lesson.teacher.publicId === this.filter.selectedTeacher
+    );
+
+    const lessonSubgroupIds =
+      dayLessons
+        ?.flatMap((lesson) => lesson.studentSubgroups)
+        .map((subgroup) => subgroup.publicId) || [];
+
+    const filterSubgroupIds = this.filter.dynamicGroups.flatMap(
+      (group) => group.subgroupIds || []
+    );
+
+    const isOneOfSubgroupsBooked = this.hasCommonValue(
+      lessonSubgroupIds,
+      filterSubgroupIds
+    );
+
+    const logo = this.generateLogo(isTeacherBooked, isOneOfSubgroupsBooked);
+
+    return {
+      color: isTeacherBooked || isOneOfSubgroupsBooked ? 'warn' : 'success',
+      logo: logo,
+      disabled: isTeacherBooked || isOneOfSubgroupsBooked,
+      description: 'some',
+      onClickFunction: this.voidFunction,
+    };
+  }
+
+  hasCommonValue(array1: any[], array2: any[]): boolean {
+    for (const value of array1) {
+      if (array2.includes(value)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  voidFunction() {}
+
+  generateLogo(
+    isTeacherBooked: boolean | undefined,
+    isOneOfSubgroupsBooked: boolean
+  ): string {
+    if (isTeacherBooked && isOneOfSubgroupsBooked) {
+      return 'П/С';
+    }
+    if (isTeacherBooked) {
+      return 'П';
+    }
+    if (isOneOfSubgroupsBooked) {
+      return 'С';
+    }
+    return '✔';
   }
 }

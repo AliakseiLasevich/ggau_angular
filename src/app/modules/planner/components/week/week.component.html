@@ -1,4 +1,11 @@
 <div *ngIf="filter">
+  <div>
+    <p>
+      На сером фоне - значит у предподавателя или какой-то подгруппы уже есть
+      занятие в это время
+    </p>
+    <p>Жёлтая кнопка - значит кабинет не подходит по количеству мест</p>
+  </div>
 
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <ng-container *ngFor="let date of dateRange" [matColumnDef]="date">
@@ -8,24 +15,11 @@
           {{ row[date]?.cabinet?.number }}
         </strong>
 
-        <button
-          mat-raised-button
-          [color]="matchCabinetToFilter(row[date]?.cabinet)"
-          [matTooltip]="generateTooltip(row[date])"
-          *ngIf="!row[date].lesson"
+        <app-planner-button
+          *ngFor="let order of orderNumbers | keyvalue"
+          [dto]="generateButtonDto(date, row[date], order.key)"
         >
-          Забронировать
-        </button>
-
-        <button
-          *ngIf="row[date].lesson"
-          mat-raised-button
-          color="warn"
-          [matTooltip]="generateTooltip(row[date])"
-          (click)="openLessonDetailsDialog(row[date].lesson)"
-        >
-          Занят
-        </button>
+        </app-planner-button>
       </td>
     </ng-container>
 

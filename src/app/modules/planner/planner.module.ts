@@ -15,6 +15,7 @@ import { WeekComponent } from './components/week/week.component';
 import { PlannerService } from './services/planner.service';
 import { PlannerEffects } from './store/planner.effect';
 import { plannerReducer } from './store/planner.reducer';
+import { PlannerButtonComponent } from './components/planner-button/planner-button.component';
 
 const routes: Routes = [{ path: 'planner', component: PlannerComponent }];
 
@@ -24,6 +25,7 @@ const routes: Routes = [{ path: 'planner', component: PlannerComponent }];
     FilterComponent,
     WeekComponent,
     LessonInfoComponent,
+    PlannerButtonComponent,
   ],
   imports: [
     HeaderModule,
