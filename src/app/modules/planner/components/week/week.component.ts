@@ -60,7 +60,8 @@ export class WeekComponent implements OnChanges {
       this.dateRange.forEach((date) => {
         const filtered = this.lessons
           ?.filter((lesson) => lesson.cabinet.publicId === cabinet.publicId)
-          .filter((lesson) => this.areDatesEqual(lesson.date, date));
+          .filter((lesson) => this.areDatesEqual(lesson.date, date))
+          .filter(lesson => lesson.orderNumber === parseInt(this.filter.orderNumber)); 
 
         if (filtered) {
           const lessonForCabinet = filtered.length > 0 ? filtered[0] : null;

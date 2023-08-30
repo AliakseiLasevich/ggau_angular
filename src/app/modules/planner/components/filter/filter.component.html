@@ -50,6 +50,19 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Время занятия</mat-label>
+      <mat-select formControlName="orderNumber">
+        <mat-option
+          *ngFor="let order of orderNumbers | keyvalue; let i = index"
+          [value]="order.key"
+        >
+          {{ order.value }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
   </mat-toolbar>
 
   <!-- Dynamic fields -->

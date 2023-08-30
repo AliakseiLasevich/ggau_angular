@@ -4,7 +4,8 @@ export interface PlannerFilterInterface {
   selectedTeacher: string;
   selectedLessonType: string;
   selectedDiscipline: string;
-  dynamicGroups: GroupFilterInterface[]
+  dynamicGroups: GroupFilterInterface[];
+  orderNumber: string;
 }
 
 export interface GroupFilterInterface {
@@ -12,5 +13,5 @@ export interface GroupFilterInterface {
   groupId: string;
   specialtyId: string;
   studentCourse: string;
-  subgroupIds: string[]
+  subgroupIds: string[];
 }

@@ -22,6 +22,7 @@ import {
   selectStudentGroupByCourse,
   selectStudentSubgroupByGroup,
 } from '../../store/planner.selectors';
+import { LessonOrder } from 'src/app/shared/enums/lesson-order.enum';
 
 @Component({
   selector: 'app-filter',
@@ -35,7 +36,10 @@ export class FilterComponent implements OnInit {
   @Output() filterSubmittedEvent = new EventEmitter<PlannerFilterInterface>();
 
   dynamicForm: FormGroup;
-
+  oneToNinePattern = /^[1-9]$/;
+  lessonTypes = LessonTypes;
+  orderNumbers = LessonOrder;
+  
   constructor(
     private store: Store<PlannerState>,
     private formBuilder: FormBuilder
@@ -57,6 +61,7 @@ export class FilterComponent implements OnInit {
       selectedTeacher: ['', [Validators.required]],
       selectedDiscipline: ['', [Validators.required]],
       selectedLessonType: ['', [Validators.required]],
+      orderNumber: ['', [Validators.required, Validators.pattern(this.oneToNinePattern)]],
       dynamicGroups: this.formBuilder.array([this.createDynamicGroup()]),
     });
   }
@@ -176,9 +181,9 @@ export class FilterComponent implements OnInit {
     this.dynamicForm
       .get('toDate')
       ?.setValue(this.convertDate(this.dynamicForm.get('toDate')?.value));
-
+    console.log(this.dynamicForm.value)
     this.filterSubmittedEvent.emit(this.dynamicForm.value);
   }
 
-  lessonTypes = LessonTypes;
+
 }
