@@ -13,5 +13,6 @@ export interface PlannerButtonDto {
   color: string;
   logo: string;
   description: string;
+  orderTime: string;
   onClickFunction: Function;
 }

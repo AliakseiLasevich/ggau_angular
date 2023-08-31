@@ -4,6 +4,10 @@
     class="small-button"
     [color]="dto.color"
     (click)="dto.onClickFunction()"
+    #tooltip="matTooltip"
+          [matTooltip]="dto.orderTime"
+          matTooltipPosition='above'
+          matTooltipHideDelay="0"
   >
     {{dto.logo}}
   </button>

@@ -188,6 +188,7 @@ export class WeekComponent implements OnChanges {
       logo: logo,
       description: 'some',
       onClickFunction: this.voidFunction,
+      orderTime: LessonOrder[parseInt(order) as keyof typeof LessonOrder],
     };
   }
   calculateColor(
