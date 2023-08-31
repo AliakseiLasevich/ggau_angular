@@ -1,5 +1,7 @@
+import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { AuthResponseInterface } from '../interfaces/auth.interfaces';
+import { PersistanceService } from './../../../shared/services/persistance.service';
 
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
@@ -9,7 +11,12 @@ import { loginFailure, loginSuccess } from './auth.actions';
 
 @Injectable()
 export class AuthEffects {
-  constructor(private actions$: Actions, private authService: AuthService) {}
+  constructor(
+    private actions$: Actions,
+    private authService: AuthService,
+    private persistanceService: PersistanceService,
+    private router: Router
+  ) {}
 
   loginEffect$ = createEffect(() =>
     this.actions$.pipe(
@@ -37,20 +44,26 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(ActionTypes.LOGIN_SUCCESS),
         tap((response: AuthResponseInterface) => {
-          localStorage.setItem('token', response.access_token.token);
-          localStorage.setItem(
-            'token_expiresIn',
-            response.access_token.expires_in.toString()
-          );
-          localStorage.setItem('refresh_token', response.refresh_token.token);
-          localStorage.setItem(
-            'refresh_expires_in',
-            response.refresh_token.expires_in.toString()
-          );
-          localStorage.setItem('name', response.name);
-          localStorage.setItem('lastname', response.lastname);
+          this.storeToken(response);
+          this.router.navigateByUrl('/planner')
         })
       ),
-    { dispatch: false } // This effect does not dispatch any new actions
+    { dispatch: false }
   );
+
+  private storeToken(response: AuthResponseInterface) {
+    this.persistanceService.set('token', response.access_token.token);
+    this.persistanceService.set('token', response.access_token.token);
+    this.persistanceService.set(
+      'token_expiresIn',
+      response.access_token.expires_in.toString()
+    );
+    this.persistanceService.set('refresh_token', response.refresh_token.token);
+    this.persistanceService.set(
+      'refresh_expires_in',
+      response.refresh_token.expires_in.toString()
+    );
+    this.persistanceService.set('name', response.name);
+    this.persistanceService.set('lastname', response.lastname);
+  }
 }
