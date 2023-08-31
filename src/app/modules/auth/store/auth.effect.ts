@@ -25,8 +25,7 @@ export class AuthEffects {
             })
           ),
           catchError((error) => {
-            this.authService.handleAuthFailure(error);
-            return of(loginFailure(error.message));
+            return of(loginFailure(error));
           })
         );
       })

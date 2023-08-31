@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { BuildingResponseInterface } from '../../interfaces/buildings.interfaces';
 import { DisciplineResponseInterface } from '../../interfaces/disciplines.interfaces';
@@ -21,6 +22,7 @@ import {
   selectDisciplines,
   selectFaculties,
   selectLessons,
+  selectPlannerError,
   selectTeachers,
 } from '../../store/planner.selectors';
 
@@ -38,7 +40,10 @@ export class PlannerComponent implements OnInit {
   lessons$: Observable<LessonResponseInterface[]>;
   filter: PlannerFilterInterface;
 
-  constructor(private store: Store<PlannerState>) {}
+  constructor(
+    private store: Store<PlannerState>,
+    private _snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.teachers$ = this.store.select(selectTeachers);
@@ -50,6 +55,12 @@ export class PlannerComponent implements OnInit {
     this.store.dispatch(getDisciplinesAction());
     this.store.dispatch(getFacultiesAction());
     this.store.dispatch(getBuildingsAction());
+
+    this.store.pipe(select(selectPlannerError)).subscribe((error) => {
+      if (error) {
+        this._snackBar.open(error.message, 'OK', { duration: 3 * 1000 });
+      }
+    });
   }
 
   filterSubmittedEvent(filter: PlannerFilterInterface) {

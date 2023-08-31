@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
 import {
@@ -17,9 +17,5 @@ export class AuthService {
     //TODO move to environment
     // const url = environment.apiUrl + '/authenticate';
     return this.http.post<AuthResponseInterface>(url, data).pipe(shareReplay());
-  }
-
-  handleAuthFailure(error: string) {
-    console.log(error);
   }
 }

@@ -45,7 +45,6 @@ export class PlannerEffects {
             getTeachersActionSuccess({ teachers: response })
           ),
           catchError((error) => {
-            this.plannerService.handleFailure(error);
             return of(getTeachersActionFailure(error.message));
           })
         );
@@ -62,7 +61,6 @@ export class PlannerEffects {
             getDisciplinesSuccess({ disciplines: response })
           ),
           catchError((error) => {
-            this.plannerService.handleFailure(error);
             return of(getDisciplinesFailure(error.message));
           })
         );
@@ -79,7 +77,6 @@ export class PlannerEffects {
             getFacutiesSuccess({ faculties: response })
           ),
           catchError((error) => {
-            this.plannerService.handleFailure(error);
             return of(getDisciplinesFailure(error.message));
           })
         );
@@ -96,7 +93,6 @@ export class PlannerEffects {
             getSpecialtiesSuccess({ specialties: response })
           ),
           catchError((error) => {
-            this.plannerService.handleFailure(error);
             return of(getDisciplinesFailure(error.message));
           })
         );
@@ -113,7 +109,6 @@ export class PlannerEffects {
             getCoursesSuccess({ courses: response })
           ),
           catchError((error) => {
-            this.plannerService.handleFailure(error);
             return of(getDisciplinesFailure(error.message));
           })
         );
@@ -130,7 +125,6 @@ export class PlannerEffects {
             getLessonsSuccess({ lessons: response })
           ),
           catchError((error) => {
-            this.plannerService.handleFailure(error);
             return of(getLessonsFailure(error.message));
           })
         );
@@ -147,7 +141,6 @@ export class PlannerEffects {
             getBuildingsSuccess({ buildings: response })
           ),
           catchError((error) => {
-            this.plannerService.handleFailure(error);
             return of(getLessonsFailure(error.message));
           })
         );

@@ -1,5 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
-import { loginAction, loginSuccess } from './auth.actions';
+import { BackendErrorInterface } from 'src/app/shared/types/backendErrors.interface';
+import { loginAction, loginFailure, loginSuccess } from './auth.actions';
 
 export interface AuthState {
   loggedIn: boolean;
@@ -8,6 +9,7 @@ export interface AuthState {
   refreshToken: string;
   name: string;
   lastname: string;
+  error: BackendErrorInterface | null;
 }
 
 const initialState: AuthState = {
@@ -17,11 +19,12 @@ const initialState: AuthState = {
   refreshToken: '',
   name: '',
   lastname: '',
+  error: null,
 };
 
 export const authReducer = createReducer(
   initialState,
-  on(loginAction, (state) => ({ ...state, loading: true })),
+  on(loginAction, (state) => ({ ...state, loading: true, error: null })),
   on(loginSuccess, (state, payload) => ({
     ...state,
     loading: false,
@@ -30,5 +33,6 @@ export const authReducer = createReducer(
     refreshToken: payload.refresh_token.token,
     name: payload.name,
     lastname: payload.lastname,
-  }))
+  })),
+  on(loginFailure, (state, payload) => ({ ...state, error: payload.error }))
 );

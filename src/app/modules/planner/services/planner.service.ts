@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
 import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
-import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
-import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
-import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
 import { LessonResponseInterface } from '../interfaces/lesson.interface';
-import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
+import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
+import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
+import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 
 @Injectable()
 export class PlannerService {
@@ -50,16 +50,12 @@ export class PlannerService {
     from: Date,
     to: Date
   ): Observable<LessonResponseInterface[]> {
-    return this.http.get<LessonResponseInterface[]>(
-      this.url + 'lessons', { params: {dateFrom: from?.toString(), dateTo: to?.toString()}}
-    );
+    return this.http.get<LessonResponseInterface[]>(this.url + 'lessons', {
+      params: { dateFrom: from?.toString(), dateTo: to?.toString() },
+    });
   }
 
   getBuildings(): Observable<BuildingResponseInterface[]> {
     return this.http.get<BuildingResponseInterface[]>(this.url + 'buildings');
-  }
-
-  handleFailure(error: string) {
-    console.log(error);
   }
 }

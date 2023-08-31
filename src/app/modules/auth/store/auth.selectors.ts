@@ -22,3 +22,8 @@ export const selectNameLastname = createSelector(
   selectAuthState,
   (state: AuthState) => state.name + ' ' + state.lastname
 );
+
+export const selectErrors = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.error
+);

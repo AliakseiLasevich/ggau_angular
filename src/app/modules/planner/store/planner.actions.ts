@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
+import { BackendErrorInterface } from 'src/app/shared/types/backendErrors.interface';
 import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
 import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
@@ -19,7 +20,7 @@ export const getTeachersActionSuccess = createAction(
 
 export const getTeachersActionFailure = createAction(
   ActionTypes.GET_TEACHERS_FAILURE,
-  props<{ payload: string }>()
+  props<{ error: BackendErrorInterface }>()
 );
 
 // DISCIPLINES
@@ -32,7 +33,7 @@ export const getDisciplinesSuccess = createAction(
 
 export const getDisciplinesFailure = createAction(
   ActionTypes.GET_DISCIPLINES_FAILURE,
-  props<{ payload: string }>()
+  props<{ error: BackendErrorInterface }>()
 );
 
 // FACULTIES
@@ -45,7 +46,7 @@ export const getFacutiesSuccess = createAction(
 
 export const getFacutiesFailure = createAction(
   ActionTypes.GET_FACULTIES_FAILURE,
-  props<{ payload: string }>()
+  props<{ error: BackendErrorInterface }>()
 );
 
 // SPECIALTIES
@@ -58,7 +59,7 @@ export const getSpecialtiesSuccess = createAction(
 
 export const getSpecialtiesFailure = createAction(
   ActionTypes.GET_SPECIALTIESS_FAILURE,
-  props<{ payload: string }>()
+  props<{ error: BackendErrorInterface }>()
 );
 
 // COURSES
@@ -74,7 +75,7 @@ export const getCoursesSuccess = createAction(
 
 export const getCoursesFailure = createAction(
   ActionTypes.GET_COURSES_FAILURE,
-  props<{ payload: string }>()
+  props<{ error: BackendErrorInterface }>()
 );
 
 export const getLessonsAction = createAction(
@@ -89,7 +90,7 @@ export const getLessonsSuccess = createAction(
 
 export const getLessonsFailure = createAction(
   ActionTypes.GET_LESSONS_FAILURE,
-  props<{ payload: string }>()
+  props<{ error: BackendErrorInterface }>()
 );
 
 export const getBuildingsAction = createAction(ActionTypes.GET_BUILDINGS);
@@ -101,5 +102,5 @@ export const getBuildingsSuccess = createAction(
 
 export const getBuildingsFailure = createAction(
   ActionTypes.GET_BUILDINGS_FAILURE,
-  props<{ payload: string }>()
+  props<{ error: BackendErrorInterface }>()
 );

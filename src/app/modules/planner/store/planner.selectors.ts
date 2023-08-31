@@ -1,6 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { PlannerState } from './planner.reducer';
-import { group } from '@angular/animations';
 
 const selectPlannerState = createFeatureSelector<PlannerState>('planner');
 
@@ -66,7 +65,7 @@ export const selectStudentCountBySubgroups = (groupIds: string[]) =>
     state.studentCourses
       .flatMap((course) => course.studentGroups)
       .flatMap((group) => group.studentSubgroups)
-      .filter(subgroup => groupIds.includes(subgroup.publicId))
+      .filter((subgroup) => groupIds.includes(subgroup.publicId))
       .map((subgroup) => subgroup.studentsCount)
       .reduce((sum, current) => sum + current, 0)
   );
@@ -103,3 +102,8 @@ function areDatesEqual(date1: number[], date2: string): boolean {
 
   return jsDate1.getTime() === jsDate2.getTime();
 }
+
+export const selectPlannerError = createSelector(
+  selectPlannerState,
+  (state: PlannerState) => state.error
+);

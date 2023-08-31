@@ -13,6 +13,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -38,6 +39,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatTooltipModule,
     MatDialogModule,
     FormsModule,
+    MatSnackBarModule,
   ],
   exports: [
     MatToolbarModule,
@@ -56,6 +58,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatTooltipModule,
     MatDialogModule,
     FormsModule,
+    MatSnackBarModule,
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'ru-RU' }],
 })
