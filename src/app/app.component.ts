@@ -20,13 +20,13 @@ export class AppComponent implements OnInit {
   constructor(private router: Router, private store: Store) {}
 
   ngOnInit(): void {
+    this.getStoredToken();
+
     this.loggedIn$.subscribe((loggedIn) =>
       loggedIn
         ? this.router.navigate(['/planner'])
         : this.router.navigate(['/login'])
     );
-
-    this.getStoredToken();
   }
 
   private getStoredToken() {

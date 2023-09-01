@@ -1,17 +1,15 @@
 <div *ngIf="filter">
-  <div>
-    <p>
-      <button mat-raised-button color="success">✔</button> - Можно бронировать
-    </p>
-    <p>
-      <button mat-raised-button color="accent">✔</button> Кабинет свободен, но
-      не хватает мест
-    </p>
-    <p>
-      <button mat-raised-button color="warn">П/С</button> Преподаватель или
-      Студенты в это время уже заняты
-    </p>
-    <p><button mat-raised-button color="primary">X</button> Кабинет занят</p>
+  <div class="info">
+    <button mat-raised-button color="success" class="info-button">✔</button
+    >&nbsp; Можно бронировать
+
+    <button mat-raised-button color="accent">✔</button>&nbsp; Кабинет свободен,
+    но не хватает мест
+
+    <button mat-raised-button color="warn">П/С</button>&nbsp; Преподаватель или
+    Студенты в это время уже заняты
+
+    <button mat-raised-button color="primary">X</button>&nbsp; Кабинет занят
   </div>
 
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">

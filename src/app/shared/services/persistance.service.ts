@@ -2,24 +2,24 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class PersistanceService {
-  set(key: string, data: any): void {
+  set(key: string, data: string): void {
     try {
-      localStorage.setItem(key, JSON.stringify(data));
+      localStorage.setItem(key, data);
     } catch (e) {
       console.error('Error saving to localStorage', e);
     }
   }
 
-  get(key: string): any {
+  get(key: string): string {
     try {
       const item = localStorage.getItem(key);
       if (item === null) {
-        return null;
+        return '';
       }
-      return JSON.parse(item);
+      return item;
     } catch (e) {
       console.error('Error getting data from the localStorage', e);
-      return null;
+      return '';
     }
   }
 }
