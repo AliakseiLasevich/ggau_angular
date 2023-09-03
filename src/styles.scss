@@ -35,4 +35,48 @@ body {
   .mat-mdc-icon-button.mat-success {
     color: #26963e;
   }
+  
+// Orange button color
+  .mdc-button.mat-orange,
+  .mat-mdc-stroked-button.mat-orange {
+    color: #b0590c;
+  }
+  .mat-mdc-unelevated-button.mat-orange:hover,
+  .mat-mdc-raised-button.mat-orange:hover {
+    color: #f0fff3;
+    background-color: #c77f14;
+  }
+
+  .mat-mdc-unelevated-button:not(:disabled, :hover).mat-orange,
+  .mat-mdc-raised-button.mat-orange,
+  .mat-mdc-fab.mat-orange,
+  .mat-mdc-mini-fab.mat-orange {
+    color: #f0fff3;
+    background-color: #c77f14;
+  }
+  .mat-mdc-icon-button.mat-orange {
+    color: #c77f14;
+  }
+
+  // Grey button color
+  .mdc-button.mat-grey,
+  .mat-mdc-stroked-button.mat-grey {
+    color: #404040;
+  }
+  .mat-mdc-unelevated-button.mat-grey:hover,
+  .mat-mdc-raised-button.mat-grey:hover {
+    color: #f0fff3;
+    background-color: #5a5a5a;
+  }
+
+  .mat-mdc-unelevated-button:not(:disabled, :hover).mat-grey,
+  .mat-mdc-raised-button.mat-grey,
+  .mat-mdc-fab.mat-grey,
+  .mat-mdc-mini-fab.mat-grey {
+    color: #f0fff3;
+    background-color: #5a5a5a;
+  }
+  .mat-mdc-icon-button.mat-grey {
+    color: #5a5a5a;
+  }
 }

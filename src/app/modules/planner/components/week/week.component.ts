@@ -12,10 +12,10 @@ import { PlannerState } from '../../store/planner.reducer';
 import { selectStudentCountBySubgroups } from '../../store/planner.selectors';
 import { LessonInfoComponent } from '../lesson-info/lesson-info.component';
 
-export interface PlannerCellDto {
+export interface PlannerRowDto {
   date: string;
   cabinet: CabinetResponseInterface;
-  lesson: LessonResponseInterface | null;
+  lessons: LessonResponseInterface[] | null;
 }
 
 @Component({
@@ -41,7 +41,10 @@ export class WeekComponent implements OnChanges {
   }
 
   generateDataSource() {
-    const result: any[] = [];
+    const result: (
+      | BuildingResponseInterface
+      | Record<string, PlannerRowDto>
+    )[] = [];
 
     if (this.buildings) {
       for (const building of this.buildings) {
@@ -55,25 +58,25 @@ export class WeekComponent implements OnChanges {
 
   private addCabinetsToDataSource(
     building: BuildingResponseInterface,
-    result: any[]
+    result: (BuildingResponseInterface | Record<string, PlannerRowDto>)[]
   ) {
     building.cabinets.forEach((cabinet) => {
-      const row: { [key: string]: PlannerCellDto } = {};
+      const row: { [key: string]: PlannerRowDto } = {};
 
       this.dateRange.forEach((date) => {
-        const filtered = this.lessons
+        const filteredByDateAndCabinet = this.lessons
           ?.filter((lesson) => lesson.cabinet.publicId === cabinet.publicId)
           .filter((lesson) => this.areDatesEqual(lesson.date, date));
-        if (filtered) {
-          const lessonForCabinet = filtered.length > 0 ? filtered[0] : null;
-          const cell: PlannerCellDto = {
+        if (filteredByDateAndCabinet) {
+          const tableRow: PlannerRowDto = {
             date,
             cabinet,
-            lesson: lessonForCabinet,
+            lessons: filteredByDateAndCabinet,
           };
-          row[date] = cell;
+          row[date] = tableRow;
         }
       });
+
       result.push(row);
     });
   }
@@ -103,17 +106,17 @@ export class WeekComponent implements OnChanges {
     return range;
   }
 
-  generateTooltip(row: PlannerCellDto): string {
-    const date = row.date;
-    const name = row.lesson?.teacher.name;
-    const subgroups = row.lesson?.studentSubgroups
-      .map((subgroup) => subgroup.name)
-      .join(',');
-    if (date && name && subgroups) {
-      return `${date} /  ${name} /  ${subgroups}`;
-    }
-    return '';
-  }
+  // generateTooltip(row: PlannerRowDto): string {
+  //   const date = row.date;
+  //   const name = row.lesson?.teacher.name;
+  //   const subgroups = row.lesson?.studentSubgroups
+  //     .map((subgroup) => subgroup.name)
+  //     .join(',');
+  //   if (date && name && subgroups) {
+  //     return `${date} /  ${name} /  ${subgroups}`;
+  //   }
+  //   return '';
+  // }
   studentsSummary: number;
 
   matchCabinetToFilter(lesson: CabinetResponseInterface) {
@@ -133,7 +136,7 @@ export class WeekComponent implements OnChanges {
     });
   }
 
-  generateButtonDto(date: string, row: any, order: string) {
+  generateButtonDto(date: string, cell: PlannerRowDto, order: string) {
     const dayLessons = this.lessons
       ?.filter((lesson: LessonResponseInterface) =>
         this.areDatesEqual(lesson.date, date)
@@ -163,13 +166,23 @@ export class WeekComponent implements OnChanges {
     );
 
     const isNotEnoughSittingPlaces =
-      row.cabinet.maxStudents <= this.filterStudentsCount;
+      cell.cabinet.maxStudents <= this.filterStudentsCount;
 
     let cabinetBookedBySomeone = false;
-    if (row.lesson) {
-      cabinetBookedBySomeone =
-        row.lesson.teacher.publicId !== this.filter.selectedTeacher &&
-        row.lesson.orderNumber === parseInt(order);
+    let lessonOnButton = null;
+    let isTeacherBookedForThisLesson = false;
+
+    if (cell.lessons) {
+      let cellLesson = this.findLessonByOrderNumber(
+        cell.lessons,
+        parseInt(order)
+      );
+      if (cellLesson) {
+        isTeacherBookedForThisLesson =
+          cellLesson.teacher.publicId === this.filter.selectedTeacher;
+        cabinetBookedBySomeone = !isTeacherBookedForThisLesson;
+        lessonOnButton = cellLesson;
+      }
     }
 
     const logo = this.generateLogo(
@@ -180,6 +193,7 @@ export class WeekComponent implements OnChanges {
 
     return {
       color: this.calculateColor(
+        isTeacherBookedForThisLesson,
         isTeacherBooked,
         isOneOfSubgroupsBooked,
         isNotEnoughSittingPlaces,
@@ -189,16 +203,29 @@ export class WeekComponent implements OnChanges {
       description: 'some',
       onClickFunction: this.voidFunction,
       orderTime: LessonOrder[parseInt(order) as keyof typeof LessonOrder],
+      lesson: lessonOnButton,
     };
   }
+
+  findLessonByOrderNumber(
+    lessons: LessonResponseInterface[],
+    orderNumber: number
+  ): LessonResponseInterface | undefined {
+    return lessons.find((lesson) => lesson.orderNumber === orderNumber);
+  }
+
   calculateColor(
+    isTeacherBookedForThisLesson: boolean,
     isTeacherBooked: boolean | undefined,
     isOneOfSubgroupsBooked: boolean,
     isNotEnoughSittingPlaces: boolean,
     cabinetBookedBySomeone: boolean
   ) {
-    if (isTeacherBooked || isOneOfSubgroupsBooked) {
+    if (isTeacherBookedForThisLesson) {
       return 'warn';
+    }
+    if (isTeacherBooked || isOneOfSubgroupsBooked) {
+      return 'grey';
     }
     if (cabinetBookedBySomeone) {
       return 'primary';
