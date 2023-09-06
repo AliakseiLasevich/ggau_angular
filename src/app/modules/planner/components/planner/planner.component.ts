@@ -13,7 +13,7 @@ import {
   getBuildingsAction,
   getDisciplinesAction,
   getFacultiesAction,
-  getTeachersAction
+  getTeachersAction,
 } from '../../store/planner.actions';
 import { PlannerState } from '../../store/planner.reducer';
 import {
@@ -46,22 +46,29 @@ export class PlannerComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.teachers$ = this.store.select(selectTeachers);
-    this.disciplines$ = this.store.select(selectDisciplines);
-    this.faculties$ = this.store.select(selectFaculties);
-    this.buildings$ = this.store.select(selectAllBuildings);
-    this.filter$ = this.store.select(selectFilter);
-    this.lessons$ = this.store.select(selectLessons);
-
-    this.store.dispatch(getTeachersAction());
-    this.store.dispatch(getDisciplinesAction());
-    this.store.dispatch(getFacultiesAction());
-    this.store.dispatch(getBuildingsAction());
+    this.initializeValues();
+    this.fetchData();
 
     this.store.pipe(select(selectPlannerError)).subscribe((error) => {
       if (error) {
         this._snackBar.open(error.message, 'OK', { duration: 3 * 1000 });
       }
     });
+  }
+
+  private fetchData() {
+    this.store.dispatch(getTeachersAction());
+    this.store.dispatch(getDisciplinesAction());
+    this.store.dispatch(getFacultiesAction());
+    this.store.dispatch(getBuildingsAction());
+  }
+
+  private initializeValues() {
+    this.teachers$ = this.store.select(selectTeachers);
+    this.disciplines$ = this.store.select(selectDisciplines);
+    this.faculties$ = this.store.select(selectFaculties);
+    this.buildings$ = this.store.select(selectAllBuildings);
+    this.filter$ = this.store.select(selectFilter);
+    this.lessons$ = this.store.select(selectLessons);
   }
 }

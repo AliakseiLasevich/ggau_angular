@@ -10,7 +10,7 @@ import { LessonResponseInterface } from '../../interfaces/lesson.interface';
 import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
 import { PlannerState } from '../../store/planner.reducer';
 import { selectStudentCountBySubgroups } from '../../store/planner.selectors';
-import { LessonInfoComponent } from '../lesson-info/lesson-info.component';
+import { PlannerButtonDto } from '../planner-button/planner-button.component';
 
 export interface PlannerRowDto {
   date: string;
@@ -42,7 +42,7 @@ export class WeekComponent implements OnChanges {
     this.generateDataSource();
   }
 
-  generateDataSource() {
+  generateDataSource(): void {
     const result: (
       | BuildingResponseInterface
       | Record<string, PlannerRowDto>
@@ -61,7 +61,7 @@ export class WeekComponent implements OnChanges {
   private addCabinetsToDataSource(
     building: BuildingResponseInterface,
     result: (BuildingResponseInterface | Record<string, PlannerRowDto>)[]
-  ) {
+  ): void {
     building.cabinets.forEach((cabinet) => {
       const row: { [key: string]: PlannerRowDto } = {};
 
@@ -97,7 +97,7 @@ export class WeekComponent implements OnChanges {
     return item.name != null || item.name;
   }
 
-  calculateDateRange() {
+  calculateDateRange(): string[] {
     const range: string[] = [];
     const currentDate = new Date(this.filter!.fromDate);
     while (currentDate <= new Date(this.filter!.toDate)) {
@@ -121,24 +121,11 @@ export class WeekComponent implements OnChanges {
   // }
   studentsSummary: number;
 
-  matchCabinetToFilter(lesson: CabinetResponseInterface) {
-    const subgrouIds: string[] = this.filter!.dynamicGroups.flatMap(
-      (group) => group.subgroupIds
-    );
-    this.store
-      .select(selectStudentCountBySubgroups(subgrouIds))
-      .subscribe((students) => (this.studentsSummary = students));
-
-    return this.studentsSummary < lesson.maxStudents ? 'success' : 'accent';
-  }
-
-  openLessonDetailsDialog(lesson: LessonResponseInterface): void {
-    const dialogRef = this.dialog.open(LessonInfoComponent, {
-      data: { lesson: lesson },
-    });
-  }
-
-  generateButtonDto(date: string, cell: PlannerRowDto, order: string) {
+  generateButtonDto(
+    date: string,
+    cell: PlannerRowDto,
+    order: string
+  ): PlannerButtonDto {
     const dayLessons = this.lessons
       ?.filter((lesson: LessonResponseInterface) =>
         this.areDatesEqual(lesson.date, date)
@@ -162,7 +149,7 @@ export class WeekComponent implements OnChanges {
       .select(selectStudentCountBySubgroups(filterSubgroupIds))
       .subscribe((count) => (this.filterStudentsCount = count));
 
-    const isOneOfSubgroupsBooked = this.hasCommonValue(
+    const isOneOfSubgroupsBooked = this.arraysHaveCommonValue(
       lessonSubgroupIds,
       filterSubgroupIds
     );
@@ -187,14 +174,14 @@ export class WeekComponent implements OnChanges {
       }
     }
 
-    const logo = this.generateLogo(
+    const logo = this.generateLessonButtonText(
       isTeacherBooked,
       isOneOfSubgroupsBooked,
       cabinetBookedBySomeone
     );
 
     return {
-      color: this.calculateColor(
+      color: this.calculateLessonButtonColor(
         isTeacherBookedForThisLesson,
         isTeacherBooked,
         isOneOfSubgroupsBooked,
@@ -203,7 +190,6 @@ export class WeekComponent implements OnChanges {
       ),
       logo: logo,
       description: 'some',
-      onClickFunction: this.voidFunction,
       orderTime: LessonOrder[parseInt(order) as keyof typeof LessonOrder],
       lesson: lessonOnButton,
     };
@@ -216,7 +202,7 @@ export class WeekComponent implements OnChanges {
     return lessons.find((lesson) => lesson.orderNumber === orderNumber);
   }
 
-  calculateColor(
+  calculateLessonButtonColor(
     isTeacherBookedForThisLesson: boolean,
     isTeacherBooked: boolean | undefined,
     isOneOfSubgroupsBooked: boolean,
@@ -239,7 +225,7 @@ export class WeekComponent implements OnChanges {
     return 'success';
   }
 
-  hasCommonValue(array1: any[], array2: any[]): boolean {
+  arraysHaveCommonValue(array1: any[], array2: any[]): boolean {
     for (const value of array1) {
       if (array2.includes(value)) {
         return true;
@@ -248,9 +234,7 @@ export class WeekComponent implements OnChanges {
     return false;
   }
 
-  voidFunction() {}
-
-  generateLogo(
+  generateLessonButtonText(
     isTeacherBooked: boolean | undefined,
     isOneOfSubgroupsBooked: boolean,
     cabinetBookedBySomeone: boolean

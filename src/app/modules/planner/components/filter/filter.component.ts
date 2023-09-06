@@ -44,10 +44,10 @@ export class FilterComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForms();
-    this.initValues();
+    this.fetchData();
   }
 
-  private initValues() {
+  private fetchData() {
     this.store.dispatch(getSpecialtiesAction());
   }
 
