@@ -4,9 +4,11 @@
   [teachers]="teachers$ | async"
   [disciplines]="disciplines$ | async"
   [faculties]="faculties$ | async"
+  (isFormValid)="handleFormValidity($event)"
 ></app-filter>
 
 <app-week
+  *ngIf="isFormValid"
   [filter]="filter$ | async"
   [lessons]="lessons$ | async"
   [buildings]="buildings$ | async"

@@ -1,174 +1,162 @@
 <ng-template [ngIf]="isLoading$ | async">
-  <div class="spinner-container global-spinner-overlay" >
+  <div class="spinner-container global-spinner-overlay">
     <mat-spinner></mat-spinner>
   </div>
 </ng-template>
 
+<form [formGroup]="dynamicForm">
+  <!-- Static fields -->
+  <mat-toolbar>
+    <!-- Date picker -->
+    <mat-form-field appearance="fill">
+      <mat-label>Выберите неделю</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input
+          matStartDate
+          placeholder="Start date"
+          formControlName="fromDate"
+        />
+        <input matEndDate placeholder="End date" formControlName="toDate" />
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
 
-  <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
-    <!-- Static fields -->
-    <mat-toolbar>
-      <!-- Date picker -->
-      <mat-form-field appearance="fill">
-        <mat-label>Выберите неделю</mat-label>
-        <mat-date-range-input [rangePicker]="picker">
-          <input
-            matStartDate
-            placeholder="Start date"
-            formControlName="fromDate"
-          />
-          <input matEndDate placeholder="End date" formControlName="toDate" />
-        </mat-date-range-input>
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-      </mat-form-field>
+    <!-- //TODO change to the autocomplete -->
+    <mat-form-field>
+      <mat-label>Преподаватель</mat-label>
+      <mat-select formControlName="selectedTeacher">
+        <mat-option *ngFor="let teacher of teachers" [value]="teacher.publicId">
+          {{ teacher.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-      <!-- //TODO change to the autocomplete -->
-      <mat-form-field>
-        <mat-label>Преподаватель</mat-label>
-        <mat-select formControlName="selectedTeacher">
-          <mat-option
-            *ngFor="let teacher of teachers"
-            [value]="teacher.publicId"
+    <!-- //TODO change to the autocomplete -->
+    <mat-form-field>
+      <mat-label>Предмет</mat-label>
+      <mat-select formControlName="selectedDiscipline">
+        <mat-option
+          *ngFor="let discipline of disciplines"
+          [value]="discipline.publicId"
+        >
+          {{ discipline.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Тип занятия</mat-label>
+      <mat-select formControlName="selectedLessonType">
+        <mat-option
+          *ngFor="let lessonType of lessonTypes | keyvalue"
+          [value]="lessonType.key"
+        >
+          {{ lessonType.value }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-toolbar>
+
+  <!-- Dynamic fields -->
+  <div formArrayName="dynamicGroups">
+    <div *ngFor="let group of dynamicGroups.controls; let i = index">
+      <div [formGroupName]="i" class="dynamic-group">
+        <mat-form-field>
+          <mat-label>Факультет</mat-label>
+          <mat-select
+            formControlName="facultyId"
+            (selectionChange)="updateFormSpecialties($event, i)"
           >
-            {{ teacher.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <!-- //TODO change to the autocomplete -->
-      <mat-form-field>
-        <mat-label>Предмет</mat-label>
-        <mat-select formControlName="selectedDiscipline">
-          <mat-option
-            *ngFor="let discipline of disciplines"
-            [value]="discipline.publicId"
-          >
-            {{ discipline.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>Тип занятия</mat-label>
-        <mat-select formControlName="selectedLessonType">
-          <mat-option
-            *ngFor="let lessonType of lessonTypes | keyvalue"
-            [value]="lessonType.key"
-          >
-            {{ lessonType.value }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </mat-toolbar>
-
-    <!-- Dynamic fields -->
-    <div formArrayName="dynamicGroups">
-      <div *ngFor="let group of dynamicGroups.controls; let i = index">
-        <div [formGroupName]="i" class="dynamic-group">
-          <mat-form-field>
-            <mat-label>Факультет</mat-label>
-            <mat-select
-              formControlName="facultyId"
-              (selectionChange)="updateFormSpecialties($event, i)"
+            <mat-option
+              *ngFor="let faculty of faculties"
+              [value]="faculty.publicId"
             >
-              <mat-option
-                *ngFor="let faculty of faculties"
-                [value]="faculty.publicId"
-              >
-                {{ faculty.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+              {{ faculty.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-          <mat-form-field>
-            <mat-label>Специальность</mat-label>
-            <mat-select
-              formControlName="specialtyId"
-              (selectionChange)="updateFormStudentCourses($event, i)"
-            >
-              <mat-option
-                *ngFor="
-                  let specialty of getSpecialtiesByFaculty(
-                    dynamicGroups.controls[i]?.get('facultyId')?.value
-                  ) | async
-                "
-                [value]="specialty.publicId"
-              >
-                {{ specialty.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>Курс</mat-label>
-            <mat-select formControlName="studentCourse">
-              <mat-option
-                *ngFor="
-                  let course of getStudentCoursesBySpecialty(
-                    dynamicGroups.controls[i]?.get('specialtyId')?.value
-                  ) | async
-                "
-                [value]="course.publicId"
-              >
-                {{ course.courseNumber }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>Группа</mat-label>
-            <mat-select formControlName="groupId">
-              <mat-option
-                *ngFor="
-                  let group of getStudentGroupByCourse(
-                    dynamicGroups.controls[i]?.get('studentCourse')?.value
-                  ) | async
-                "
-                [value]="group.publicId"
-              >
-                {{ group.number }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>Подгруппы</mat-label>
-            <mat-select formControlName="subgroupIds" multiple>
-              <mat-option
-                *ngFor="
-                  let subgroup of getStudentSubgroupByGroup(
-                    dynamicGroups.controls[i]?.get('groupId')?.value
-                  ) | async
-                "
-                [value]="subgroup.publicId"
-              >
-                {{ subgroup.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <button
-            mat-raised-button
-            color="warn"
-            (click)="removeDynamicGroup(i)"
-            *ngIf="dynamicGroups.length > 1"
+        <mat-form-field>
+          <mat-label>Специальность</mat-label>
+          <mat-select
+            formControlName="specialtyId"
+            (selectionChange)="updateFormStudentCourses($event, i)"
           >
-            X
-          </button>
-        </div>
+            <mat-option
+              *ngFor="
+                let specialty of getSpecialtiesByFaculty(
+                  dynamicGroups.controls[i]?.get('facultyId')?.value
+                ) | async
+              "
+              [value]="specialty.publicId"
+            >
+              {{ specialty.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Курс</mat-label>
+          <mat-select formControlName="studentCourse">
+            <mat-option
+              *ngFor="
+                let course of getStudentCoursesBySpecialty(
+                  dynamicGroups.controls[i]?.get('specialtyId')?.value
+                ) | async
+              "
+              [value]="course.publicId"
+            >
+              {{ course.courseNumber }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Группа</mat-label>
+          <mat-select formControlName="groupId">
+            <mat-option
+              *ngFor="
+                let group of getStudentGroupByCourse(
+                  dynamicGroups.controls[i]?.get('studentCourse')?.value
+                ) | async
+              "
+              [value]="group.publicId"
+            >
+              {{ group.number }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Подгруппы</mat-label>
+          <mat-select formControlName="subgroupIds" multiple>
+            <mat-option
+              *ngFor="
+                let subgroup of getStudentSubgroupByGroup(
+                  dynamicGroups.controls[i]?.get('groupId')?.value
+                ) | async
+              "
+              [value]="subgroup.publicId"
+            >
+              {{ subgroup.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="warn"
+          (click)="removeDynamicGroup(i)"
+          *ngIf="dynamicGroups.length > 1"
+        >
+          X
+        </button>
       </div>
     </div>
+  </div>
 
-    <button mat-raised-button color="warn" (click)="addDynamicGroup()">
-      Добавить группу
-    </button>
-    <button
-      mat-raised-button
-      color="accent"
-      type="submit"
-      [disabled]="!dynamicForm.valid"
-    >
-      Применить фильтр
-    </button>
-  </form>
+  <button mat-raised-button color="warn" (click)="addDynamicGroup()">
+    Добавить группу
+  </button>
+</form>

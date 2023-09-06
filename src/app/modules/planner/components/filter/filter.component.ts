@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { Store } from '@ngrx/store';
@@ -34,6 +34,7 @@ export class FilterComponent implements OnInit {
   @Input() teachers: TeacherResponseInterface[] | null;
   @Input() disciplines: DisciplineResponseInterface[] | null;
   @Input() faculties: FacultyResponseInterface[] | null;
+  @Output() isFormValid = new EventEmitter<boolean>();
   isLoading$: Observable<boolean>;
   dynamicForm: FormGroup;
   lessonTypes = LessonTypes;
@@ -51,6 +52,13 @@ export class FilterComponent implements OnInit {
 
   initializeListeners() {
     this.isLoading$ = this.store.select(selectIsLoading);
+    this.dynamicForm.valueChanges.subscribe((formValues) => {
+      if (this.dynamicForm.valid) {
+        const filterValue = this.dynamicForm.value as PlannerFilterInterface;
+        this.store.dispatch(setFilterAction({ filter: filterValue }));
+      }
+      this.isFormValid.emit(this.dynamicForm.valid);
+    });
   }
 
   private fetchData() {
@@ -157,10 +165,5 @@ export class FilterComponent implements OnInit {
     groupId: string
   ): Observable<StudentSubgroupResponseInterface[]> {
     return this.store.select(selectStudentSubgroupByGroup(groupId));
-  }
-
-  onSubmit() {
-    const filterValue = this.dynamicForm.value as PlannerFilterInterface;
-    this.store.dispatch(setFilterAction({ filter: filterValue }));
   }
 }

@@ -32,6 +32,7 @@ import {
   styleUrls: ['./planner.component.scss'],
 })
 export class PlannerComponent implements OnInit {
+  isFormValid: boolean;
   teachers$: Observable<TeacherResponseInterface[]>;
   disciplines$: Observable<DisciplineResponseInterface[]>;
   faculties$: Observable<FacultyResponseInterface[]>;
@@ -71,5 +72,9 @@ export class PlannerComponent implements OnInit {
     this.buildings$ = this.store.select(selectAllBuildings);
     this.filter$ = this.store.select(selectFilter);
     this.lessons$ = this.store.select(selectLessons);
+  }
+
+  handleFormValidity(isFormValid: boolean) {
+    this.isFormValid = isFormValid;
   }
 }
