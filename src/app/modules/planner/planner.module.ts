@@ -17,6 +17,7 @@ import { PlannerEffects } from './store/planner.effect';
 import { plannerReducer } from './store/planner.reducer';
 import { PlannerButtonComponent } from './components/planner-button/planner-button.component';
 import { TableCellComponent } from './components/table-cell/table-cell.component';
+import { NewLessonFormComponent } from './components/new-lesson-form/new-lesson-form.component';
 
 const routes: Routes = [{ path: 'planner', component: PlannerComponent }];
 
@@ -28,6 +29,7 @@ const routes: Routes = [{ path: 'planner', component: PlannerComponent }];
     LessonInfoComponent,
     PlannerButtonComponent,
     TableCellComponent,
+    NewLessonFormComponent,
   ],
   imports: [
     HeaderModule,
