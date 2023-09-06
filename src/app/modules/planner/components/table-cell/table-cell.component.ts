@@ -4,7 +4,7 @@ import { LessonOrder } from 'src/app/shared/enums/lesson-order.enum';
 import { anyCommonValue, areDatesEqual } from 'src/app/shared/utils';
 import { LessonResponseInterface } from '../../interfaces/lesson.interface';
 import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
-import { selectStudentCountBySubgroups } from '../../store/planner.selectors';
+import { StudentCourseResponseInterface } from '../../interfaces/studentCourse.interfaces';
 import { PlannerButtonDto } from '../planner-button/planner-button.component';
 import { PlannerRowDto } from '../table/table.component';
 
@@ -18,12 +18,11 @@ export class TableCellComponent {
   @Input() lessons: LessonResponseInterface[] | null;
   @Input() date: string;
   @Input() row: Record<string, PlannerRowDto>;
-
-  filterStudentsCount: number;
-
-  constructor(private store: Store) {}
+  @Input() studentCourses!: StudentCourseResponseInterface[] | null;
 
   orderNumbers = LessonOrder;
+
+  constructor(private store: Store) {}
 
   generateButtonDto(order: string): PlannerButtonDto {
     const cell = this.row[this.date];
@@ -46,10 +45,8 @@ export class TableCellComponent {
     const filterSubgroupIds = this.filter!.dynamicGroups.flatMap(
       (group) => group.subgroupIds || []
     );
-
-    this.store
-      .select(selectStudentCountBySubgroups(filterSubgroupIds))
-      .subscribe((count) => (this.filterStudentsCount = count));
+    const filterStudentsCount =
+      this.calculateStudentsInFilter(filterSubgroupIds);
 
     const isOneOfSubgroupsBooked = anyCommonValue(
       lessonSubgroupIds,
@@ -57,7 +54,7 @@ export class TableCellComponent {
     );
 
     const isNotEnoughSittingPlaces =
-      cell.cabinet.maxStudents < this.filterStudentsCount;
+      cell.cabinet.maxStudents < filterStudentsCount;
 
     let cabinetBookedBySomeone = false;
     let lessonOnButton = null;
@@ -80,7 +77,7 @@ export class TableCellComponent {
       isTeacherBooked,
       isOneOfSubgroupsBooked,
       cabinetBookedBySomeone,
-      cell.cabinet.maxStudents - this.filterStudentsCount
+      cell.cabinet.maxStudents - filterStudentsCount
     );
 
     return {
@@ -96,6 +93,18 @@ export class TableCellComponent {
       orderTime: LessonOrder[parseInt(order) as keyof typeof LessonOrder],
       lesson: lessonOnButton,
     };
+  }
+
+  calculateStudentsInFilter(subgroupIds: string[]): number {
+    if (subgroupIds && this.studentCourses) {
+      return this.studentCourses
+        .flatMap((course) => course.studentGroups)
+        .flatMap((group) => group.studentSubgroups)
+        .filter((subgroup) => subgroupIds.includes(subgroup.publicId))
+        .map((subgroup) => subgroup.studentsCount)
+        .reduce((sum, current) => sum + current, 0);
+    }
+    return 0;
   }
 
   generateLessonButtonText(
@@ -126,14 +135,14 @@ export class TableCellComponent {
     isNotEnoughSittingPlaces: boolean,
     cabinetBookedBySomeone: boolean
   ) {
-    if (isTeacherBookedForThisLesson) {
+    if (cabinetBookedBySomeone) {
       return 'warn';
+    }
+    if (isTeacherBookedForThisLesson) {
+      return 'primary';
     }
     if (isTeacherBooked || isOneOfSubgroupsBooked) {
       return 'grey';
-    }
-    if (cabinetBookedBySomeone) {
-      return 'primary';
     }
     if (isNotEnoughSittingPlaces) {
       return 'accent';

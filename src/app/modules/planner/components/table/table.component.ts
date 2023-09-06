@@ -1,4 +1,10 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -9,8 +15,9 @@ import { BuildingResponseInterface } from '../../interfaces/buildings.interfaces
 import { CabinetResponseInterface } from '../../interfaces/cabinet.interfaces';
 import { LessonResponseInterface } from '../../interfaces/lesson.interface';
 import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
+import { StudentCourseResponseInterface } from '../../interfaces/studentCourse.interfaces';
 import { PlannerState } from '../../store/planner.reducer';
-import { PlannerButtonDto } from '../planner-button/planner-button.component';
+import { selectStudentCourses } from '../../store/planner.selectors';
 
 export interface PlannerRowDto {
   date: string;
@@ -23,17 +30,25 @@ export interface PlannerRowDto {
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
-export class TableComponent implements OnChanges {
+export class TableComponent implements OnInit, OnChanges {
   @Input() filter: PlannerFilterInterface | null;
   @Input() buildings: BuildingResponseInterface[] | null;
   @Input() lessons: LessonResponseInterface[] | null;
 
-  buttonDtos$: Observable<PlannerButtonDto[]>;
+  studentCourses: Observable<StudentCourseResponseInterface[]>;
 
   dateRange: string[] = [];
   dataSource: MatTableDataSource<any>;
 
   constructor(private store: Store<PlannerState>, public dialog: MatDialog) {}
+
+  ngOnInit(): void {
+    this.initializeListeners();
+  }
+
+  initializeListeners() {
+    this.studentCourses = this.store.select(selectStudentCourses);
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['filter']?.currentValue) {

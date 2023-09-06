@@ -23,7 +23,7 @@ import {
   selectFilter,
   selectLessons,
   selectPlannerError,
-  selectTeachers,
+  selectTeachers
 } from '../../store/planner.selectors';
 
 @Component({
@@ -48,6 +48,7 @@ export class PlannerComponent implements OnInit {
   ngOnInit(): void {
     this.initializeValues();
     this.fetchData();
+    this.initializeListeners();
 
     this.store.pipe(select(selectPlannerError)).subscribe((error) => {
       if (error) {
@@ -55,7 +56,7 @@ export class PlannerComponent implements OnInit {
       }
     });
   }
-
+  initializeListeners() {}
   private fetchData() {
     this.store.dispatch(getTeachersAction());
     this.store.dispatch(getDisciplinesAction());

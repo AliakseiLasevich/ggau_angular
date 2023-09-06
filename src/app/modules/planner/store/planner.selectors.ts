@@ -60,16 +60,6 @@ export const selectStudentSubgroupByGroup = (groupId: string) =>
       .flatMap((group) => group.studentSubgroups)
   );
 
-export const selectStudentCountBySubgroups = (groupIds: string[]) =>
-  createSelector(selectPlannerState, (state: PlannerState) =>
-    state.studentCourses
-      .flatMap((course) => course.studentGroups)
-      .flatMap((group) => group.studentSubgroups)
-      .filter((subgroup) => groupIds.includes(subgroup.publicId))
-      .map((subgroup) => subgroup.studentsCount)
-      .reduce((sum, current) => sum + current, 0)
-  );
-
 export const selectAllBuildings = createSelector(
   selectPlannerState,
   (state: PlannerState) => state.buildings

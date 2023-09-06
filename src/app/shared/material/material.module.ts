@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSortModule } from '@angular/material/sort';
@@ -40,6 +41,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatDialogModule,
     FormsModule,
     MatSnackBarModule,
+    MatProgressSpinnerModule,
   ],
   exports: [
     MatToolbarModule,
@@ -59,6 +61,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatDialogModule,
     FormsModule,
     MatSnackBarModule,
+    MatProgressSpinnerModule,
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'ru-RU' }],
 })

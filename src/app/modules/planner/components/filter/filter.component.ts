@@ -18,6 +18,7 @@ import {
 } from '../../store/planner.actions';
 import { PlannerState } from '../../store/planner.reducer';
 import {
+  selectIsLoading,
   selectSpecialtiesByFaculty,
   selectStudentCourseBySpecialty,
   selectStudentGroupByCourse,
@@ -33,7 +34,7 @@ export class FilterComponent implements OnInit {
   @Input() teachers: TeacherResponseInterface[] | null;
   @Input() disciplines: DisciplineResponseInterface[] | null;
   @Input() faculties: FacultyResponseInterface[] | null;
-
+  isLoading$: Observable<boolean>;
   dynamicForm: FormGroup;
   lessonTypes = LessonTypes;
 
@@ -45,6 +46,11 @@ export class FilterComponent implements OnInit {
   ngOnInit(): void {
     this.initForms();
     this.fetchData();
+    this.initializeListeners();
+  }
+
+  initializeListeners() {
+    this.isLoading$ = this.store.select(selectIsLoading);
   }
 
   private fetchData() {

@@ -3,10 +3,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { loginSuccess } from './modules/auth/store/auth.actions';
-import {
-  selectIsLoading,
-  selectIsLoggedIn,
-} from './modules/auth/store/auth.selectors';
+import { selectIsLoggedIn } from './modules/auth/store/auth.selectors';
 
 @Component({
   selector: 'app-root',
@@ -14,12 +11,12 @@ import {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  loggedIn$: Observable<boolean> = this.store.select(selectIsLoggedIn);
-  isLoading$: Observable<boolean> = this.store.select(selectIsLoading);
+  loggedIn$: Observable<boolean>;
 
   constructor(private router: Router, private store: Store) {}
 
   ngOnInit(): void {
+    this.initializeListeners();
     this.getStoredToken();
 
     this.loggedIn$.subscribe((loggedIn) =>
@@ -27,6 +24,10 @@ export class AppComponent implements OnInit {
         ? this.router.navigate(['/planner'])
         : this.router.navigate(['/login'])
     );
+  }
+
+  initializeListeners() {
+    this.loggedIn$ = this.store.select(selectIsLoggedIn);
   }
 
   private getStoredToken() {
