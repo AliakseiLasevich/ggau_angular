@@ -1,0 +1,5 @@
+<app-planner-button
+  *ngFor="let order of orderNumbers | keyvalue"
+  [dto]="generateButtonDto(order.key)"
+>
+</app-planner-button>

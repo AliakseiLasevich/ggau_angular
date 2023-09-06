@@ -11,11 +11,12 @@ import { HeaderModule } from './../header/header.module';
 import { FilterComponent } from './components/filter/filter.component';
 import { LessonInfoComponent } from './components/lesson-info/lesson-info.component';
 import { PlannerComponent } from './components/planner/planner.component';
-import { WeekComponent } from './components/week/week.component';
+import { TableComponent } from './components/table/table.component';
 import { PlannerService } from './services/planner.service';
 import { PlannerEffects } from './store/planner.effect';
 import { plannerReducer } from './store/planner.reducer';
 import { PlannerButtonComponent } from './components/planner-button/planner-button.component';
+import { TableCellComponent } from './components/table-cell/table-cell.component';
 
 const routes: Routes = [{ path: 'planner', component: PlannerComponent }];
 
@@ -23,9 +24,10 @@ const routes: Routes = [{ path: 'planner', component: PlannerComponent }];
   declarations: [
     PlannerComponent,
     FilterComponent,
-    WeekComponent,
+    TableComponent,
     LessonInfoComponent,
     PlannerButtonComponent,
+    TableCellComponent,
   ],
   imports: [
     HeaderModule,
