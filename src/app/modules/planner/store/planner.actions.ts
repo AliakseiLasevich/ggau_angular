@@ -9,6 +9,7 @@ import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
 import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import { ActionTypes } from './planner.actionTypes';
+import { PlannerFilterInterface } from '../interfaces/planner-filter.interfaces';
 
 // TEACHERS
 export const getTeachersAction = createAction(ActionTypes.GET_TEACHERS);
@@ -78,9 +79,10 @@ export const getCoursesFailure = createAction(
   props<{ error: BackendErrorInterface }>()
 );
 
+//LESSONS
 export const getLessonsAction = createAction(
   ActionTypes.GET_LESSONS,
-  props<{ dateFrom: Date; dateTo: Date }>()
+  props<{ dateFrom: string; dateTo: string }>()
 );
 
 export const getLessonsSuccess = createAction(
@@ -93,6 +95,7 @@ export const getLessonsFailure = createAction(
   props<{ error: BackendErrorInterface }>()
 );
 
+// BUILDINGS
 export const getBuildingsAction = createAction(ActionTypes.GET_BUILDINGS);
 
 export const getBuildingsSuccess = createAction(
@@ -103,4 +106,10 @@ export const getBuildingsSuccess = createAction(
 export const getBuildingsFailure = createAction(
   ActionTypes.GET_BUILDINGS_FAILURE,
   props<{ error: BackendErrorInterface }>()
+);
+
+// FILTER STATE
+export const setFilterAction = createAction(
+  ActionTypes.SET_FILTER,
+  props<{ filter: PlannerFilterInterface }>()
 );

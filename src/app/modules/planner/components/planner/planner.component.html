@@ -3,11 +3,10 @@
   [teachers]="teachers$ | async"
   [disciplines]="disciplines$ | async"
   [faculties]="faculties$ | async"
-  (filterSubmittedEvent)="filterSubmittedEvent($event)"
 ></app-filter>
 
 <app-week
-  [filter]="filter"
+  [filter]="filter$ |async"
   [lessons]="lessons$ | async"
   [buildings]="buildings$ | async"
 ></app-week>

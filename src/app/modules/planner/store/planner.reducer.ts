@@ -4,6 +4,7 @@ import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
 import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
 import { LessonResponseInterface } from '../interfaces/lesson.interface';
+import { PlannerFilterInterface } from '../interfaces/planner-filter.interfaces';
 import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
 import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
@@ -29,8 +30,8 @@ import {
   getTeachersAction,
   getTeachersActionFailure,
   getTeachersActionSuccess,
+  setFilterAction,
 } from './planner.actions';
-
 export interface PlannerState {
   isLoading: boolean;
   teachers: TeacherResponseInterface[];
@@ -40,9 +41,8 @@ export interface PlannerState {
   studentCourses: StudentCourseResponseInterface[];
   buildings: BuildingResponseInterface[];
   lessons: LessonResponseInterface[];
-  dateFrom: Date | null;
-  dateTo: Date | null;
   error: BackendErrorInterface | null;
+  filter: PlannerFilterInterface | null;
 }
 
 const initialState: PlannerState = {
@@ -54,9 +54,8 @@ const initialState: PlannerState = {
   studentCourses: [],
   buildings: [],
   lessons: [],
-  dateFrom: null,
-  dateTo: null,
   error: null,
+  filter: null,
 };
 
 export const plannerReducer = createReducer(
@@ -190,5 +189,11 @@ export const plannerReducer = createReducer(
     ...state,
     isLoading: false,
     error: payload.error,
+  })),
+
+  on(setFilterAction, (state, payload) => ({
+    ...state,
+    isLoading: false,
+    filter: payload.filter,
   }))
 );

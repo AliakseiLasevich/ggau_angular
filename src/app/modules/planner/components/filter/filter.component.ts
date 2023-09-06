@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { Store } from '@ngrx/store';
@@ -14,6 +14,7 @@ import { TeacherResponseInterface } from '../../interfaces/teachers.interfaces';
 import {
   getCoursesAction,
   getSpecialtiesAction,
+  setFilterAction,
 } from '../../store/planner.actions';
 import { PlannerState } from '../../store/planner.reducer';
 import {
@@ -32,7 +33,6 @@ export class FilterComponent implements OnInit {
   @Input() teachers: TeacherResponseInterface[] | null;
   @Input() disciplines: DisciplineResponseInterface[] | null;
   @Input() faculties: FacultyResponseInterface[] | null;
-  @Output() filterSubmittedEvent = new EventEmitter<PlannerFilterInterface>();
 
   dynamicForm: FormGroup;
   lessonTypes = LessonTypes;
@@ -90,22 +90,6 @@ export class FilterComponent implements OnInit {
     if (specialtyControl) {
       specialtyControl.setValue(selectedSpecialty.value);
     }
-  }
-
-  convertDate(selectedDate: string): string {
-    const localDate = new Date(selectedDate);
-    const utcDate = new Date(
-      Date.UTC(
-        localDate.getFullYear(),
-        localDate.getMonth(),
-        localDate.getDate(),
-        localDate.getHours(),
-        localDate.getMinutes(),
-        localDate.getSeconds(),
-        localDate.getMilliseconds()
-      )
-    );
-    return utcDate.toISOString().split('T')[0];
   }
 
   private declareFieldsErasingStrategy(dynamicFormGroup: FormGroup<any>) {
@@ -170,14 +154,7 @@ export class FilterComponent implements OnInit {
   }
 
   onSubmit() {
-    //TODO убрать костыль
-    this.dynamicForm
-      .get('fromDate')
-      ?.setValue(this.convertDate(this.dynamicForm.get('fromDate')?.value));
-    this.dynamicForm
-      .get('toDate')
-      ?.setValue(this.convertDate(this.dynamicForm.get('toDate')?.value));
-
-    this.filterSubmittedEvent.emit(this.dynamicForm.value);
+    const filterValue = this.dynamicForm.value as PlannerFilterInterface;
+    this.store.dispatch(setFilterAction({ filter: filterValue }));
   }
 }

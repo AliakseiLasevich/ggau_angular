@@ -107,3 +107,8 @@ export const selectPlannerError = createSelector(
   selectPlannerState,
   (state: PlannerState) => state.error
 );
+
+export const selectFilter = createSelector(
+  selectPlannerState,
+  (state: PlannerState) => state.filter
+);

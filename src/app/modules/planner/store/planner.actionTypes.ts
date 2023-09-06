@@ -26,4 +26,6 @@ export enum ActionTypes {
   GET_BUILDINGS = '[PLANNER_PAGE] Get buildings',
   GET_BUILDINGS_SUCCESS = '[GET_BUILDINGS_API] Get buildings success',
   GET_BUILDINGS_FAILURE = '[GET_BUILDINGS_API] Get buildings failure',
+
+  SET_FILTER = '[PLANNER_FILTER] Set filter to state',
 }

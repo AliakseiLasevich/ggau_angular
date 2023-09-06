@@ -13,14 +13,14 @@ import {
   getBuildingsAction,
   getDisciplinesAction,
   getFacultiesAction,
-  getLessonsAction,
-  getTeachersAction,
+  getTeachersAction
 } from '../../store/planner.actions';
 import { PlannerState } from '../../store/planner.reducer';
 import {
   selectAllBuildings,
   selectDisciplines,
   selectFaculties,
+  selectFilter,
   selectLessons,
   selectPlannerError,
   selectTeachers,
@@ -38,7 +38,7 @@ export class PlannerComponent implements OnInit {
   specialties$: Observable<SpecialtyResponseInterface[]>;
   buildings$: Observable<BuildingResponseInterface[]>;
   lessons$: Observable<LessonResponseInterface[]>;
-  filter: PlannerFilterInterface;
+  filter$: Observable<PlannerFilterInterface | null>;
 
   constructor(
     private store: Store<PlannerState>,
@@ -50,6 +50,8 @@ export class PlannerComponent implements OnInit {
     this.disciplines$ = this.store.select(selectDisciplines);
     this.faculties$ = this.store.select(selectFaculties);
     this.buildings$ = this.store.select(selectAllBuildings);
+    this.filter$ = this.store.select(selectFilter);
+    this.lessons$ = this.store.select(selectLessons);
 
     this.store.dispatch(getTeachersAction());
     this.store.dispatch(getDisciplinesAction());
@@ -61,16 +63,5 @@ export class PlannerComponent implements OnInit {
         this._snackBar.open(error.message, 'OK', { duration: 3 * 1000 });
       }
     });
-  }
-
-  filterSubmittedEvent(filter: PlannerFilterInterface) {
-    this.filter = filter;
-    this.store.dispatch(
-      getLessonsAction({
-        dateFrom: this.filter.fromDate,
-        dateTo: this.filter.toDate,
-      })
-    );
-    this.lessons$ = this.store.select(selectLessons);
   }
 }

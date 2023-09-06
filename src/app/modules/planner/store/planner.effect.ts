@@ -17,12 +17,14 @@ import {
   getDisciplinesFailure,
   getDisciplinesSuccess,
   getFacutiesSuccess,
+  getLessonsAction,
   getLessonsFailure,
   getLessonsSuccess,
   getSpecialtiesSuccess,
   getTeachersActionFailure,
   getTeachersActionSuccess,
 } from './planner.actions';
+import { PlannerFilterInterface } from '../interfaces/planner-filter.interfaces';
 
 // mergeMap - при удалении
 // concatMap - при создании или апдейте
@@ -147,4 +149,31 @@ export class PlannerEffects {
       })
     )
   );
+
+  triggerGetLessons$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ActionTypes.SET_FILTER),
+      switchMap(({ filter }: { filter: PlannerFilterInterface }) => {
+        const dateFrom = this.convertDate(filter.fromDate.toString());
+        const dateTo = this.convertDate(filter.toDate.toString());
+        return of(getLessonsAction({ dateFrom, dateTo }));
+      })
+    )
+  );
+
+  convertDate(selectedDate: string): string {
+    const localDate = new Date(selectedDate);
+    const utcDate = new Date(
+      Date.UTC(
+        localDate.getFullYear(),
+        localDate.getMonth(),
+        localDate.getDate(),
+        localDate.getHours(),
+        localDate.getMinutes(),
+        localDate.getSeconds(),
+        localDate.getMilliseconds()
+      )
+    );
+    return utcDate.toISOString().split('T')[0];
+  }
 }

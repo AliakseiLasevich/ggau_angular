@@ -24,7 +24,7 @@ export interface PlannerRowDto {
   styleUrls: ['./week.component.scss'],
 })
 export class WeekComponent implements OnChanges {
-  @Input() filter: PlannerFilterInterface;
+  @Input() filter: PlannerFilterInterface | null;
   @Input() buildings: BuildingResponseInterface[] | null;
   @Input() lessons: LessonResponseInterface[] | null;
 
@@ -36,7 +36,9 @@ export class WeekComponent implements OnChanges {
   constructor(private store: Store<PlannerState>, public dialog: MatDialog) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.calculateDateRange();
+    if (changes['filter']?.currentValue) {
+      this.calculateDateRange();
+    }
     this.generateDataSource();
   }
 
@@ -97,8 +99,8 @@ export class WeekComponent implements OnChanges {
 
   calculateDateRange() {
     const range: string[] = [];
-    const currentDate = new Date(this.filter?.fromDate);
-    while (currentDate <= new Date(this.filter?.toDate)) {
+    const currentDate = new Date(this.filter!.fromDate);
+    while (currentDate <= new Date(this.filter!.toDate)) {
       range.push(new Date(currentDate).toLocaleDateString('ru-RU'));
       currentDate.setDate(currentDate.getDate() + 1);
     }
@@ -120,7 +122,7 @@ export class WeekComponent implements OnChanges {
   studentsSummary: number;
 
   matchCabinetToFilter(lesson: CabinetResponseInterface) {
-    const subgrouIds: string[] = this.filter.dynamicGroups.flatMap(
+    const subgrouIds: string[] = this.filter!.dynamicGroups.flatMap(
       (group) => group.subgroupIds
     );
     this.store
@@ -144,7 +146,7 @@ export class WeekComponent implements OnChanges {
       .filter((lesson) => lesson.orderNumber === parseInt(order));
 
     const isTeacherBooked = dayLessons?.some(
-      (lesson) => lesson.teacher.publicId === this.filter.selectedTeacher
+      (lesson) => lesson.teacher.publicId === this.filter?.selectedTeacher
     );
 
     const lessonSubgroupIds =
@@ -152,7 +154,7 @@ export class WeekComponent implements OnChanges {
         ?.flatMap((lesson) => lesson.studentSubgroups)
         .map((subgroup) => subgroup.publicId) || [];
 
-    const filterSubgroupIds = this.filter.dynamicGroups.flatMap(
+    const filterSubgroupIds = this.filter!.dynamicGroups.flatMap(
       (group) => group.subgroupIds || []
     );
 
@@ -179,7 +181,7 @@ export class WeekComponent implements OnChanges {
       );
       if (cellLesson) {
         isTeacherBookedForThisLesson =
-          cellLesson.teacher.publicId === this.filter.selectedTeacher;
+          cellLesson.teacher.publicId === this.filter!.selectedTeacher;
         cabinetBookedBySomeone = !isTeacherBookedForThisLesson;
         lessonOnButton = cellLesson;
       }
