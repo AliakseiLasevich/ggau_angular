@@ -11,6 +11,7 @@ import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfac
 import { PlannerState } from '../../store/planner.reducer';
 import { selectStudentCountBySubgroups } from '../../store/planner.selectors';
 import { PlannerButtonDto } from '../planner-button/planner-button.component';
+import { Observable } from 'rxjs';
 
 export interface PlannerRowDto {
   date: string;
@@ -27,6 +28,8 @@ export class WeekComponent implements OnChanges {
   @Input() filter: PlannerFilterInterface | null;
   @Input() buildings: BuildingResponseInterface[] | null;
   @Input() lessons: LessonResponseInterface[] | null;
+
+  buttonDtos$: Observable<PlannerButtonDto[]>;
 
   dateRange: string[] = [];
   dataSource: MatTableDataSource<any>;
@@ -155,7 +158,7 @@ export class WeekComponent implements OnChanges {
     );
 
     const isNotEnoughSittingPlaces =
-      cell.cabinet.maxStudents <= this.filterStudentsCount;
+      cell.cabinet.maxStudents < this.filterStudentsCount;
 
     let cabinetBookedBySomeone = false;
     let lessonOnButton = null;
@@ -177,7 +180,8 @@ export class WeekComponent implements OnChanges {
     const logo = this.generateLessonButtonText(
       isTeacherBooked,
       isOneOfSubgroupsBooked,
-      cabinetBookedBySomeone
+      cabinetBookedBySomeone,
+      cell.cabinet.maxStudents - this.filterStudentsCount
     );
 
     return {
@@ -237,7 +241,8 @@ export class WeekComponent implements OnChanges {
   generateLessonButtonText(
     isTeacherBooked: boolean | undefined,
     isOneOfSubgroupsBooked: boolean,
-    cabinetBookedBySomeone: boolean
+    cabinetBookedBySomeone: boolean,
+    extraSits: number
   ): string {
     if (isTeacherBooked && isOneOfSubgroupsBooked) {
       return 'П/С';
@@ -251,6 +256,6 @@ export class WeekComponent implements OnChanges {
     if (cabinetBookedBySomeone) {
       return 'X';
     }
-    return '✔';
+    return '' + extraSits;
   }
 }
