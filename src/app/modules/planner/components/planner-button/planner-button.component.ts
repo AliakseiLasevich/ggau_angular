@@ -20,8 +20,14 @@ export class PlannerButtonComponent {
       this.viewLessonDetails();
     }
   }
+
   openNewLessonForm() {
-    const dialogRef = this.dialog.open(NewLessonFormComponent);
+    const dialogRef = this.dialog.open(NewLessonFormComponent, {
+      data: {
+        orderNumber: this.dto.orderNumber,
+        orderTime: this.dto.orderTime,
+      },
+    });
     dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed');
     });
@@ -38,6 +44,7 @@ export interface PlannerButtonDto {
   color: string;
   logo: string;
   description: string;
+  orderNumber: string;
   orderTime: string;
   lesson: LessonResponseInterface | null;
 }

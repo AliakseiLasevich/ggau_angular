@@ -1,10 +1,28 @@
-<h1 mat-dialog-title>Заголовок</h1>
+<mat-card class="popup-card">
+  <mat-card-header>
+    <div mat-card-avatar class="new-lesson-image"></div>
+    <mat-card-title>{{
+      filter?.fromDate | date : 'dd/MM/yyyy'
+    }}</mat-card-title>
+    <mat-card-subtitle>{{ data.orderTime }}</mat-card-subtitle>
+  </mat-card-header>
 
-<div mat-dialog-content>
-  <p>Форма</p>
-</div>
+  <mat-card-content>
+    <div>{{ selectedTeacher?.name }}</div>
 
-<div mat-dialog-actions>
-  <button mat-raised-button mat-dialog-close color="warn">Сохранить</button>
-  <button mat-raised-button mat-dialog-close color="primary">Закрыть</button>
-</div>
+    <div *ngFor="let group of filter?.dynamicGroups">
+      <p>
+        {{ group.facultyId }} &nbsp; {{ group.specialtyId }} &nbsp;
+        {{ group.groupId }} &nbsp; {{ group.studentCourse }} &nbsp;
+      </p>
+      <p *ngFor="let subgroupId of group.subgroupIds">
+        {{ subgroupId }}
+      </p>
+    </div>
+  </mat-card-content>
+
+  <div mat-dialog-actions>
+    <button mat-raised-button mat-dialog-close color="warn">Сохранить</button>
+    <button mat-raised-button mat-dialog-close color="primary">Отмена</button>
+  </div>
+</mat-card>

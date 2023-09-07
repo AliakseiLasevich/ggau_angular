@@ -90,6 +90,7 @@ export class TableCellComponent {
       ),
       logo: logo,
       description: 'some',
+      orderNumber: order,
       orderTime: LessonOrder[parseInt(order) as keyof typeof LessonOrder],
       lesson: lessonOnButton,
     };

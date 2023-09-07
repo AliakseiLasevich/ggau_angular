@@ -13,6 +13,13 @@ export const selectTeachers = createSelector(
   (state: PlannerState) => state.teachers
 );
 
+export const selectTeacherById = (teacherId: string) =>
+  createSelector(selectPlannerState, (state: PlannerState) => {
+    return (
+      state.teachers.find((teacher) => teacher.publicId === teacherId) || null
+    );
+  });
+
 export const selectDisciplines = createSelector(
   selectPlannerState,
   (state: PlannerState) => state.disciplines

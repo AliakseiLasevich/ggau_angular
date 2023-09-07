@@ -113,16 +113,5 @@ export class TableComponent implements OnInit, OnChanges {
     return range;
   }
 
-  // generateTooltip(row: PlannerRowDto): string {
-  //   const date = row.date;
-  //   const name = row.lesson?.teacher.name;
-  //   const subgroups = row.lesson?.studentSubgroups
-  //     .map((subgroup) => subgroup.name)
-  //     .join(',');
-  //   if (date && name && subgroups) {
-  //     return `${date} /  ${name} /  ${subgroups}`;
-  //   }
-  //   return '';
-  // }
   studentsSummary: number;
 }
