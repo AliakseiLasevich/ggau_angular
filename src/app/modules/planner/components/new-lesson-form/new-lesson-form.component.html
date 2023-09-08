@@ -2,23 +2,40 @@
   <mat-card-header>
     <div mat-card-avatar class="new-lesson-image"></div>
     <mat-card-title>{{
-      filter?.fromDate | date : 'dd/MM/yyyy'
+      selectedFilter?.fromDate | date : 'dd/MM/yyyy'
     }}</mat-card-title>
     <mat-card-subtitle>{{ data.orderTime }}</mat-card-subtitle>
   </mat-card-header>
 
   <mat-card-content>
-    <div>{{ selectedTeacher?.name }}</div>
+    <mat-list>
+      <div mat-subheader>{{ (teacher$ | async)?.name }}</div>
+      <div mat-subheader>{{ (discipline$ | async)?.name }}</div>
+      <div mat-subheader>{{ selectedFilter?.selectedLessonType }}</div>
+      <mat-divider></mat-divider>
 
-    <div *ngFor="let group of filter?.dynamicGroups">
-      <p>
-        {{ group.facultyId }} &nbsp; {{ group.specialtyId }} &nbsp;
-        {{ group.groupId }} &nbsp; {{ group.studentCourse }} &nbsp;
-      </p>
-      <p *ngFor="let subgroupId of group.subgroupIds">
-        {{ subgroupId }}
-      </p>
-    </div>
+      <div *ngFor="let group of selectedFilter?.dynamicGroups">
+        <p matListItemTitle>
+          <mat-icon matListItemIcon>person</mat-icon>
+          {{ (getFacultyById(group.facultyId) | async)?.name }} &nbsp; /
+          {{ (getSpecialtyById(group.specialtyId) | async)?.name }} &nbsp;
+        </p>
+
+        <p>
+          {{
+            (getStudentCourseById(group.studentCourse) | async)?.courseNumber
+          }}
+          &nbsp; курс,
+          {{ (getStudentGroupById(group.groupId) | async)?.number }} &nbsp;
+          Группа, Подгруппы:
+          <span *ngFor="let subgroupId of group.subgroupIds">
+            {{ (getSubgroupById(subgroupId) | async)?.name }}
+          </span>
+        </p>
+
+        <mat-divider></mat-divider>
+      </div>
+    </mat-list>
   </mat-card-content>
 
   <div mat-dialog-actions>
