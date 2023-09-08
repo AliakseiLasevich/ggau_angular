@@ -5,6 +5,9 @@
   <p>{{ data.lesson.type }}</p>
   <p>{{ data.lesson.orderNumber }}</p>
   <p>{{ data.lesson.teacher.name }}</p>
+  <p *ngFor="let subgroup of data.lesson.studentSubgroups">
+    {{ subgroup.publicId }} / {{ subgroup.name }}
+  </p>
 </div>
 
 <div mat-dialog-actions>

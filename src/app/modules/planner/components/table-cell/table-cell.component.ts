@@ -24,41 +24,70 @@ export class TableCellComponent {
 
   constructor(private store: Store) {}
 
+  /*
+Генерирует данные для кнопки, отвечающей за занятие по времени (order).Т.е, например, это 1 занятие (8:00 - 9:20). 
+Надо понять, свободен ли преподаватель в это время,в этот день(ячейка определяет день). Определить, все ли подгруппы 
+из фильтра свободны в это время в этот день. 
+Кейсы:
+1. В дне ячейки в указанном порядке(order) и преподаватель, и все подгруппы свободны. Кабинет при этом никем не занят:
+   кнопка окрашивается в зелёный если мест в кабинете хватает, жёлтым - если мест в кабинете не хватает. На кнопке отображается
+   разница, сколько лишних мест или сколько мест не хватает.
+2. В дне ячейки в указанном порядке(order) и преподаватель, и все подгруппы свободны. Кабинет при этом занят. 
+   Кнопка окрашивается в красный с символом X
+3. В дне ячейки в указанном порядке заняты либо преподаватель, либо одна из подгрупп студентов. Кнопка окрашивается в синий цвет.
+   Символ на кнопке означает, кто именно "занят" в это время в этом месте: С - хотя бы одна из подгрупп из фильтра, П - преподаватель
+   П/С - Выбранный преподаватель ведёт занятие хотя бы у одной из выбранных подгрупп в это время, в день этой ячейки, в выбранном кабинете
+4. В дней ячейки в указаном порядке хотя бы одна подгруппа из фильтра занята, либо занят преподаватель. В этом случае весь столбец,
+   отвечающий за указанное время(порядок) окрашивается в серый цвет, т.к. это время недоступно. При этом остаётся возможность
+   при нажатии на кнопку посмотреть, кем занят кабинет в это время.
+*/
   generateButtonDto(order: string): PlannerButtonDto {
     const cell = this.row[this.date];
 
-    const dayLessons = this.lessons
+    //Выбираем занятия на дату в ячейке, оставляем только нужное занятие по порядку (orderNumber)
+    const dayOrderLessons = this.lessons
       ?.filter((lesson: LessonResponseInterface) =>
         areDatesEqual(lesson.date, this.date)
       )
       .filter((lesson) => lesson.orderNumber === parseInt(order));
 
-    const isTeacherBooked = dayLessons?.some(
+    // Определяем, занят ли учитель хотя бы в одном из найденных занятий
+    const isTeacherBooked = dayOrderLessons?.some(
       (lesson) => lesson.teacher.publicId === this.filter?.selectedTeacher
     );
 
+    //Выбираем все подгруппы, которые уже заняты в дату ячейки
     const lessonSubgroupIds =
-      dayLessons
+      dayOrderLessons
         ?.flatMap((lesson) => lesson.studentSubgroups)
         .map((subgroup) => subgroup.publicId) || [];
 
+    // Выбираем все id подгрупп, которые выбраны в фильтре
     const filterSubgroupIds = this.filter!.dynamicGroups.flatMap(
       (group) => group.subgroupIds || []
     );
+
+    // Определяем количество студентов в подгруппах фильтра
     const filterStudentsCount =
       this.calculateStudentsInFilter(filterSubgroupIds);
 
+    // Определяем, заняты ли какие-либо из подгрупп фильтра в найденых занятиях (по дате и времени)
     const isOneOfSubgroupsBooked = anyCommonValue(
       lessonSubgroupIds,
       filterSubgroupIds
     );
 
+    // Определяем, хватает ли в кабинете мест для студентов всех подгрупп фильтра
     const isNotEnoughSittingPlaces =
       cell.cabinet.maxStudents < filterStudentsCount;
 
-    let cabinetBookedBySomeone = false;
+    //Кабинет забукан другим учителем
+    let cabinetBookedByOtherTeacher = false;
+
+    //
     let lessonOnButton = null;
     let isTeacherBookedForThisLesson = false;
+    let cabinetBookedByOneOfFilterSubgroups = false;
 
     if (cell.lessons) {
       let cellLesson = this.findLessonByOrderNumber(
@@ -68,16 +97,20 @@ export class TableCellComponent {
       if (cellLesson) {
         isTeacherBookedForThisLesson =
           cellLesson.teacher.publicId === this.filter!.selectedTeacher;
-        cabinetBookedBySomeone = !isTeacherBookedForThisLesson;
+        cabinetBookedByOtherTeacher = !isTeacherBookedForThisLesson;
+        cabinetBookedByOneOfFilterSubgroups = anyCommonValue(
+          cellLesson.studentSubgroups.map((subgroup) => subgroup.publicId),
+          filterSubgroupIds
+        );
         lessonOnButton = cellLesson;
       }
     }
 
     const logo = this.generateLessonButtonText(
-      isTeacherBooked,
-      isOneOfSubgroupsBooked,
-      cabinetBookedBySomeone,
-      cell.cabinet.maxStudents - filterStudentsCount
+      isTeacherBookedForThisLesson,
+      cabinetBookedByOtherTeacher,
+      cell.cabinet.maxStudents - filterStudentsCount,
+      cabinetBookedByOneOfFilterSubgroups
     );
 
     return {
@@ -86,7 +119,8 @@ export class TableCellComponent {
         isTeacherBooked,
         isOneOfSubgroupsBooked,
         isNotEnoughSittingPlaces,
-        cabinetBookedBySomeone
+        cabinetBookedByOtherTeacher,
+        cabinetBookedByOneOfFilterSubgroups
       ),
       logo: logo,
       description: 'some',
@@ -109,23 +143,32 @@ export class TableCellComponent {
   }
 
   generateLessonButtonText(
-    isTeacherBooked: boolean | undefined,
-    isOneOfSubgroupsBooked: boolean,
-    cabinetBookedBySomeone: boolean,
-    extraSits: number
+    isTeacherBookedForThisLesson: boolean | undefined,
+    cabinetBookedByOtherTeacher: boolean,
+    extraSits: number,
+    cabinetBookedByOneOfFilterSubgroups: boolean
   ): string {
-    if (isTeacherBooked && isOneOfSubgroupsBooked) {
+    //3 кейс. Если кабинет занят преподавателем из фильтра и хотя бы одной из подгрупп фильтра
+    if (isTeacherBookedForThisLesson && cabinetBookedByOneOfFilterSubgroups) {
       return 'П/С';
     }
-    if (isTeacherBooked) {
+
+    //3 кейс. Если кабинет занят преподавателем из фильтра
+    if (isTeacherBookedForThisLesson) {
       return 'П';
     }
-    if (isOneOfSubgroupsBooked) {
+
+    //3 кейс. Если кабинет занят одной из подгрупп из фильтра
+    if (cabinetBookedByOneOfFilterSubgroups) {
       return 'С';
     }
-    if (cabinetBookedBySomeone) {
+
+    //2 кейс, когда кабинет занят другим преподавателем. Студенты не проверяются, т.к. условие проверки по подгруппам есть выше
+    if (cabinetBookedByOtherTeacher) {
       return 'X';
     }
+
+    //1 кейс, когда кабинет никем не занят
     return '' + extraSits;
   }
 
@@ -134,14 +177,16 @@ export class TableCellComponent {
     isTeacherBooked: boolean | undefined,
     isOneOfSubgroupsBooked: boolean,
     isNotEnoughSittingPlaces: boolean,
-    cabinetBookedBySomeone: boolean
+    cabinetBookedBySomeone: boolean,
+    cabinetBookedByOneOfFilterSubgroups: boolean
   ) {
+    if (isTeacherBookedForThisLesson || cabinetBookedByOneOfFilterSubgroups) {
+      return 'primary';
+    }
     if (cabinetBookedBySomeone) {
       return 'warn';
     }
-    if (isTeacherBookedForThisLesson) {
-      return 'primary';
-    }
+
     if (isTeacherBooked || isOneOfSubgroupsBooked) {
       return 'grey';
     }
