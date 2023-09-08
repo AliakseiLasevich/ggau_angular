@@ -4,12 +4,15 @@ import { BackendErrorInterface } from 'src/app/shared/types/backendErrors.interf
 import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
 import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
-import { LessonResponseInterface } from '../interfaces/lesson.interface';
+import {
+  LessonRequestInterface,
+  LessonResponseInterface,
+} from '../interfaces/lesson.interface';
+import { PlannerFilterInterface } from '../interfaces/planner-filter.interfaces';
 import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
 import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import { ActionTypes } from './planner.actionTypes';
-import { PlannerFilterInterface } from '../interfaces/planner-filter.interfaces';
 
 // TEACHERS
 export const getTeachersAction = createAction(ActionTypes.GET_TEACHERS);
@@ -112,4 +115,19 @@ export const getBuildingsFailure = createAction(
 export const setFilterAction = createAction(
   ActionTypes.SET_FILTER,
   props<{ filter: PlannerFilterInterface }>()
+);
+
+//LESSONS
+export const createLessonAction = createAction(
+  ActionTypes.CREATE_LESSON,
+  props< LessonRequestInterface >()
+);
+
+export const createLessonSuccess = createAction(
+  ActionTypes.CREATE_LESSON_SUCCESS
+);
+
+export const createLessonFailure = createAction(
+  ActionTypes.CREATE_LESSON_FAILURE,
+  props<{ error: BackendErrorInterface }>()
 );

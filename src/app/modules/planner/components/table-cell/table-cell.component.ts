@@ -127,6 +127,8 @@ export class TableCellComponent {
       orderNumber: order,
       orderTime: LessonOrder[parseInt(order) as keyof typeof LessonOrder],
       lesson: lessonOnButton,
+      cabinetId: cell.cabinet.publicId,
+      date: cell.date,
     };
   }
 

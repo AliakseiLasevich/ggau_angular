@@ -4,7 +4,10 @@ import { Observable } from 'rxjs';
 import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
 import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
-import { LessonResponseInterface } from '../interfaces/lesson.interface';
+import {
+  LessonRequestInterface,
+  LessonResponseInterface,
+} from '../interfaces/lesson.interface';
 import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
 import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
@@ -57,5 +60,13 @@ export class PlannerService {
 
   getBuildings(): Observable<BuildingResponseInterface[]> {
     return this.http.get<BuildingResponseInterface[]>(this.url + 'buildings');
+  }
+
+  createLesson(request: LessonRequestInterface) {
+    console.log('from service');
+    return this.http.post<LessonRequestInterface>(
+      this.url + 'lessons',
+      request
+    );
   }
 }

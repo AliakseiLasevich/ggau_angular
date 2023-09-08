@@ -1,6 +1,5 @@
 import { CabinetResponseInterface } from './cabinet.interfaces';
 import { DisciplineResponseInterface } from './disciplines.interfaces';
-import { StudentCourseResponseInterface } from './studentCourse.interfaces';
 import { StudentSubgroupResponseInterface } from './studentSubgroup.interfaces';
 import { TeacherResponseInterface } from './teachers.interfaces';
 
@@ -13,4 +12,14 @@ export interface LessonResponseInterface {
   teacher: TeacherResponseInterface;
   cabinet: CabinetResponseInterface;
   studentSubgroups: StudentSubgroupResponseInterface[];
+}
+
+export interface LessonRequestInterface {
+  cabinetId: string;
+  date: string;
+  lessonType: string;
+  disciplineId: string;
+  orderNumber: number;
+  teacherId: string;
+  studentSubgroupIds: string[];
 }

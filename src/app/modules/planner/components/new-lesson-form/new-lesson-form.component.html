@@ -7,39 +7,56 @@
     <mat-card-subtitle>{{ data.orderTime }}</mat-card-subtitle>
   </mat-card-header>
 
-  <mat-card-content>
-    <mat-list>
-      <div mat-subheader>{{ (teacher$ | async)?.name }}</div>
-      <div mat-subheader>{{ (discipline$ | async)?.name }}</div>
-      <div mat-subheader>{{ selectedFilter?.selectedLessonType }}</div>
-      <mat-divider></mat-divider>
-
-      <div *ngFor="let group of selectedFilter?.dynamicGroups">
-        <p matListItemTitle>
-          <mat-icon matListItemIcon>person</mat-icon>
-          {{ (getFacultyById(group.facultyId) | async)?.name }} &nbsp; /
-          {{ (getSpecialtyById(group.specialtyId) | async)?.name }} &nbsp;
-        </p>
-
-        <p>
-          {{
-            (getStudentCourseById(group.studentCourse) | async)?.courseNumber
-          }}
-          &nbsp; курс,
-          {{ (getStudentGroupById(group.groupId) | async)?.number }} &nbsp;
-          Группа, Подгруппы:
-          <span *ngFor="let subgroupId of group.subgroupIds">
-            {{ (getSubgroupById(subgroupId) | async)?.name }}
-          </span>
-        </p>
-
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-card-content>
+      <mat-list>
+        <div mat-subheader>{{ (teacher$ | async)?.name }}</div>
+        <div mat-subheader>{{ (discipline$ | async)?.name }}</div>
+        <div mat-subheader>{{ selectedFilter?.selectedLessonType }}</div>
         <mat-divider></mat-divider>
-      </div>
-    </mat-list>
-  </mat-card-content>
 
-  <div mat-dialog-actions>
-    <button mat-raised-button mat-dialog-close color="warn">Сохранить</button>
-    <button mat-raised-button mat-dialog-close color="primary">Отмена</button>
-  </div>
+        <div *ngFor="let group of selectedFilter?.dynamicGroups">
+          <p matListItemTitle>
+            <mat-icon matListItemIcon>person</mat-icon>
+            {{ (getFacultyById(group.facultyId) | async)?.name }} &nbsp; /
+            {{ (getSpecialtyById(group.specialtyId) | async)?.name }} &nbsp;
+          </p>
+
+          <p>
+            {{
+              (getStudentCourseById(group.studentCourse) | async)?.courseNumber
+            }}
+            &nbsp; курс,
+            {{ (getStudentGroupById(group.groupId) | async)?.number }} &nbsp;
+            Группа, Подгруппы:
+            <span *ngFor="let subgroupId of group.subgroupIds">
+              {{ (getSubgroupById(subgroupId) | async)?.name }}
+            </span>
+          </p>
+
+          <mat-divider></mat-divider>
+        </div>
+      </mat-list>
+
+      <mat-form-field>
+        <input
+          matInput
+          type="text"
+          formControlName="note"
+          class="form-control"
+          placeholder="Заметка"
+          autocomplete="new-password"
+        />
+      </mat-form-field>
+
+      <div mat-dialog-actions>
+        <button mat-raised-button mat-dialog-close color="warn" type="submit">
+          Сохранить
+        </button>
+        <button mat-raised-button mat-dialog-close color="primary">
+          Отмена
+        </button>
+      </div>
+    </mat-card-content>
+  </form>
 </mat-card>

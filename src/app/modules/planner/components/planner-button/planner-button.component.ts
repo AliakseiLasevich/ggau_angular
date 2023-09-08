@@ -1,7 +1,7 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { LessonInfoComponent } from '../lesson-info/lesson-info.component';
 import { LessonResponseInterface } from '../../interfaces/lesson.interface';
+import { LessonInfoComponent } from '../lesson-info/lesson-info.component';
 import { NewLessonFormComponent } from '../new-lesson-form/new-lesson-form.component';
 
 @Component({
@@ -26,6 +26,8 @@ export class PlannerButtonComponent {
       data: {
         orderNumber: this.dto.orderNumber,
         orderTime: this.dto.orderTime,
+        cabinetId: this.dto.cabinetId,
+        date: this.dto.date,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -47,4 +49,6 @@ export interface PlannerButtonDto {
   orderNumber: string;
   orderTime: string;
   lesson: LessonResponseInterface | null;
+  cabinetId: string;
+  date: string;
 }

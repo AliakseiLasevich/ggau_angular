@@ -28,4 +28,8 @@ export enum ActionTypes {
   GET_BUILDINGS_FAILURE = '[GET_BUILDINGS_API] Get buildings failure',
 
   SET_FILTER = '[PLANNER_FILTER] Set filter to state',
+
+  CREATE_LESSON = '[CREATE_LESSON] Create lesson',
+  CREATE_LESSON_SUCCESS = '[CREATE_LESSON_API] Create lesson success',
+  CREATE_LESSON_FAILURE = '[CREATE_LESSON_API] Create lesson failure',
 }
