@@ -5,10 +5,7 @@ import { catchError, exhaustMap, map, of, switchMap } from 'rxjs';
 import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
 import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
-import {
-  LessonRequestInterface,
-  LessonResponseInterface,
-} from '../interfaces/lesson.interface';
+import { LessonResponseInterface } from '../interfaces/lesson.interface';
 import { PlannerFilterInterface } from '../interfaces/planner-filter.interfaces';
 import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
 import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
@@ -16,15 +13,20 @@ import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import { PlannerService } from '../services/planner.service';
 import { ActionTypes } from './planner.actionTypes';
 import {
+  createLessonFailure,
   createLessonSuccess,
+  getBuildingsFailure,
   getBuildingsSuccess,
+  getCoursesFailure,
   getCoursesSuccess,
   getDisciplinesFailure,
   getDisciplinesSuccess,
+  getFacutiesFailure,
   getFacutiesSuccess,
   getLessonsAction,
   getLessonsFailure,
   getLessonsSuccess,
+  getSpecialtiesFailure,
   getSpecialtiesSuccess,
   getTeachersActionFailure,
   getTeachersActionSuccess,
@@ -83,7 +85,7 @@ export class PlannerEffects {
             getFacutiesSuccess({ faculties: response })
           ),
           catchError((error) => {
-            return of(getDisciplinesFailure(error.message));
+            return of(getFacutiesFailure(error.message));
           })
         );
       })
@@ -99,7 +101,7 @@ export class PlannerEffects {
             getSpecialtiesSuccess({ specialties: response })
           ),
           catchError((error) => {
-            return of(getDisciplinesFailure(error.message));
+            return of(getSpecialtiesFailure(error.message));
           })
         );
       })
@@ -115,7 +117,7 @@ export class PlannerEffects {
             getCoursesSuccess({ courses: response })
           ),
           catchError((error) => {
-            return of(getDisciplinesFailure(error.message));
+            return of(getCoursesFailure(error.message));
           })
         );
       })
@@ -147,7 +149,7 @@ export class PlannerEffects {
             getBuildingsSuccess({ buildings: response })
           ),
           catchError((error) => {
-            return of(getLessonsFailure(error.message));
+            return of(getBuildingsFailure(error.message));
           })
         );
       })
@@ -184,11 +186,11 @@ export class PlannerEffects {
   createLesson$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ActionTypes.CREATE_LESSON),
-      switchMap((request: LessonRequestInterface) => {
-        return this.plannerService.createLesson(request).pipe(
-          map((response) => createLessonSuccess()),
+      switchMap(({ lessonRequest }) => {
+        return this.plannerService.createLesson(lessonRequest).pipe(
+          map((response) => createLessonSuccess({ lessonResponse: response })),
           catchError((error) => {
-            return of(getLessonsFailure(error.message));
+            return of(createLessonFailure(error.message));
           })
         );
       })

@@ -9,6 +9,9 @@ import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
 import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import {
+  createLessonAction,
+  createLessonFailure,
+  createLessonSuccess,
   getBuildingsAction,
   getBuildingsFailure,
   getBuildingsSuccess,
@@ -195,5 +198,20 @@ export const plannerReducer = createReducer(
     ...state,
     isLoading: false,
     filter: payload.filter,
+  })),
+
+  on(createLessonAction, (state, payload) => ({
+    ...state,
+    isLoading: true,
+  })),
+  on(createLessonSuccess, (state, { lessonResponse }) => ({
+    ...state,
+    isLoading: false,
+    lessons: [...state.lessons, lessonResponse], // Add the new lesson to the lessons array
+  })),
+  on(createLessonFailure, (state, payload) => ({
+    ...state,
+    isLoading: false,
+    error: payload.error,
   }))
 );

@@ -120,11 +120,12 @@ export const setFilterAction = createAction(
 //LESSONS
 export const createLessonAction = createAction(
   ActionTypes.CREATE_LESSON,
-  props< LessonRequestInterface >()
+  props<{ lessonRequest: LessonRequestInterface }>()
 );
 
 export const createLessonSuccess = createAction(
-  ActionTypes.CREATE_LESSON_SUCCESS
+  ActionTypes.CREATE_LESSON_SUCCESS,
+  props<{ lessonResponse: LessonResponseInterface }>()
 );
 
 export const createLessonFailure = createAction(

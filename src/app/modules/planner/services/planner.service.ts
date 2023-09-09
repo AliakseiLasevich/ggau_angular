@@ -62,9 +62,10 @@ export class PlannerService {
     return this.http.get<BuildingResponseInterface[]>(this.url + 'buildings');
   }
 
-  createLesson(request: LessonRequestInterface) {
-    console.log('from service');
-    return this.http.post<LessonRequestInterface>(
+  createLesson(
+    request: LessonRequestInterface
+  ): Observable<LessonResponseInterface> {
+    return this.http.post<LessonResponseInterface>(
       this.url + 'lessons',
       request
     );

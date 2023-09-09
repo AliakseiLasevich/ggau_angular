@@ -149,7 +149,6 @@ export class NewLessonFormComponent implements OnInit, OnDestroy {
     };
 
     //TODO add note
-    console.log(lesson);
-    this.store.dispatch(createLessonAction(lesson));
+    this.store.dispatch(createLessonAction({ lessonRequest: lesson }));
   }
 }
