@@ -146,6 +146,7 @@ export class NewLessonFormComponent implements OnInit, OnDestroy {
       studentSubgroupIds: this.selectedFilter!.dynamicGroups.flatMap(
         (groups) => groups.subgroupIds
       ),
+      note: this.form.value?.note
     };
 
     //TODO add note

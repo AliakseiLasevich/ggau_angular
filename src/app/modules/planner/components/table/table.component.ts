@@ -112,6 +112,18 @@ export class TableComponent implements OnInit, OnChanges {
     this.dateRange = range;
     return range;
   }
+  colorCellByType(type: string) {
+    switch (type) {
+      case 'PRACTICAL':
+        return 'beige-bg';
+      case 'LECTURE':
+        return 'light-green-bg';
+      case 'LABORATORY':
+        return 'light-blue-bg';
+      default:
+        return 'white';
+    }
+  }
 
   studentsSummary: number;
 }

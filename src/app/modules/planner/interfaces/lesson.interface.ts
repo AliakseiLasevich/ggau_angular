@@ -12,6 +12,7 @@ export interface LessonResponseInterface {
   teacher: TeacherResponseInterface;
   cabinet: CabinetResponseInterface;
   studentSubgroups: StudentSubgroupResponseInterface[];
+  note: string | null;
 }
 
 export interface LessonRequestInterface {
@@ -22,4 +23,5 @@ export interface LessonRequestInterface {
   orderNumber: number;
   teacherId: string;
   studentSubgroupIds: string[];
+  note: string | null;
 }
