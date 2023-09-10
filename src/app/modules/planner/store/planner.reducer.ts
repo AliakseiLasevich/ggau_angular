@@ -210,8 +210,8 @@ export const plannerReducer = createReducer(
     lessons: [...state.lessons, lessonResponse], // Add the new lesson to the lessons array
   })),
   on(createLessonFailure, (state, payload) => ({
-    ...state,
-    isLoading: false,
-    error: payload.error,
-  }))
+      ...state,
+      isLoading: false,
+      error: payload.error,
+    }))
 );

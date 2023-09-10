@@ -16,7 +16,6 @@ import { selectErrors } from '../../store/auth.selectors';
 export class LoginComponent implements OnInit {
   form: FormGroup;
   alphaNumericPattern = /^[a-zA-Z0-9]*$/;
-  backendError$: Observable<BackendErrorInterface | null>;
 
   constructor(
     private formBuilder: FormBuilder,

@@ -53,7 +53,7 @@ export class PlannerComponent implements OnInit {
 
     this.store.pipe(select(selectPlannerError)).subscribe((error) => {
       if (error) {
-        this._snackBar.open(error.message, 'OK', { duration: 3 * 1000 });
+        this._snackBar.open(error.message, 'OK', { duration: 5 * 1000 });
       }
     });
   }

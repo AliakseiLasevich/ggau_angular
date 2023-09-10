@@ -53,7 +53,7 @@ export class PlannerEffects {
             getTeachersActionSuccess({ teachers: response })
           ),
           catchError((error) => {
-            return of(getTeachersActionFailure(error.message));
+            return of(getTeachersActionFailure(error));
           })
         );
       })
@@ -69,7 +69,7 @@ export class PlannerEffects {
             getDisciplinesSuccess({ disciplines: response })
           ),
           catchError((error) => {
-            return of(getDisciplinesFailure(error.message));
+            return of(getDisciplinesFailure(error));
           })
         );
       })
@@ -85,7 +85,7 @@ export class PlannerEffects {
             getFacutiesSuccess({ faculties: response })
           ),
           catchError((error) => {
-            return of(getFacutiesFailure(error.message));
+            return of(getFacutiesFailure(error));
           })
         );
       })
@@ -101,7 +101,7 @@ export class PlannerEffects {
             getSpecialtiesSuccess({ specialties: response })
           ),
           catchError((error) => {
-            return of(getSpecialtiesFailure(error.message));
+            return of(getSpecialtiesFailure(error));
           })
         );
       })
@@ -117,7 +117,7 @@ export class PlannerEffects {
             getCoursesSuccess({ courses: response })
           ),
           catchError((error) => {
-            return of(getCoursesFailure(error.message));
+            return of(getCoursesFailure(error));
           })
         );
       })
@@ -133,7 +133,7 @@ export class PlannerEffects {
             getLessonsSuccess({ lessons: response })
           ),
           catchError((error) => {
-            return of(getLessonsFailure(error.message));
+            return of(getLessonsFailure(error));
           })
         );
       })
@@ -149,7 +149,7 @@ export class PlannerEffects {
             getBuildingsSuccess({ buildings: response })
           ),
           catchError((error) => {
-            return of(getBuildingsFailure(error.message));
+            return of(getBuildingsFailure(error));
           })
         );
       })
@@ -190,7 +190,7 @@ export class PlannerEffects {
         return this.plannerService.createLesson(lessonRequest).pipe(
           map((response) => createLessonSuccess({ lessonResponse: response })),
           catchError((error) => {
-            return of(createLessonFailure(error.message));
+            return of(createLessonFailure(error));
           })
         );
       })
