@@ -4,11 +4,12 @@
     class="small-button"
     [color]="dto.color"
     (click)="openDialogWindow()"
+    [disabled]="dto.color === 'grey'"
     #tooltip="matTooltip"
-          [matTooltip]="dto.orderTime"
-          matTooltipPosition='above'
-          matTooltipHideDelay="0"
+    [matTooltip]="dto.orderTime"
+    matTooltipPosition="above"
+    matTooltipHideDelay="0"
   >
-    {{dto.logo}}
+    {{ dto.logo }}
   </button>
 </div>
