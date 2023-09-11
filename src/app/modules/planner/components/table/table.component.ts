@@ -11,13 +11,13 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { areDatesEqual } from 'src/app/shared/utils';
-import { BuildingResponseInterface } from '../../interfaces/buildings.interfaces';
-import { CabinetResponseInterface } from '../../interfaces/cabinet.interfaces';
 import { LessonResponseInterface } from '../../interfaces/lesson.interface';
 import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
-import { StudentCourseResponseInterface } from '../../interfaces/studentCourse.interfaces';
 import { PlannerState } from '../../store/planner.reducer';
-import { selectStudentCourses } from '../../store/planner.selectors';
+import { CabinetResponseInterface } from 'src/app/shared/interfaces/cabinet.interfaces';
+import { BuildingResponseInterface } from 'src/app/shared/interfaces/buildings.interfaces';
+import { StudentCourseResponseInterface } from 'src/app/shared/interfaces/studentCourse.interfaces';
+import { selectStudentCourses } from 'src/app/shared/shared-store/shared-store.selectors';
 
 export interface PlannerRowDto {
   date: string;

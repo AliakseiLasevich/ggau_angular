@@ -4,9 +4,9 @@ import { LessonOrder } from 'src/app/shared/enums/lesson-order.enum';
 import { anyCommonValue, areDatesEqual } from 'src/app/shared/utils';
 import { LessonResponseInterface } from '../../interfaces/lesson.interface';
 import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
-import { StudentCourseResponseInterface } from '../../interfaces/studentCourse.interfaces';
 import { PlannerButtonDto } from '../planner-button/planner-button.component';
 import { PlannerRowDto } from '../table/table.component';
+import { StudentCourseResponseInterface } from 'src/app/shared/interfaces/studentCourse.interfaces';
 
 @Component({
   selector: 'app-table-cell',

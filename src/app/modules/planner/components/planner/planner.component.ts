@@ -2,29 +2,22 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { BuildingResponseInterface } from '../../interfaces/buildings.interfaces';
-import { DisciplineResponseInterface } from '../../interfaces/disciplines.interfaces';
-import { FacultyResponseInterface } from '../../interfaces/faculties.interfaces';
 import { LessonResponseInterface } from '../../interfaces/lesson.interface';
 import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
-import { SpecialtyResponseInterface } from '../../interfaces/specialty.interfaces';
-import { TeacherResponseInterface } from '../../interfaces/teachers.interfaces';
-import {
-  getBuildingsAction,
-  getDisciplinesAction,
-  getFacultiesAction,
-  getTeachersAction,
-} from '../../store/planner.actions';
+
 import { PlannerState } from '../../store/planner.reducer';
 import {
-  selectAllBuildings,
-  selectDisciplines,
-  selectFaculties,
   selectFilter,
   selectLessons,
   selectPlannerError,
-  selectTeachers
 } from '../../store/planner.selectors';
+import { TeacherResponseInterface } from 'src/app/shared/interfaces/teachers.interfaces';
+import { DisciplineResponseInterface } from 'src/app/shared/interfaces/disciplines.interfaces';
+import { FacultyResponseInterface } from 'src/app/shared/interfaces/faculties.interfaces';
+import { SpecialtyResponseInterface } from 'src/app/shared/interfaces/specialty.interfaces';
+import { BuildingResponseInterface } from 'src/app/shared/interfaces/buildings.interfaces';
+import { getBuildingsAction, getDisciplinesAction, getFacultiesAction, getTeachersAction } from 'src/app/shared/shared-store/shared-store.actions';
+import { selectAllBuildings, selectDisciplines, selectFaculties, selectTeachers } from 'src/app/shared/shared-store/shared-store.selectors';
 
 @Component({
   selector: 'app-planner',

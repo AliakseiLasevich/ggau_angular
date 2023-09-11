@@ -1,7 +1,8 @@
-import { CabinetResponseInterface } from './cabinet.interfaces';
-import { DisciplineResponseInterface } from './disciplines.interfaces';
-import { StudentSubgroupResponseInterface } from './studentSubgroup.interfaces';
-import { TeacherResponseInterface } from './teachers.interfaces';
+import { CabinetResponseInterface } from "src/app/shared/interfaces/cabinet.interfaces";
+import { DisciplineResponseInterface } from "src/app/shared/interfaces/disciplines.interfaces";
+import { StudentSubgroupResponseInterface } from "src/app/shared/interfaces/studentSubgroup.interfaces";
+import { TeacherResponseInterface } from "src/app/shared/interfaces/teachers.interfaces";
+
 
 export interface LessonResponseInterface {
   publicId: string;

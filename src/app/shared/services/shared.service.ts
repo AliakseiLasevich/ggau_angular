@@ -1,20 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {
-  LessonRequestInterface,
-  LessonResponseInterface,
-} from '../interfaces/lesson.interface';
-import { TeacherResponseInterface } from 'src/app/shared/interfaces/teachers.interfaces';
-import { DisciplineResponseInterface } from 'src/app/shared/interfaces/disciplines.interfaces';
-import { FacultyResponseInterface } from 'src/app/shared/interfaces/faculties.interfaces';
-import { SpecialtyResponseInterface } from 'src/app/shared/interfaces/specialty.interfaces';
-import { StudentCourseResponseInterface } from 'src/app/shared/interfaces/studentCourse.interfaces';
-import { BuildingResponseInterface } from 'src/app/shared/interfaces/buildings.interfaces';
-
+import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
+import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
+import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
+import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
+import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
+import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 
 @Injectable()
-export class PlannerService {
+export class SharedService {
   //TODO move to environment
   url = 'http://localhost:8080/rest/';
 
@@ -50,25 +45,7 @@ export class PlannerService {
     );
   }
 
-  getLessonsByDateRange(
-    from: Date,
-    to: Date
-  ): Observable<LessonResponseInterface[]> {
-    return this.http.get<LessonResponseInterface[]>(this.url + 'lessons', {
-      params: { dateFrom: from?.toString(), dateTo: to?.toString() },
-    });
-  }
-
   getBuildings(): Observable<BuildingResponseInterface[]> {
     return this.http.get<BuildingResponseInterface[]>(this.url + 'buildings');
-  }
-
-  createLesson(
-    request: LessonRequestInterface
-  ): Observable<LessonResponseInterface> {
-    return this.http.post<LessonResponseInterface>(
-      this.url + 'lessons',
-      request
-    );
   }
 }

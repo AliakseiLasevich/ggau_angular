@@ -4,26 +4,19 @@ import { MatSelectChange } from '@angular/material/select';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { LessonTypes } from '../../../../shared/enums/lesson-types.enum';
-import { DisciplineResponseInterface } from '../../interfaces/disciplines.interfaces';
-import { FacultyResponseInterface } from '../../interfaces/faculties.interfaces';
-import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
-import { StudentCourseResponseInterface } from '../../interfaces/studentCourse.interfaces';
-import { StudentGroupResponseInterface } from '../../interfaces/studentGroup.interfaces';
-import { StudentSubgroupResponseInterface } from '../../interfaces/studentSubgroup.interfaces';
-import { TeacherResponseInterface } from '../../interfaces/teachers.interfaces';
-import {
-  getCoursesAction,
-  getSpecialtiesAction,
-  setFilterAction,
-} from '../../store/planner.actions';
 import { PlannerState } from '../../store/planner.reducer';
-import {
-  selectIsLoading,
-  selectSpecialtiesByFaculty,
-  selectStudentCourseBySpecialty,
-  selectStudentGroupByCourse,
-  selectStudentSubgroupByGroup,
-} from '../../store/planner.selectors';
+import { TeacherResponseInterface } from 'src/app/shared/interfaces/teachers.interfaces';
+import { DisciplineResponseInterface } from 'src/app/shared/interfaces/disciplines.interfaces';
+import { FacultyResponseInterface } from 'src/app/shared/interfaces/faculties.interfaces';
+import { selectIsLoading } from '../../store/planner.selectors';
+import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
+import { setFilterAction } from '../../store/planner.actions';
+import { getCoursesAction, getSpecialtiesAction } from 'src/app/shared/shared-store/shared-store.actions';
+import { selectSpecialtiesByFaculty, selectStudentCourseBySpecialty, selectStudentGroupByCourse, selectStudentSubgroupByGroup } from 'src/app/shared/shared-store/shared-store.selectors';
+import { StudentCourseResponseInterface } from 'src/app/shared/interfaces/studentCourse.interfaces';
+import { StudentGroupResponseInterface } from 'src/app/shared/interfaces/studentGroup.interfaces';
+import { StudentSubgroupResponseInterface } from 'src/app/shared/interfaces/studentSubgroup.interfaces';
+
 
 @Component({
   selector: 'app-filter',

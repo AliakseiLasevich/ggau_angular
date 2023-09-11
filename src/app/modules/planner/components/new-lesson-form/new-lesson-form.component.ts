@@ -4,27 +4,23 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { DisciplineResponseInterface } from '../../interfaces/disciplines.interfaces';
-import { FacultyResponseInterface } from '../../interfaces/faculties.interfaces';
 import { LessonRequestInterface } from '../../interfaces/lesson.interface';
 import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
-import { SpecialtyResponseInterface } from '../../interfaces/specialty.interfaces';
-import { StudentCourseResponseInterface } from '../../interfaces/studentCourse.interfaces';
-import { StudentGroupResponseInterface } from '../../interfaces/studentGroup.interfaces';
-import { StudentSubgroupResponseInterface } from '../../interfaces/studentSubgroup.interfaces';
-import { TeacherResponseInterface } from '../../interfaces/teachers.interfaces';
+
 import { createLessonAction } from '../../store/planner.actions';
 import { PlannerState } from '../../store/planner.reducer';
 import {
-  selectDisciplineById,
-  selectFacultyById,
+
   selectFilter,
-  selectSpecialtyById,
-  selectStudentCourseById,
-  selectStudentGroupById,
-  selectStudentSubgroupById,
-  selectTeacherById,
 } from '../../store/planner.selectors';
+import { DisciplineResponseInterface } from 'src/app/shared/interfaces/disciplines.interfaces';
+import { TeacherResponseInterface } from 'src/app/shared/interfaces/teachers.interfaces';
+import { FacultyResponseInterface } from 'src/app/shared/interfaces/faculties.interfaces';
+import { selectDisciplineById, selectFacultyById, selectSpecialtyById, selectStudentCourseById, selectStudentGroupById, selectStudentSubgroupById, selectTeacherById } from 'src/app/shared/shared-store/shared-store.selectors';
+import { SpecialtyResponseInterface } from 'src/app/shared/interfaces/specialty.interfaces';
+import { StudentCourseResponseInterface } from 'src/app/shared/interfaces/studentCourse.interfaces';
+import { StudentGroupResponseInterface } from 'src/app/shared/interfaces/studentGroup.interfaces';
+import { StudentSubgroupResponseInterface } from 'src/app/shared/interfaces/studentSubgroup.interfaces';
 
 @Component({
   selector: 'app-new-lesson-form',
