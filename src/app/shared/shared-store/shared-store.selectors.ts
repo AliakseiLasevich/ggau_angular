@@ -3,7 +3,7 @@ import { SharedState } from './shared-store.reducer';
 
 const selectSharedState = createFeatureSelector<SharedState>('shared');
 
-export const selectIsLoading = createSelector(
+export const selectIsSharedLoading = createSelector(
   selectSharedState,
   (state: SharedState) => state.isLoading
 );

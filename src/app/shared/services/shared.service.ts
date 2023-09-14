@@ -1,11 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
-import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
-import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
-import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
+import {
+  BuildingRequestInterface,
+  BuildingResponseInterface,
+} from '../interfaces/buildings.interfaces';
 import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
+import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
+import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
+import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 
 @Injectable()
@@ -47,5 +50,23 @@ export class SharedService {
 
   getBuildings(): Observable<BuildingResponseInterface[]> {
     return this.http.get<BuildingResponseInterface[]>(this.url + 'buildings');
+  }
+
+  createBuilding(
+    data: BuildingRequestInterface
+  ): Observable<BuildingResponseInterface> {
+    return this.http.post<BuildingResponseInterface>(
+      this.url + 'buildings',
+      data
+    );
+  }
+
+  updateBuilding(
+    data: BuildingRequestInterface
+  ): Observable<BuildingResponseInterface> {
+    return this.http.put<BuildingResponseInterface>(
+      this.url + 'buildings/' + data.publicId,
+      data
+    );
   }
 }

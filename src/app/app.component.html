@@ -4,7 +4,13 @@
 />
 
 <div class="mat-app-background">
+  <ng-template [ngIf]="isLoading$ | async">
+    <div class="spinner-container global-spinner-overlay">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>
   <mat-grid-list cols="1">
+    <app-header *ngIf="loggedIn$ | async"></app-header>
     <router-outlet></router-outlet>
   </mat-grid-list>
 </div>

@@ -7,6 +7,9 @@ import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
 import { StudentCourseResponseInterface } from '../interfaces/studentCourse.interfaces';
 import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import {
+  createBuildingAction,
+  createBuildingFailure,
+  createBuildingSuccess,
   getBuildingsAction,
   getBuildingsFailure,
   getBuildingsSuccess,
@@ -25,6 +28,9 @@ import {
   getTeachersAction,
   getTeachersActionFailure,
   getTeachersActionSuccess,
+  updateBuildingAction,
+  updateBuildingFailure,
+  updateBuildingSuccess,
 } from './shared-store.actions';
 export interface SharedState {
   isLoading: boolean;
@@ -162,6 +168,49 @@ export const sharedReducer = createReducer(
     };
   }),
   on(getBuildingsFailure, (state, payload) => ({
+    ...state,
+    isLoading: false,
+    error: payload.error,
+  })),
+
+  on(createBuildingAction, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
+  on(createBuildingSuccess, (state, { response }) => {
+    return {
+      ...state,
+      buildings: [...state.buildings, response],
+      isLoading: false,
+    };
+  }),
+  on(createBuildingFailure, (state, payload) => ({
+    ...state,
+    isLoading: false,
+    error: payload.error,
+  })),
+
+  on(updateBuildingAction, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
+  on(updateBuildingSuccess, (state, { response }) => {
+    const updatedBuildings = state.buildings.map((building) => {
+      if (building.publicId === response.publicId) {
+        return response; // Replace with the new response
+      }
+      return building;
+    });
+
+    return {
+      ...state,
+      buildings: updatedBuildings,
+      isLoading: false,
+    };
+  }),
+  on(updateBuildingFailure, (state, payload) => ({
     ...state,
     isLoading: false,
     error: payload.error,

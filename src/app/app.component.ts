@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { loginSuccess } from './modules/auth/store/auth.actions';
 import { selectIsLoggedIn } from './modules/auth/store/auth.selectors';
+import { selectIsSharedLoading } from './shared/shared-store/shared-store.selectors';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,7 @@ import { selectIsLoggedIn } from './modules/auth/store/auth.selectors';
 })
 export class AppComponent implements OnInit {
   loggedIn$: Observable<boolean>;
+  isLoading$: Observable<boolean>;
 
   constructor(private router: Router, private store: Store) {}
 
@@ -27,7 +29,9 @@ export class AppComponent implements OnInit {
   }
 
   initializeListeners() {
+    console.log(this.store);
     this.loggedIn$ = this.store.select(selectIsLoggedIn);
+    this.isLoading$ = this.store.select(selectIsSharedLoading);
   }
 
   private getStoredToken() {

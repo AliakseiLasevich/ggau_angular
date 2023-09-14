@@ -11,6 +11,8 @@ import { TeacherResponseInterface } from '../interfaces/teachers.interfaces';
 import { SharedService } from '../services/shared.service';
 import { ActionTypes } from './shared-store.actionTypes';
 import {
+  createBuildingFailure,
+  createBuildingSuccess,
   getBuildingsFailure,
   getBuildingsSuccess,
   getCoursesFailure,
@@ -22,7 +24,9 @@ import {
   getSpecialtiesFailure,
   getSpecialtiesSuccess,
   getTeachersActionFailure,
-  getTeachersActionSuccess
+  getTeachersActionSuccess,
+  updateBuildingFailure,
+  updateBuildingSuccess,
 } from './shared-store.actions';
 
 // mergeMap - при удалении
@@ -148,4 +152,40 @@ export class SharedEffects {
     );
     return utcDate.toISOString().split('T')[0];
   }
+
+  createBuilding$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ActionTypes.CREATE_BUILDING),
+      switchMap(({ building }) => {
+        return this.sharedService.createBuilding(building).pipe(
+          map((response: BuildingResponseInterface) =>
+            createBuildingSuccess({
+              response,
+            })
+          ),
+          catchError((error) => {
+            return of(createBuildingFailure(error));
+          })
+        );
+      })
+    )
+  );
+
+  updateBuilding$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ActionTypes.UPDATE_BUILDING),
+      switchMap(({ building }) => {
+        return this.sharedService.updateBuilding(building).pipe(
+          map((response: BuildingResponseInterface) =>
+            updateBuildingSuccess({
+              response,
+            })
+          ),
+          catchError((error) => {
+            return of(updateBuildingFailure(error));
+          })
+        );
+      })
+    )
+  );
 }

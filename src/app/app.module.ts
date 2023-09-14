@@ -13,7 +13,10 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AuthInterceptor } from './modules/auth/services/auth.interceptor';
 import { AuthEffects } from './modules/auth/store/auth.effect';
 import { authReducer } from './modules/auth/store/auth.reducer';
+import { HeaderModule } from './modules/header/header.module';
+import { MaintenanceModule } from './modules/maintenance/maintenance.module';
 import { PlannerModule } from './modules/planner/planner.module';
+import { sharedReducer } from './shared/shared-store/shared-store.reducer';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
@@ -22,12 +25,14 @@ import { SharedModule } from './shared/shared.module';
     AuthModule,
     BrowserModule,
     AppRoutingModule,
+    HeaderModule,
     BrowserAnimationsModule,
     EffectsModule.forRoot([AuthEffects]),
     HttpClientModule,
     PlannerModule,
     SharedModule,
-    StoreModule.forRoot({ auth: authReducer }),
+    MaintenanceModule,
+    StoreModule.forRoot({ auth: authReducer, shared: sharedReducer }),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       // logOnly: environment.production,

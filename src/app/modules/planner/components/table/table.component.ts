@@ -77,7 +77,7 @@ export class TableComponent implements OnInit, OnChanges {
     building: BuildingResponseInterface,
     result: (BuildingResponseInterface | Record<string, PlannerRowDto>)[]
   ): void {
-    building.cabinets.forEach((cabinet) => {
+    building.cabinets?.forEach((cabinet) => {
       const row: { [key: string]: PlannerRowDto } = {};
 
       this.dateRange.forEach((date) => {

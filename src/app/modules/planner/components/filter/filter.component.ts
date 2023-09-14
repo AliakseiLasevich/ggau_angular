@@ -3,20 +3,26 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { LessonTypes } from '../../../../shared/enums/lesson-types.enum';
-import { PlannerState } from '../../store/planner.reducer';
-import { TeacherResponseInterface } from 'src/app/shared/interfaces/teachers.interfaces';
 import { DisciplineResponseInterface } from 'src/app/shared/interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from 'src/app/shared/interfaces/faculties.interfaces';
-import { selectIsLoading } from '../../store/planner.selectors';
-import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
-import { setFilterAction } from '../../store/planner.actions';
-import { getCoursesAction, getSpecialtiesAction } from 'src/app/shared/shared-store/shared-store.actions';
-import { selectSpecialtiesByFaculty, selectStudentCourseBySpecialty, selectStudentGroupByCourse, selectStudentSubgroupByGroup } from 'src/app/shared/shared-store/shared-store.selectors';
 import { StudentCourseResponseInterface } from 'src/app/shared/interfaces/studentCourse.interfaces';
 import { StudentGroupResponseInterface } from 'src/app/shared/interfaces/studentGroup.interfaces';
 import { StudentSubgroupResponseInterface } from 'src/app/shared/interfaces/studentSubgroup.interfaces';
-
+import { TeacherResponseInterface } from 'src/app/shared/interfaces/teachers.interfaces';
+import {
+  getCoursesAction,
+  getSpecialtiesAction,
+} from 'src/app/shared/shared-store/shared-store.actions';
+import {
+  selectSpecialtiesByFaculty,
+  selectStudentCourseBySpecialty,
+  selectStudentGroupByCourse,
+  selectStudentSubgroupByGroup,
+} from 'src/app/shared/shared-store/shared-store.selectors';
+import { LessonTypes } from '../../../../shared/enums/lesson-types.enum';
+import { PlannerFilterInterface } from '../../interfaces/planner-filter.interfaces';
+import { setFilterAction } from '../../store/planner.actions';
+import { PlannerState } from '../../store/planner.reducer';
 
 @Component({
   selector: 'app-filter',
@@ -28,7 +34,7 @@ export class FilterComponent implements OnInit {
   @Input() disciplines: DisciplineResponseInterface[] | null;
   @Input() faculties: FacultyResponseInterface[] | null;
   @Output() isFormValid = new EventEmitter<boolean>();
-  isLoading$: Observable<boolean>;
+
   dynamicForm: FormGroup;
   lessonTypes = LessonTypes;
 
@@ -44,7 +50,6 @@ export class FilterComponent implements OnInit {
   }
 
   initializeListeners() {
-    this.isLoading$ = this.store.select(selectIsLoading);
     this.dynamicForm.valueChanges.subscribe((formValues) => {
       if (this.dynamicForm.valid) {
         const filterValue = this.dynamicForm.value as PlannerFilterInterface;

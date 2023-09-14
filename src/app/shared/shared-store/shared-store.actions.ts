@@ -1,7 +1,10 @@
 import { createAction, props } from '@ngrx/store';
 
 import { BackendErrorInterface } from 'src/app/shared/types/backendErrors.interface';
-import { BuildingResponseInterface } from '../interfaces/buildings.interfaces';
+import {
+  BuildingRequestInterface,
+  BuildingResponseInterface,
+} from '../interfaces/buildings.interfaces';
 import { DisciplineResponseInterface } from '../interfaces/disciplines.interfaces';
 import { FacultyResponseInterface } from '../interfaces/faculties.interfaces';
 import { SpecialtyResponseInterface } from '../interfaces/specialty.interfaces';
@@ -87,5 +90,35 @@ export const getBuildingsSuccess = createAction(
 
 export const getBuildingsFailure = createAction(
   ActionTypes.GET_BUILDINGS_FAILURE,
+  props<{ error: BackendErrorInterface }>()
+);
+
+export const createBuildingAction = createAction(
+  ActionTypes.CREATE_BUILDING,
+  props<{ building: BuildingRequestInterface }>()
+);
+
+export const createBuildingSuccess = createAction(
+  ActionTypes.CREATE_BUILDING_SUCCESS,
+  props<{ response: BuildingResponseInterface }>()
+);
+
+export const createBuildingFailure = createAction(
+  ActionTypes.CREATE_BUILDING_FAILURE,
+  props<{ error: BackendErrorInterface }>()
+);
+
+export const updateBuildingAction = createAction(
+  ActionTypes.UPDATE_BUILDING,
+  props<{ building: BuildingRequestInterface }>()
+);
+
+export const updateBuildingSuccess = createAction(
+  ActionTypes.UPDATE_BUILDING_SUCCESS,
+  props<{ response: BuildingResponseInterface }>()
+);
+
+export const updateBuildingFailure = createAction(
+  ActionTypes.UPDATE_BUILDING_FAILURE,
   props<{ error: BackendErrorInterface }>()
 );

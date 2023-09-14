@@ -5,3 +5,8 @@ export interface BuildingResponseInterface {
   name: string;
   cabinets: CabinetResponseInterface[];
 }
+
+export interface BuildingRequestInterface {
+  publicId: string | null;
+  name: string;
+}

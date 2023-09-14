@@ -21,6 +21,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [],
@@ -46,6 +47,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatProgressSpinnerModule,
     MatListModule,
     MatDividerModule,
+    MatMenuModule,
   ],
   exports: [
     MatToolbarModule,
@@ -68,6 +70,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatProgressSpinnerModule,
     MatListModule,
     MatDividerModule,
+    MatMenuModule,
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'ru-RU' }],
 })

@@ -23,4 +23,11 @@ export enum ActionTypes {
   GET_BUILDINGS_SUCCESS = '[GET_BUILDINGS_API] Get buildings success',
   GET_BUILDINGS_FAILURE = '[GET_BUILDINGS_API] Get buildings failure',
 
+  CREATE_BUILDING = '[MAINTENANCE_PAGE] Create building',
+  CREATE_BUILDING_SUCCESS = '[CREATE_BUILDING_API] Create building success',
+  CREATE_BUILDING_FAILURE = '[CREATE_BUILDING_API] Create building failure',
+
+  UPDATE_BUILDING = '[MAINTENANCE_PAGE] Update building',
+  UPDATE_BUILDING_SUCCESS = '[CREATE_BUILDING_API] Update building success',
+  UPDATE_BUILDING_FAILURE = '[CREATE_BUILDING_API] Update building failure',
 }

@@ -4,9 +4,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { MaterialModule } from './material/material.module';
+import { SharedService } from './services/shared.service';
 import { SharedEffects } from './shared-store/shared-store.effects';
 import { sharedReducer } from './shared-store/shared-store.reducer';
-import { SharedService } from './services/shared.service';
 
 @NgModule({
   declarations: [],

@@ -3,14 +3,65 @@
     <span class="menu-spacer"></span>
 
     <div>
-      <a mat-raised-button [routerLink]="'/planner'" class="header-button"> Планировщик </a>
+      <a mat-raised-button [routerLink]="'/planner'" class="header-button">
+        Планировщик
+      </a>
     </div>
     <div>
-      <a mat-raised-button [routerLink]="'/schedule'" class="header-button"> Расписание </a>
+      <a mat-raised-button [routerLink]="'/schedule'" class="header-button">
+        Расписание
+      </a>
     </div>
     <span class="menu-spacer"></span>
 
     <div class="username">{{ userName$ | async }}</div>
+
+    <button
+      mat-icon-button
+      [matMenuTriggerFor]="menu"
+      aria-label="Обслуживание"
+    >
+      <mat-icon>settings</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item [routerLink]="'/buildings'">
+        <mat-icon>account_balance</mat-icon>
+        <span>Здания</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon> store_mall_directory</mat-icon>
+        <span>Кабинеты</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>supervised_user_circle</mat-icon>
+        <span>Факультеты</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>school</mat-icon>
+        <span>Специальности</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>accessibility_new</mat-icon>
+        <span>Преподаватели</span>
+      </button>
+
+      <button mat-menu-item>
+        <mat-icon>group_add</mat-icon>
+        <span>Преподаватели</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>group</mat-icon>
+        <span>Преподаватели</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>person</mat-icon>
+        <span>Преподаватели</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon> local_library</mat-icon>
+        <span>Преподаватели</span>
+      </button>
+    </mat-menu>
 
     <div>
       <button mat-raised-button color="warn" [routerLink]="'/logout'">

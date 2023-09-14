@@ -1,0 +1,35 @@
+<h1 class="dialog-title">
+  <ng-container *ngIf="data?.building?.publicId; else fallback">
+    Редактировать
+  </ng-container>
+  <ng-template #fallback> Создать новый </ng-template>
+</h1>
+
+<div class="dialog-content">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill" class="full-width">
+      <input
+        matInput
+        type="text"
+        formControlName="name"
+        placeholder="Название корпуса"
+        autocomplete="new-password"
+        required
+      />
+      <mat-error *ngIf="form.controls['name'].hasError('required')">
+        Введите название
+      </mat-error>
+    </mat-form-field>
+
+    <div class="dialog-actions">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [mat-dialog-close]="true"
+      >
+        Сохранить
+      </button>
+    </div>
+  </form>
+</div>
