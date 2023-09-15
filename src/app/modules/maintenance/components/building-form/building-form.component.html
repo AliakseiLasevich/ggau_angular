@@ -30,6 +30,17 @@
       >
         Сохранить
       </button>
+
+      <ng-container *ngIf="data?.building?.publicId">
+        <button
+          mat-raised-button
+          color="warn"
+          (click)="openDeleteDialog()"
+          [mat-dialog-close]="true"
+        >
+          Удалить
+        </button>
+      </ng-container>
     </div>
   </form>
 </div>

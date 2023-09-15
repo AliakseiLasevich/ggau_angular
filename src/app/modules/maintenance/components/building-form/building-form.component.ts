@@ -1,15 +1,20 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import {
-    BuildingRequestInterface,
-    BuildingResponseInterface,
+  BuildingRequestInterface,
+  BuildingResponseInterface,
 } from 'src/app/shared/interfaces/buildings.interfaces';
 import {
-    createBuildingAction,
-    updateBuildingAction,
+  createBuildingAction,
+  updateBuildingAction,
 } from 'src/app/shared/shared-store/shared-store.actions';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-building-form',
@@ -20,6 +25,7 @@ export class BuildingFormComponent implements OnInit {
   form: FormGroup;
 
   constructor(
+    public dialog: MatDialog,
     private formBuilder: FormBuilder,
     private store: Store,
     public dialogRef: MatDialogRef<BuildingResponseInterface>,
@@ -56,5 +62,11 @@ export class BuildingFormComponent implements OnInit {
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  openDeleteDialog() {
+    this.dialog.open(ConfirmationDialogComponent, {
+      data: { building: this.data.building },
+    });
   }
 }

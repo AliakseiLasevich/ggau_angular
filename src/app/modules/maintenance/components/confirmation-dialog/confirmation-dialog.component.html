@@ -1,0 +1,14 @@
+<mat-dialog-content>
+  <p>Вы точно хотите удалить: {{ data.building.name }}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button mat-dialog-close color="primary">Отмена</button>
+  <button
+    mat-raised-button
+    color="warn"
+    [mat-dialog-close]="true"
+    (click)="confirmDelete()"
+  >
+    Удалить
+  </button>
+</mat-dialog-actions>
