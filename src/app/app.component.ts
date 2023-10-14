@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { loginSuccess } from './modules/auth/store/auth.actions';
-import { selectIsLoggedIn } from './modules/auth/store/auth.selectors';
-import { selectIsSharedLoading } from './shared/shared-store/shared-store.selectors';
+import { Observable, Subscription } from 'rxjs';
+import { loginSuccess } from './store/auth-store/auth.actions';
+import { selectIsLoggedIn } from './store/auth-store/auth.selectors';
+import { selectIsPlannerLoading } from './store/planner-store/planner-store.selectors';
 
 @Component({
   selector: 'app-root',
@@ -14,24 +14,25 @@ import { selectIsSharedLoading } from './shared/shared-store/shared-store.select
 export class AppComponent implements OnInit {
   loggedIn$: Observable<boolean>;
   isLoading$: Observable<boolean>;
+  isLoggedInSubscription: Subscription;
 
   constructor(private router: Router, private store: Store) {}
 
   ngOnInit(): void {
     this.initializeListeners();
     this.getStoredToken();
-
-    this.loggedIn$.subscribe((loggedIn) =>
-      loggedIn
-        ? this.router.navigate(['/planner'])
-        : this.router.navigate(['/login'])
-    );
   }
 
   initializeListeners() {
-    console.log(this.store);
-    this.loggedIn$ = this.store.select(selectIsLoggedIn);
-    this.isLoading$ = this.store.select(selectIsSharedLoading);
+    this.isLoggedInSubscription = this.store
+      .select(selectIsLoggedIn)
+      .subscribe((loggedIn) =>
+        loggedIn
+          ? this.router.navigate(['/planner'])
+          : this.router.navigate(['/login'])
+      );
+
+    this.isLoading$ = this.store.select(selectIsPlannerLoading);
   }
 
   private getStoredToken() {
