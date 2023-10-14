@@ -1,4 +1,4 @@
-<div *ngIf="filter">
+<div *ngIf="lessonForm">
   <div class="info">
     <button mat-raised-button color="success" class="info-button">✔</button
     >&nbsp; Можно бронировать. Цифра = лишние свободные места.
@@ -28,7 +28,7 @@
         </strong>
         <app-table-cell
           [date]="date"
-          [filter]="filter"
+          [lessonForm]="lessonForm"
           [lessons]="lessons"
           [row]="row"
           [studentCourses]="studentCourses | async"

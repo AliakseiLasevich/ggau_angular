@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FilterComponent } from './filter.component';
+import { PlannerFormComponent } from './planner-form.component';
 
 describe('FilterComponent', () => {
-  let component: FilterComponent;
-  let fixture: ComponentFixture<FilterComponent>;
+  let component: PlannerFormComponent;
+  let fixture: ComponentFixture<PlannerFormComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [FilterComponent],
+      declarations: [PlannerFormComponent],
     });
-    fixture = TestBed.createComponent(FilterComponent);
+    fixture = TestBed.createComponent(PlannerFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

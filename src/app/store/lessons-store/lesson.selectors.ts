@@ -1,7 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { LessonState } from './lesson.reducer';
 
-const selectPlannerState = createFeatureSelector<LessonState>('planner');
+const selectPlannerState = createFeatureSelector<LessonState>('lesson');
 
 export const selectIsLoading = createSelector(
   selectPlannerState,
@@ -43,5 +43,5 @@ export const selectPlannerError = createSelector(
 
 export const selectFilter = createSelector(
   selectPlannerState,
-  (state: LessonState) => state.filter
+  (state: LessonState) => state.lessonForm
 );

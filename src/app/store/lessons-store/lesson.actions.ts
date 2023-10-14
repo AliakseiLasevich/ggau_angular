@@ -5,7 +5,7 @@ import {
   LessonRequestInterface,
   LessonResponseInterface,
 } from '../../core/models/lesson.interface';
-import { LessonsFilterInterface } from '../../core/models/lessons-filter.interfaces';
+import { LessonsFormInterface } from '../../core/models/lessons-form.interfaces';
 import { ActionTypes } from './lesson.actionTypes';
 
 //LESSONS
@@ -25,9 +25,9 @@ export const getLessonsFailure = createAction(
 );
 
 // FILTER STATE
-export const setFilterAction = createAction(
-  ActionTypes.SET_FILTER,
-  props<{ filter: LessonsFilterInterface }>()
+export const applyFormAction = createAction(
+  ActionTypes.APPLY_PLANNER_FORM,
+  props<{ lessonForm: LessonsFormInterface }>()
 );
 
 //LESSONS CREATE

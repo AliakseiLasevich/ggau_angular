@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { BackendErrorInterface } from 'src/app/core/models/backendErrors.interface';
 import { LessonResponseInterface } from '../../core/models/lesson.interface';
-import { LessonsFilterInterface } from '../../core/models/lessons-filter.interfaces';
+import { LessonsFormInterface } from '../../core/models/lessons-form.interfaces';
 import {
   createLessonAction,
   createLessonFailure,
@@ -9,20 +9,20 @@ import {
   getLessonsAction,
   getLessonsFailure,
   getLessonsSuccess,
-  setFilterAction
+  applyFormAction
 } from './lesson.actions';
 export interface LessonState {
   isLoading: boolean;
   lessons: LessonResponseInterface[];
   error: BackendErrorInterface | null;
-  filter: LessonsFilterInterface | null;
+  lessonForm: LessonsFormInterface | null;
 }
 
 const initialState: LessonState = {
   isLoading: false,
   lessons: [],
   error: null,
-  filter: null,
+  lessonForm: null,
 };
 
 export const lessonsReducer = createReducer(
@@ -41,10 +41,10 @@ export const lessonsReducer = createReducer(
     error: payload.error,
   })),
 
-  on(setFilterAction, (state, payload) => ({
+  on(applyFormAction, (state, payload) => ({
     ...state,
     isLoading: false,
-    filter: payload.filter,
+    lessonForm: payload.lessonForm,
   })),
 
   on(createLessonAction, (state, payload) => ({

@@ -1,13 +1,14 @@
-<app-filter
+<app-planner-form
   [teachers]="teachers$ | async"
   [disciplines]="disciplines$ | async"
   [faculties]="faculties$ | async"
   (isFormValid)="handleFormValidity($event)"
-></app-filter>
+></app-planner-form>
 
-<app-week
+
+<app-week-table
   *ngIf="isFormValid"
-  [filter]="filter$ | async"
+  [lessonForm]="lessonForm$ | async"
   [lessons]="lessons$ | async"
   [buildings]="buildings$ | async"
-></app-week>
+></app-week-table>

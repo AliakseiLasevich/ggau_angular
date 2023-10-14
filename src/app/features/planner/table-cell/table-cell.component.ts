@@ -3,9 +3,9 @@ import { Store } from '@ngrx/store';
 import { LessonOrder } from 'src/app/core/enums/lesson-order.enum';
 import { anyCommonValue, areDatesEqual } from 'src/app/shared/utils';
 import { LessonResponseInterface } from '../../../core/models/lesson.interface';
-import { LessonsFilterInterface } from '../../../core/models/lessons-filter.interfaces';
+import { LessonsFormInterface } from '../../../core/models/lessons-form.interfaces';
 import { PlannerButtonDto } from '../planner-button/planner-button.component';
-import { PlannerRowDto } from '../table/table.component';
+import { PlannerRowDto } from '../week-table/week-table.component';
 import { StudentCourseResponseInterface } from 'src/app/core/models/studentCourse.interfaces';
 
 @Component({
@@ -14,7 +14,7 @@ import { StudentCourseResponseInterface } from 'src/app/core/models/studentCours
   styleUrls: ['./table-cell.component.scss'],
 })
 export class TableCellComponent {
-  @Input() filter: LessonsFilterInterface;
+  @Input() lessonForm: LessonsFormInterface | null;
   @Input() lessons: LessonResponseInterface[] | null;
   @Input() date: string;
   @Input() row: Record<string, PlannerRowDto>;
@@ -53,7 +53,7 @@ export class TableCellComponent {
 
     // Определяем, занят ли учитель хотя бы в одном из найденных занятий
     const isTeacherBooked = dayOrderLessons?.some(
-      (lesson) => lesson.teacher.publicId === this.filter?.selectedTeacher
+      (lesson) => lesson.teacher.publicId === this.lessonForm?.selectedTeacher
     );
 
     //Выбираем все подгруппы, которые уже заняты в дату ячейки
@@ -63,7 +63,7 @@ export class TableCellComponent {
         .map((subgroup) => subgroup.publicId) || [];
 
     // Выбираем все id подгрупп, которые выбраны в фильтре
-    const filterSubgroupIds = this.filter!.dynamicGroups.flatMap(
+    const filterSubgroupIds = this.lessonForm!.dynamicGroups.flatMap(
       (group) => group.subgroupIds || []
     );
 
@@ -96,7 +96,7 @@ export class TableCellComponent {
       );
       if (cellLesson) {
         isTeacherBookedForThisLesson =
-          cellLesson.teacher.publicId === this.filter!.selectedTeacher;
+          cellLesson.teacher.publicId === this.lessonForm!.selectedTeacher;
         cabinetBookedByOtherTeacher = !isTeacherBookedForThisLesson;
         cabinetBookedByOneOfFilterSubgroups = anyCommonValue(
           cellLesson.studentSubgroups.map((subgroup) => subgroup.publicId),

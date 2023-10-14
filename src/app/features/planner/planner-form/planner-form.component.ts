@@ -20,16 +20,16 @@ import {
   selectStudentSubgroupByGroupId,
 } from 'src/app/store/planner-store/planner-store.selectors';
 import { LessonTypes } from '../../../core/enums/lesson-types.enum';
-import { LessonsFilterInterface } from '../../../core/models/lessons-filter.interfaces';
-import { setFilterAction } from '../../../store/lessons-store/lesson.actions';
+import { LessonsFormInterface } from '../../../core/models/lessons-form.interfaces';
+import { applyFormAction } from '../../../store/lessons-store/lesson.actions';
 import { LessonState } from '../../../store/lessons-store/lesson.reducer';
 
 @Component({
-  selector: 'app-filter',
-  templateUrl: './filter.component.html',
-  styleUrls: ['./filter.component.scss'],
+  selector: 'app-planner-form',
+  templateUrl: './planner-form.component.html',
+  styleUrls: ['./planner-form.component.scss'],
 })
-export class FilterComponent implements OnInit {
+export class PlannerFormComponent implements OnInit {
   @Input() teachers: TeacherResponseInterface[] | null;
   @Input() disciplines: DisciplineResponseInterface[] | null;
   @Input() faculties: FacultyResponseInterface[] | null;
@@ -52,8 +52,8 @@ export class FilterComponent implements OnInit {
   initializeListeners() {
     this.dynamicForm.valueChanges.subscribe((formValues) => {
       if (this.dynamicForm.valid) {
-        const filterValue = this.dynamicForm.value as LessonsFilterInterface;
-        this.store.dispatch(setFilterAction({ filter: filterValue }));
+        const formValue = this.dynamicForm.value as LessonsFormInterface;
+        this.store.dispatch(applyFormAction({ lessonForm: formValue }));
       }
       this.isFormValid.emit(this.dynamicForm.valid);
     });

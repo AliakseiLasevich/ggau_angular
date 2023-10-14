@@ -1,23 +1,17 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges,} from '@angular/core';
 
-import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { areDatesEqual } from 'src/app/shared/utils';
-import { LessonResponseInterface } from '../../../core/models/lesson.interface';
-import { LessonsFilterInterface } from '../../../core/models/lessons-filter.interfaces';
-import { LessonState } from '../../../store/lessons-store/lesson.reducer';
-import { CabinetResponseInterface } from 'src/app/core/models/cabinet.interfaces';
-import { BuildingResponseInterface } from 'src/app/core/models/buildings.interfaces';
-import { StudentCourseResponseInterface } from 'src/app/core/models/studentCourse.interfaces';
-import { selectStudentCourses } from 'src/app/store/planner-store/planner-store.selectors';
+import {MatDialog} from '@angular/material/dialog';
+import {MatTableDataSource} from '@angular/material/table';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
+import {areDatesEqual} from 'src/app/shared/utils';
+import {LessonResponseInterface} from '../../../core/models/lesson.interface';
+import {LessonsFormInterface} from '../../../core/models/lessons-form.interfaces';
+import {LessonState} from '../../../store/lessons-store/lesson.reducer';
+import {CabinetResponseInterface} from 'src/app/core/models/cabinet.interfaces';
+import {BuildingResponseInterface} from 'src/app/core/models/buildings.interfaces';
+import {StudentCourseResponseInterface} from 'src/app/core/models/studentCourse.interfaces';
+import {selectStudentCourses} from 'src/app/store/planner-store/planner-store.selectors';
 
 export interface PlannerRowDto {
   date: string;
@@ -26,12 +20,12 @@ export interface PlannerRowDto {
 }
 
 @Component({
-  selector: 'app-week',
-  templateUrl: './table.component.html',
-  styleUrls: ['./table.component.scss'],
+  selector: 'app-week-table',
+  templateUrl: './week-table.component.html',
+  styleUrls: ['./week-table.component.scss'],
 })
-export class TableComponent implements OnInit, OnChanges {
-  @Input() filter: LessonsFilterInterface | null;
+export class WeekTableComponent implements OnInit, OnChanges {
+  @Input() lessonForm: LessonsFormInterface | null;
   @Input() buildings: BuildingResponseInterface[] | null;
   @Input() lessons: LessonResponseInterface[] | null;
 
@@ -40,7 +34,8 @@ export class TableComponent implements OnInit, OnChanges {
   dateRange: string[] = [];
   dataSource: MatTableDataSource<any>;
 
-  constructor(private store: Store<LessonState>, public dialog: MatDialog) {}
+  constructor(private store: Store<LessonState>, public dialog: MatDialog) {
+  }
 
   ngOnInit(): void {
     this.initializeListeners();
@@ -51,7 +46,7 @@ export class TableComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['filter']?.currentValue) {
+    if (changes['lessonForm']?.currentValue) {
       this.calculateDateRange();
     }
     this.generateDataSource();
@@ -61,7 +56,7 @@ export class TableComponent implements OnInit, OnChanges {
     const result: (
       | BuildingResponseInterface
       | Record<string, PlannerRowDto>
-    )[] = [];
+      )[] = [];
 
     if (this.buildings) {
       for (const building of this.buildings) {
@@ -104,14 +99,15 @@ export class TableComponent implements OnInit, OnChanges {
 
   calculateDateRange(): string[] {
     const range: string[] = [];
-    const currentDate = new Date(this.filter!.fromDate);
-    while (currentDate <= new Date(this.filter!.toDate)) {
+    const currentDate = new Date(this.lessonForm!.fromDate);
+    while (currentDate <= new Date(this.lessonForm!.toDate)) {
       range.push(new Date(currentDate).toLocaleDateString('ru-RU'));
       currentDate.setDate(currentDate.getDate() + 1);
     }
     this.dateRange = range;
     return range;
   }
+
   colorCellByType(type: string) {
     switch (type) {
       case 'PRACTICAL':

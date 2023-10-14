@@ -8,7 +8,6 @@ import { FacultyResponseInterface } from '../../core/models/faculties.interfaces
 import { SpecialtyResponseInterface } from '../../core/models/specialty.interfaces';
 import { StudentCourseResponseInterface } from '../../core/models/studentCourse.interfaces';
 import { TeacherResponseInterface } from '../../core/models/teachers.interfaces';
-import { SharedService } from '../../services/planner-services/shared.service';
 import { ActionTypes } from './planner-store.actionTypes';
 import {
   createBuildingFailure,
@@ -28,6 +27,7 @@ import {
   updateBuildingFailure,
   updateBuildingSuccess,
 } from './planner-store.actions';
+import {PlannerService} from "../../services/planner-services/planner.service";
 
 // mergeMap - при удалении
 // concatMap - при создании или апдейте
@@ -35,17 +35,17 @@ import {
 // switchMap - для параметризованных запросов
 
 @Injectable()
-export class SharedEffects {
+export class PlannerEffects {
   constructor(
     private actions$: Actions,
-    private sharedService: SharedService
+    private plannerService: PlannerService
   ) {}
 
   getTeachers$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ActionTypes.GET_TEACHERS),
       exhaustMap(() => {
-        return this.sharedService.getTeachers().pipe(
+        return this.plannerService.getTeachers().pipe(
           map((response: TeacherResponseInterface[]) =>
             getTeachersActionSuccess({ teachers: response })
           ),
@@ -61,7 +61,7 @@ export class SharedEffects {
     this.actions$.pipe(
       ofType(ActionTypes.GET_DISCIPLINES),
       exhaustMap(() => {
-        return this.sharedService.getDisciplines().pipe(
+        return this.plannerService.getDisciplines().pipe(
           map((response: DisciplineResponseInterface[]) =>
             getDisciplinesSuccess({ disciplines: response })
           ),
@@ -77,7 +77,7 @@ export class SharedEffects {
     this.actions$.pipe(
       ofType(ActionTypes.GET_FACULTIES),
       exhaustMap(() => {
-        return this.sharedService.getFaculties().pipe(
+        return this.plannerService.getFaculties().pipe(
           map((response: FacultyResponseInterface[]) =>
             getFacultiesSuccess({ faculties: response })
           ),
@@ -93,7 +93,7 @@ export class SharedEffects {
     this.actions$.pipe(
       ofType(ActionTypes.GET_SPECIALTIES),
       switchMap(({ publicId }) => {
-        return this.sharedService.getSpecialtiesByFaculty(publicId).pipe(
+        return this.plannerService.getSpecialtiesByFaculty(publicId).pipe(
           map((response: SpecialtyResponseInterface[]) =>
             getSpecialtiesSuccess({ specialties: response })
           ),
@@ -109,7 +109,7 @@ export class SharedEffects {
     this.actions$.pipe(
       ofType(ActionTypes.GET_COURSES),
       switchMap(({ specialtyId }) => {
-        return this.sharedService.getCoursesBySpecialty(specialtyId).pipe(
+        return this.plannerService.getCoursesBySpecialty(specialtyId).pipe(
           map((response: StudentCourseResponseInterface[]) =>
             getCoursesSuccess({ courses: response })
           ),
@@ -125,7 +125,7 @@ export class SharedEffects {
     this.actions$.pipe(
       ofType(ActionTypes.GET_BUILDINGS),
       exhaustMap(() => {
-        return this.sharedService.getBuildings().pipe(
+        return this.plannerService.getBuildings().pipe(
           map((response: BuildingResponseInterface[]) =>
             getBuildingsSuccess({ buildings: response })
           ),
@@ -157,7 +157,7 @@ export class SharedEffects {
     this.actions$.pipe(
       ofType(ActionTypes.CREATE_BUILDING),
       switchMap(({ building }) => {
-        return this.sharedService.createBuilding(building).pipe(
+        return this.plannerService.createBuilding(building).pipe(
           map((response: BuildingResponseInterface) =>
             createBuildingSuccess({
               response,
@@ -175,7 +175,7 @@ export class SharedEffects {
     this.actions$.pipe(
       ofType(ActionTypes.UPDATE_BUILDING),
       switchMap(({ building }) => {
-        return this.sharedService.updateBuilding(building).pipe(
+        return this.plannerService.updateBuilding(building).pipe(
           map((response: BuildingResponseInterface) =>
             updateBuildingSuccess({
               response,

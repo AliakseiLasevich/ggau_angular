@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { LessonResponseInterface } from '../../core/models/lesson.interface';
-import { LessonsFilterInterface } from '../../core/models/lessons-filter.interfaces';
+import { LessonsFormInterface } from '../../core/models/lessons-form.interfaces';
 import { PlannerService } from '../../services/planner-services/planner.service';
 import { ActionTypes } from './lesson.actionTypes';
 import {
@@ -20,7 +20,7 @@ import {
 // switchMap - для параметризованных запросов. Заменяет не выполненные запросы новыми, старые отменяются
 
 @Injectable()
-export class PlannerEffects {
+export class LessonEffects {
   constructor(
     private actions$: Actions,
     private plannerService: PlannerService
@@ -44,10 +44,10 @@ export class PlannerEffects {
 
   triggerGetLessons$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(ActionTypes.SET_FILTER),
-      switchMap(({ filter }: { filter: LessonsFilterInterface }) => {
-        const dateFrom = this.convertDate(filter.fromDate.toString());
-        const dateTo = this.convertDate(filter.toDate.toString());
+      ofType(ActionTypes.APPLY_PLANNER_FORM),
+      switchMap(({ lessonForm }: { lessonForm: LessonsFormInterface }) => {
+        const dateFrom = this.convertDate(lessonForm.fromDate.toString());
+        const dateTo = this.convertDate(lessonForm.toDate.toString());
         return of(getLessonsAction({ dateFrom, dateTo }));
       })
     )

@@ -1,14 +1,14 @@
-export interface LessonsFilterInterface {
+export interface LessonsFormInterface {
   fromDate: Date;
   toDate: Date;
   selectedTeacher: string;
   selectedLessonType: string;
   selectedDiscipline: string;
-  dynamicGroups: GroupFilterInterface[];
+  dynamicGroups: GroupFormInterface[];
   orderNumber: string;
 }
 
-export interface GroupFilterInterface {
+export interface GroupFormInterface {
   facultyId: string;
   groupId: string;
   specialtyId: string;

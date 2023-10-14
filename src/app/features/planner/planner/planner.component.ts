@@ -1,23 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { LessonResponseInterface } from '../../../core/models/lesson.interface';
-import { LessonsFilterInterface } from '../../../core/models/lessons-filter.interfaces';
+import {Component, OnInit} from '@angular/core';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {select, Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
+import {LessonResponseInterface} from '../../../core/models/lesson.interface';
+import {LessonsFormInterface} from '../../../core/models/lessons-form.interfaces';
 
-import { LessonState } from '../../../store/lessons-store/lesson.reducer';
-import {
-  selectFilter,
-  selectLessons,
-  selectPlannerError,
-} from '../../../store/lessons-store/lesson.selectors';
-import { TeacherResponseInterface } from 'src/app/core/models/teachers.interfaces';
-import { DisciplineResponseInterface } from 'src/app/core/models/disciplines.interfaces';
-import { FacultyResponseInterface } from 'src/app/core/models/faculties.interfaces';
-import { SpecialtyResponseInterface } from 'src/app/core/models/specialty.interfaces';
-import { BuildingResponseInterface } from 'src/app/core/models/buildings.interfaces';
-import { getBuildingsAction, getDisciplinesAction, getFacultiesAction, getTeachersAction } from 'src/app/store/planner-store/planner-store.actions';
-import { selectAllBuildings, selectDisciplines, selectFaculties, selectTeachers } from 'src/app/store/planner-store/planner-store.selectors';
+import {LessonState} from '../../../store/lessons-store/lesson.reducer';
+import {selectFilter, selectLessons,} from '../../../store/lessons-store/lesson.selectors';
+import {TeacherResponseInterface} from 'src/app/core/models/teachers.interfaces';
+import {DisciplineResponseInterface} from 'src/app/core/models/disciplines.interfaces';
+import {FacultyResponseInterface} from 'src/app/core/models/faculties.interfaces';
+import {SpecialtyResponseInterface} from 'src/app/core/models/specialty.interfaces';
+import {BuildingResponseInterface} from 'src/app/core/models/buildings.interfaces';
+import {PlannerStateFacade} from "../../../store/planner-store/planner-state.facade";
+import {BackendErrorInterface} from "../../../core/models/backendErrors.interface";
 
 @Component({
   selector: 'app-planner',
@@ -26,45 +22,41 @@ import { selectAllBuildings, selectDisciplines, selectFaculties, selectTeachers 
 })
 export class PlannerComponent implements OnInit {
   isFormValid: boolean;
-  teachers$: Observable<TeacherResponseInterface[]>;
-  disciplines$: Observable<DisciplineResponseInterface[]>;
-  faculties$: Observable<FacultyResponseInterface[]>;
-  specialties$: Observable<SpecialtyResponseInterface[]>;
-  buildings$: Observable<BuildingResponseInterface[]>;
-  lessons$: Observable<LessonResponseInterface[]>;
-  filter$: Observable<LessonsFilterInterface | null>;
+  teachers$: Observable<TeacherResponseInterface[]> = this.plannerStateFacade.teachers$;
+  disciplines$: Observable<DisciplineResponseInterface[]> = this.plannerStateFacade.disciplines$;
+  faculties$: Observable<FacultyResponseInterface[]> = this.plannerStateFacade.faculties$;
+  specialties$: Observable<SpecialtyResponseInterface[]> = this.plannerStateFacade.specialties$;
+  buildings$: Observable<BuildingResponseInterface[]> = this.plannerStateFacade.buildings$;
+  error$: Observable<BackendErrorInterface | null> = this.plannerStateFacade.error$;
 
-  constructor(
-    private store: Store<LessonState>,
-    private _snackBar: MatSnackBar
-  ) {}
+  lessons$: Observable<LessonResponseInterface[]> = this.store.pipe(select(selectLessons));
+  lessonForm$: Observable<LessonsFormInterface | null> = this.store.pipe(select(selectFilter));
+
+  constructor(private plannerStateFacade: PlannerStateFacade,
+              private store: Store<LessonState>,
+              private _snackBar: MatSnackBar
+  ) {
+  }
 
   ngOnInit(): void {
-    this.initializeValues();
     this.fetchData();
-    this.initializeListeners();
+    this.initializeSubscriptions();
+  }
 
-    this.store.pipe(select(selectPlannerError)).subscribe((error) => {
+  initializeSubscriptions() {
+    this.error$.subscribe((error) => {
       if (error) {
-        this._snackBar.open(error.message, 'OK', { duration: 5 * 1000 });
+        this._snackBar.open(error.message, 'OK', {duration: 5 * 1000});
       }
     });
   }
-  initializeListeners() {}
-  private fetchData() {
-    this.store.dispatch(getTeachersAction());
-    this.store.dispatch(getDisciplinesAction());
-    this.store.dispatch(getFacultiesAction());
-    this.store.dispatch(getBuildingsAction());
-  }
 
-  private initializeValues() {
-    this.teachers$ = this.store.select(selectTeachers);
-    this.disciplines$ = this.store.select(selectDisciplines);
-    this.faculties$ = this.store.select(selectFaculties);
-    this.buildings$ = this.store.select(selectAllBuildings);
-    this.filter$ = this.store.select(selectFilter);
-    this.lessons$ = this.store.select(selectLessons);
+
+  private fetchData() {
+    this.plannerStateFacade.fetchTeachers();
+    this.plannerStateFacade.fetchDisciplines();
+    this.plannerStateFacade.fetchFaculties();
+    this.plannerStateFacade.fetchBuildings();
   }
 
   handleFormValidity(isFormValid: boolean) {

@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { LessonRequestInterface } from '../../../core/models/lesson.interface';
-import { LessonsFilterInterface } from '../../../core/models/lessons-filter.interfaces';
+import { LessonsFormInterface } from '../../../core/models/lessons-form.interfaces';
 
 import { createLessonAction } from '../../../store/lessons-store/lesson.actions';
 import { LessonState } from '../../../store/lessons-store/lesson.reducer';
@@ -29,9 +29,9 @@ import { StudentSubgroupResponseInterface } from 'src/app/core/models/studentSub
 })
 export class NewLessonFormComponent implements OnInit, OnDestroy {
   form: FormGroup;
-  selectedFilter: LessonsFilterInterface | null;
+  selectedFilter: LessonsFormInterface | null;
 
-  filter$: Observable<LessonsFilterInterface | null>;
+  filter$: Observable<LessonsFormInterface | null>;
   discipline$: Observable<DisciplineResponseInterface | null>;
   teacher$: Observable<TeacherResponseInterface | null>;
   faculty$: Observable<FacultyResponseInterface | null>;

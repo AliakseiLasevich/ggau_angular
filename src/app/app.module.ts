@@ -18,6 +18,9 @@ import {MaintenanceModule} from './features/maintenance/maintenance.module';
 import {PlannerModule} from './features/planner/planner.module';
 import {plannerReducer} from './store/planner-store/planner-store.reducer';
 import {SharedModule} from './shared/shared.module';
+import {MaterialModule} from "./shared/material/material.module";
+import {PlannerEffects} from "./store/planner-store/planner-store.effects";
+import {lessonsReducer} from "./store/lessons-store/lesson.reducer";
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,7 +35,9 @@ import {SharedModule} from './shared/shared.module';
     PlannerModule,
     SharedModule,
     MaintenanceModule,
-    StoreModule.forRoot({auth: authReducer, shared: plannerReducer}),
+    MaterialModule,
+    StoreModule.forRoot({auth: authReducer, planner: plannerReducer, lesson: lessonsReducer}),
+    EffectsModule.forFeature(PlannerEffects),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       // logOnly: environment.production,

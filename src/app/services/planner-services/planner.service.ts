@@ -1,24 +1,23 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import {
-  LessonRequestInterface,
-  LessonResponseInterface,
-} from '../../core/models/lesson.interface';
-import { TeacherResponseInterface } from 'src/app/core/models/teachers.interfaces';
-import { DisciplineResponseInterface } from 'src/app/core/models/disciplines.interfaces';
-import { FacultyResponseInterface } from 'src/app/core/models/faculties.interfaces';
-import { SpecialtyResponseInterface } from 'src/app/core/models/specialty.interfaces';
-import { StudentCourseResponseInterface } from 'src/app/core/models/studentCourse.interfaces';
-import { BuildingResponseInterface } from 'src/app/core/models/buildings.interfaces';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {BuildingRequestInterface, BuildingResponseInterface,} from '../../core/models/buildings.interfaces';
+import {DisciplineResponseInterface} from '../../core/models/disciplines.interfaces';
+import {FacultyResponseInterface} from '../../core/models/faculties.interfaces';
+import {SpecialtyResponseInterface} from '../../core/models/specialty.interfaces';
+import {StudentCourseResponseInterface} from '../../core/models/studentCourse.interfaces';
+import {TeacherResponseInterface} from '../../core/models/teachers.interfaces';
+import {LessonRequestInterface, LessonResponseInterface} from "../../core/models/lesson.interface";
 
-
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class PlannerService {
   //TODO move to environment
   url = 'http://localhost:8080/rest/';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getTeachers(): Observable<TeacherResponseInterface[]> {
     return this.http.get<TeacherResponseInterface[]>(this.url + 'teachers');
@@ -50,17 +49,35 @@ export class PlannerService {
     );
   }
 
+  getBuildings(): Observable<BuildingResponseInterface[]> {
+    return this.http.get<BuildingResponseInterface[]>(this.url + 'buildings');
+  }
+
+  createBuilding(
+    data: BuildingRequestInterface
+  ): Observable<BuildingResponseInterface> {
+    return this.http.post<BuildingResponseInterface>(
+      this.url + 'buildings',
+      data
+    );
+  }
+
+  updateBuilding(
+    data: BuildingRequestInterface
+  ): Observable<BuildingResponseInterface> {
+    return this.http.put<BuildingResponseInterface>(
+      this.url + 'buildings/' + data.publicId,
+      data
+    );
+  }
+
   getLessonsByDateRange(
     from: Date,
     to: Date
   ): Observable<LessonResponseInterface[]> {
     return this.http.get<LessonResponseInterface[]>(this.url + 'lessons', {
-      params: { dateFrom: from?.toString(), dateTo: to?.toString() },
+      params: {dateFrom: from?.toString(), dateTo: to?.toString()},
     });
-  }
-
-  getBuildings(): Observable<BuildingResponseInterface[]> {
-    return this.http.get<BuildingResponseInterface[]>(this.url + 'buildings');
   }
 
   createLesson(

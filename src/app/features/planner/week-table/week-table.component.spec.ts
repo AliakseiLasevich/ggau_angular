@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TableComponent } from './table.component';
+import { WeekTableComponent } from './week-table.component';
 
 describe('WeekComponent', () => {
-  let component: TableComponent;
-  let fixture: ComponentFixture<TableComponent>;
+  let component: WeekTableComponent;
+  let fixture: ComponentFixture<WeekTableComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TableComponent],
+      declarations: [WeekTableComponent],
     });
-    fixture = TestBed.createComponent(TableComponent);
+    fixture = TestBed.createComponent(WeekTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

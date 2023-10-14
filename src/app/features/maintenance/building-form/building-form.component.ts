@@ -1,20 +1,10 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogRef,
-} from '@angular/material/dialog';
-import { Store } from '@ngrx/store';
-import {
-  BuildingRequestInterface,
-  BuildingResponseInterface,
-} from 'src/app/core/models/buildings.interfaces';
-import {
-  createBuildingAction,
-  updateBuildingAction,
-} from 'src/app/store/planner-store/planner-store.actions';
-import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import {Component, Inject, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef,} from '@angular/material/dialog';
+import {Store} from '@ngrx/store';
+import {BuildingRequestInterface, BuildingResponseInterface,} from 'src/app/core/models/buildings.interfaces';
+import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
+import {PlannerStateFacade} from "../../../store/planner-store/planner-state.facade";
 
 @Component({
   selector: 'app-building-form',
@@ -28,10 +18,12 @@ export class BuildingFormComponent implements OnInit {
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
     private store: Store,
+    private plannerStateFacade: PlannerStateFacade,
     public dialogRef: MatDialogRef<BuildingResponseInterface>,
     @Inject(MAT_DIALOG_DATA)
     public data: { building: BuildingResponseInterface | null }
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -54,9 +46,9 @@ export class BuildingFormComponent implements OnInit {
     };
 
     if (this.form.valid && this.data.building?.publicId) {
-      this.store.dispatch(updateBuildingAction({ building: request }));
+      this.plannerStateFacade.updateBuilding(request)
     } else if (this.form.valid) {
-      this.store.dispatch(createBuildingAction({ building: request }));
+      this.plannerStateFacade.createBuilding(request)
     }
   }
 
@@ -66,7 +58,7 @@ export class BuildingFormComponent implements OnInit {
 
   openDeleteDialog() {
     this.dialog.open(ConfirmationDialogComponent, {
-      data: { building: this.data.building },
+      data: {building: this.data.building},
     });
   }
 }
