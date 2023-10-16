@@ -24,7 +24,7 @@ export const getLessonsFailure = createAction(
   props<{ error: BackendErrorInterface }>()
 );
 
-// FILTER STATE
+// APPLY FORM TO FETCH LESSONS
 export const applyFormAction = createAction(
   ActionTypes.APPLY_PLANNER_FORM,
   props<{ lessonForm: LessonsFormInterface }>()

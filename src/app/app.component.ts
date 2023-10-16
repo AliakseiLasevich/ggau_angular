@@ -52,7 +52,7 @@ export class AppComponent implements OnInit {
       refreshExpiresIn: string;
     } = this.getLocalStorageData();
 
-    if (token && tokenExpiresIn && +tokenExpiresIn > Date.now()) {
+    if (token && tokenExpiresIn && + tokenExpiresIn > Date.now()) {
       this.store.dispatch(
         loginSuccess({
           name: name,

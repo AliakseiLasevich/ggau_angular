@@ -46,7 +46,7 @@ import {StudentSubgroupResponseInterface} from "../../core/models/studentSubgrou
 @Injectable({
   providedIn: 'root',
 })
-export class PlannerStateFacade {
+export class PlannerStoreFacade {
   isPlannerLoading$: Observable<boolean> = this.store.pipe(select(selectIsPlannerLoading));
   allBuildings$: Observable<BuildingResponseInterface[]> = this.store.pipe(select(selectAllBuildings));
   teachers$: Observable<TeacherResponseInterface[]> = this.store.pipe(select(selectTeachers));

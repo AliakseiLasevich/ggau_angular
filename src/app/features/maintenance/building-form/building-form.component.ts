@@ -4,7 +4,7 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef,} from '@angular/material/dialo
 import {Store} from '@ngrx/store';
 import {BuildingRequestInterface, BuildingResponseInterface,} from 'src/app/core/models/buildings.interfaces';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
-import {PlannerStateFacade} from "../../../store/planner-store/planner-state.facade";
+import {PlannerStoreFacade} from "../../../store/planner-store/planner-store.facade";
 
 @Component({
   selector: 'app-building-form',
@@ -18,7 +18,7 @@ export class BuildingFormComponent implements OnInit {
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
     private store: Store,
-    private plannerStateFacade: PlannerStateFacade,
+    private plannerStateFacade: PlannerStoreFacade,
     public dialogRef: MatDialogRef<BuildingResponseInterface>,
     @Inject(MAT_DIALOG_DATA)
     public data: { building: BuildingResponseInterface | null }

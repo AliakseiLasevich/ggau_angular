@@ -6,13 +6,13 @@ import {LessonResponseInterface} from '../../../core/models/lesson.interface';
 import {LessonsFormInterface} from '../../../core/models/lessons-form.interfaces';
 
 import {LessonState} from '../../../store/lessons-store/lesson.reducer';
-import {selectFilter, selectLessons,} from '../../../store/lessons-store/lesson.selectors';
+import {selectLessonForm, selectLessons,} from '../../../store/lessons-store/lesson.selectors';
 import {TeacherResponseInterface} from 'src/app/core/models/teachers.interfaces';
 import {DisciplineResponseInterface} from 'src/app/core/models/disciplines.interfaces';
 import {FacultyResponseInterface} from 'src/app/core/models/faculties.interfaces';
 import {SpecialtyResponseInterface} from 'src/app/core/models/specialty.interfaces';
 import {BuildingResponseInterface} from 'src/app/core/models/buildings.interfaces';
-import {PlannerStateFacade} from "../../../store/planner-store/planner-state.facade";
+import {PlannerStoreFacade} from "../../../store/planner-store/planner-store.facade";
 import {BackendErrorInterface} from "../../../core/models/backendErrors.interface";
 
 @Component({
@@ -30,9 +30,9 @@ export class PlannerComponent implements OnInit {
   error$: Observable<BackendErrorInterface | null> = this.plannerStateFacade.error$;
 
   lessons$: Observable<LessonResponseInterface[]> = this.store.pipe(select(selectLessons));
-  lessonForm$: Observable<LessonsFormInterface | null> = this.store.pipe(select(selectFilter));
+  lessonForm$: Observable<LessonsFormInterface | null> = this.store.pipe(select(selectLessonForm));
 
-  constructor(private plannerStateFacade: PlannerStateFacade,
+  constructor(private plannerStateFacade: PlannerStoreFacade,
               private store: Store<LessonState>,
               private _snackBar: MatSnackBar
   ) {

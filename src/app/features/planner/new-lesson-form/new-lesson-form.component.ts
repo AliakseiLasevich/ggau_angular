@@ -1,26 +1,35 @@
-import { DatePipe } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
-import { LessonRequestInterface } from '../../../core/models/lesson.interface';
-import { LessonsFormInterface } from '../../../core/models/lessons-form.interfaces';
+import {DatePipe} from '@angular/common';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {Store} from '@ngrx/store';
+import {Observable, Subscription} from 'rxjs';
+import {LessonRequestInterface} from '../../../core/models/lesson.interface';
+import {LessonsFormInterface} from '../../../core/models/lessons-form.interfaces';
 
-import { createLessonAction } from '../../../store/lessons-store/lesson.actions';
-import { LessonState } from '../../../store/lessons-store/lesson.reducer';
+import {createLessonAction} from '../../../store/lessons-store/lesson.actions';
+import {LessonState} from '../../../store/lessons-store/lesson.reducer';
 import {
 
-  selectFilter,
+  selectLessonForm,
 } from '../../../store/lessons-store/lesson.selectors';
-import { DisciplineResponseInterface } from 'src/app/core/models/disciplines.interfaces';
-import { TeacherResponseInterface } from 'src/app/core/models/teachers.interfaces';
-import { FacultyResponseInterface } from 'src/app/core/models/faculties.interfaces';
-import { selectDisciplineById, selectFacultyById, selectSpecialtyById, selectStudentCourseById, selectStudentGroupById, selectStudentSubgroupById, selectTeacherById } from 'src/app/store/planner-store/planner-store.selectors';
-import { SpecialtyResponseInterface } from 'src/app/core/models/specialty.interfaces';
-import { StudentCourseResponseInterface } from 'src/app/core/models/studentCourse.interfaces';
-import { StudentGroupResponseInterface } from 'src/app/core/models/studentGroup.interfaces';
-import { StudentSubgroupResponseInterface } from 'src/app/core/models/studentSubgroup.interfaces';
+import {DisciplineResponseInterface} from 'src/app/core/models/disciplines.interfaces';
+import {TeacherResponseInterface} from 'src/app/core/models/teachers.interfaces';
+import {FacultyResponseInterface} from 'src/app/core/models/faculties.interfaces';
+import {
+  selectDisciplineById,
+  selectFacultyById,
+  selectSpecialtyById,
+  selectStudentCourseById,
+  selectStudentGroupById,
+  selectStudentSubgroupById,
+  selectTeacherById
+} from 'src/app/store/planner-store/planner-store.selectors';
+import {SpecialtyResponseInterface} from 'src/app/core/models/specialty.interfaces';
+import {StudentCourseResponseInterface} from 'src/app/core/models/studentCourse.interfaces';
+import {StudentGroupResponseInterface} from 'src/app/core/models/studentGroup.interfaces';
+import {StudentSubgroupResponseInterface} from 'src/app/core/models/studentSubgroup.interfaces';
+import {LessonStoreFacade} from "../../../store/lessons-store/lesson-store.facade";
 
 @Component({
   selector: 'app-new-lesson-form',
@@ -44,6 +53,7 @@ export class NewLessonFormComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private datePipe: DatePipe,
     public dialogRef: MatDialogRef<NewLessonFormComponent>,
+    private lessonStateFacade: LessonStoreFacade,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       orderNumber: number;
@@ -51,7 +61,8 @@ export class NewLessonFormComponent implements OnInit, OnDestroy {
       cabinetId: string;
       date: string;
     }
-  ) {}
+  ) {
+  }
 
   // onNoClick(): void {
   //   this.dialogRef.close();
@@ -64,7 +75,7 @@ export class NewLessonFormComponent implements OnInit, OnDestroy {
   }
 
   initializeValues() {
-    this.filter$ = this.store.select(selectFilter);
+    this.filter$ = this.store.select(selectLessonForm);
   }
 
   initForms() {
@@ -146,6 +157,7 @@ export class NewLessonFormComponent implements OnInit, OnDestroy {
     };
 
     //TODO add note
-    this.store.dispatch(createLessonAction({ lessonRequest: lesson }));
+
+    this.lessonStateFacade.createLessonAction(lesson);
   }
 }

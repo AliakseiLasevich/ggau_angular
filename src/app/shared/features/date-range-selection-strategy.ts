@@ -24,8 +24,7 @@ export class CustomRangeSelectionStrategy
       const selectedDate = this._dateAdapter.deserialize(date) || new Date();
       const startOfWeek = this._getStartOfWeek(selectedDate);
       const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(startOfWeek.getDate() + 5); // Change this line to add 5 days (Mon to Sat)
-
+      endOfWeek.setDate(startOfWeek.getDate() + 5); // add 5 days (Mon to Sat)
       return new DateRange<Date>(startOfWeek, endOfWeek);
     }
 

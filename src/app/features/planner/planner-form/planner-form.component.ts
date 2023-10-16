@@ -1,28 +1,17 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSelectChange } from '@angular/material/select';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { DisciplineResponseInterface } from 'src/app/core/models/disciplines.interfaces';
-import { FacultyResponseInterface } from 'src/app/core/models/faculties.interfaces';
-import { StudentCourseResponseInterface } from 'src/app/core/models/studentCourse.interfaces';
-import { StudentGroupResponseInterface } from 'src/app/core/models/studentGroup.interfaces';
-import { StudentSubgroupResponseInterface } from 'src/app/core/models/studentSubgroup.interfaces';
-import { TeacherResponseInterface } from 'src/app/core/models/teachers.interfaces';
-import {
-  getCoursesAction,
-  getSpecialtiesAction,
-} from 'src/app/store/planner-store/planner-store.actions';
-import {
-  selectSpecialtiesByFacultyId,
-  selectStudentCoursesBySpecialty,
-  selectStudentGroupsByCourse,
-  selectStudentSubgroupByGroupId,
-} from 'src/app/store/planner-store/planner-store.selectors';
-import { LessonTypes } from '../../../core/enums/lesson-types.enum';
-import { LessonsFormInterface } from '../../../core/models/lessons-form.interfaces';
-import { applyFormAction } from '../../../store/lessons-store/lesson.actions';
-import { LessonState } from '../../../store/lessons-store/lesson.reducer';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MatSelectChange} from '@angular/material/select';
+import {Observable} from 'rxjs';
+import {DisciplineResponseInterface} from 'src/app/core/models/disciplines.interfaces';
+import {FacultyResponseInterface} from 'src/app/core/models/faculties.interfaces';
+import {StudentCourseResponseInterface} from 'src/app/core/models/studentCourse.interfaces';
+import {StudentGroupResponseInterface} from 'src/app/core/models/studentGroup.interfaces';
+import {StudentSubgroupResponseInterface} from 'src/app/core/models/studentSubgroup.interfaces';
+import {TeacherResponseInterface} from 'src/app/core/models/teachers.interfaces';
+import {LessonTypes} from '../../../core/enums/lesson-types.enum';
+import {LessonsFormInterface} from '../../../core/models/lessons-form.interfaces';
+import {LessonStoreFacade} from "../../../store/lessons-store/lesson-store.facade";
+import {PlannerStoreFacade} from "../../../store/planner-store/planner-store.facade";
 
 @Component({
   selector: 'app-planner-form',
@@ -39,9 +28,11 @@ export class PlannerFormComponent implements OnInit {
   lessonTypes = LessonTypes;
 
   constructor(
-    private store: Store<LessonState>,
+    private lessonStateFacade: LessonStoreFacade,
+    private plannerStateFacade: PlannerStoreFacade,
     private formBuilder: FormBuilder
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.initForms();
@@ -53,14 +44,14 @@ export class PlannerFormComponent implements OnInit {
     this.dynamicForm.valueChanges.subscribe((formValues) => {
       if (this.dynamicForm.valid) {
         const formValue = this.dynamicForm.value as LessonsFormInterface;
-        this.store.dispatch(applyFormAction({ lessonForm: formValue }));
+        this.lessonStateFacade.applyLessonForm(formValue);
       }
-      this.isFormValid.emit(this.dynamicForm.valid);
+        this.isFormValid.emit(this.dynamicForm.valid);
     });
   }
 
   private fetchData() {
-    this.store.dispatch(getSpecialtiesAction());
+    this.plannerStateFacade.fetchSpecialties();
   }
 
   private initForms() {
@@ -87,6 +78,7 @@ export class PlannerFormComponent implements OnInit {
 
     return dynamicFormGroup;
   }
+
   updateFormSpecialties(selectedFaculty: MatSelectChange, index: number) {
     const facultyControl = this.dynamicGroups.at(index).get('facultyId');
     if (facultyControl) {
@@ -95,9 +87,7 @@ export class PlannerFormComponent implements OnInit {
   }
 
   updateFormStudentCourses(selectedSpecialty: MatSelectChange, index: number) {
-    this.store.dispatch(
-      getCoursesAction({ specialtyId: selectedSpecialty.value })
-    );
+    this.plannerStateFacade.fetchCoursesBySpecialty(selectedSpecialty.value);
     const specialtyControl = this.dynamicGroups.at(index).get('specialtyId');
     if (specialtyControl) {
       specialtyControl.setValue(selectedSpecialty.value);
@@ -119,8 +109,8 @@ export class PlannerFormComponent implements OnInit {
     dynamicFormGroup
       .get('studentCourse')
       ?.valueChanges.subscribe((newValue) => {
-        dynamicFormGroup.get('groupId')?.setValue(null);
-      });
+      dynamicFormGroup.get('groupId')?.setValue(null);
+    });
 
     //Занулять подгруппы при смене группы
     dynamicFormGroup.get('groupId')?.valueChanges.subscribe((newValue) => {
@@ -144,24 +134,24 @@ export class PlannerFormComponent implements OnInit {
   }
 
   getSpecialtiesByFaculty(facultyId: string) {
-    return this.store.select(selectSpecialtiesByFacultyId(facultyId));
+    return this.plannerStateFacade.getSpecialtiesByFacultyId(facultyId);
   }
 
   getStudentCoursesBySpecialty(
     specialtyId: string
-  ): Observable<StudentCourseResponseInterface[]> {
-    return this.store.select(selectStudentCoursesBySpecialty(specialtyId));
+  ): Observable<StudentCourseResponseInterface[] | null> {
+    return this.plannerStateFacade.getStudentCourseBySpecialtyId(specialtyId)
   }
 
   getStudentGroupByCourse(
     courseId: string
-  ): Observable<StudentGroupResponseInterface[]> {
-    return this.store.select(selectStudentGroupsByCourse(courseId));
+  ): Observable<StudentGroupResponseInterface[] | null> {
+    return this.plannerStateFacade.getStudentGroupByCourse(courseId);
   }
 
   getStudentSubgroupByGroup(
     groupId: string
-  ): Observable<StudentSubgroupResponseInterface[]> {
-    return this.store.select(selectStudentSubgroupByGroupId(groupId));
+  ): Observable<StudentSubgroupResponseInterface[] | null> {
+    return this.plannerStateFacade.getStudentSubgroupByGroupId(groupId)
   }
 }

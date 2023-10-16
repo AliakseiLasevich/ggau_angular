@@ -1,5 +1,5 @@
-import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { LessonState } from './lesson.reducer';
+import {createFeatureSelector, createSelector} from '@ngrx/store';
+import {LessonState} from './lesson.reducer';
 
 const selectPlannerState = createFeatureSelector<LessonState>('lesson');
 
@@ -25,6 +25,17 @@ export const selectLessonsByCabinetAndDateAndOrder = (
       .filter((lesson) => lesson.orderNumber === order)
   );
 
+export const selectLessonError = createSelector(
+  selectPlannerState,
+  (state: LessonState) => state.error
+);
+
+export const selectLessonForm = createSelector(
+  selectPlannerState,
+  (state: LessonState) => state.lessonForm
+);
+
+
 //TODO remove hack
 function areDatesEqual(date1: number[], date2: string): boolean {
   const [year1, month1, day1] = date1;
@@ -35,13 +46,3 @@ function areDatesEqual(date1: number[], date2: string): boolean {
 
   return jsDate1.getTime() === jsDate2.getTime();
 }
-
-export const selectPlannerError = createSelector(
-  selectPlannerState,
-  (state: LessonState) => state.error
-);
-
-export const selectFilter = createSelector(
-  selectPlannerState,
-  (state: LessonState) => state.lessonForm
-);

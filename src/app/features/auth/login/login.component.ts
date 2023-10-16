@@ -1,12 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { BackendErrorInterface } from 'src/app/core/models/backendErrors.interface';
-import { loginAction } from '../../../store/auth-store/auth.actions';
-import { AuthState } from '../../../store/auth-store/auth.reducer';
-import { selectError } from '../../../store/auth-store/auth.selectors';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {select, Store} from '@ngrx/store';
+import {AuthState} from '../../../store/auth-store/auth.reducer';
+import {selectError} from '../../../store/auth-store/auth.selectors';
+import {AuthStoreFacade} from "../../../store/auth-store/auth-store.facade";
 
 @Component({
   selector: 'app-login',
@@ -20,8 +18,10 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private store: Store<AuthState>,
-    private _snackBar: MatSnackBar
-  ) {}
+    private _snackBar: MatSnackBar,
+    private authFacade: AuthStoreFacade
+  ) {
+  }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -41,14 +41,15 @@ export class LoginComponent implements OnInit {
   initializeValues() {
     this.store.pipe(select(selectError)).subscribe((error) => {
       if (error) {
-        this._snackBar.open(error.message, 'OK', { duration: 2 * 1000 });
+        this._snackBar.open(error.message, 'OK', {duration: 2 * 1000});
       }
     });
   }
 
   onSubmit() {
     if (this.form.valid) {
-      this.store.dispatch(loginAction({ userData: this.form.value }));
+      this.authFacade.login(this.form.value);
+
     }
   }
 }
