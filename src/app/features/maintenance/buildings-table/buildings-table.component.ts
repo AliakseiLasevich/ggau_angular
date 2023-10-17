@@ -7,11 +7,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { BuildingFormComponent } from '../building-form/building-form.component';
 
 @Component({
-  selector: 'app-buildings',
-  templateUrl: './buildings.component.html',
-  styleUrls: ['./buildings.component.scss'],
+  selector: 'app-buildings-table',
+  templateUrl: './buildings-table.component.html',
+  styleUrls: ['./buildings-table.component.scss'],
 })
-export class BuildingsComponent implements OnInit {
+export class BuildingsTableComponent implements OnInit {
   columnsSchema: any = COLUMNS_SCHEMA;
   displayedColumns: string[] = COLUMNS_SCHEMA.map((col) => col.key);
   buildings: BuildingResponseInterface[];
