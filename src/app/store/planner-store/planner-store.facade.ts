@@ -3,6 +3,7 @@ import {select, Store} from "@ngrx/store";
 import {PlannerState} from "./planner-store.reducer";
 import {
   createBuildingAction,
+  deleteBuildingAction,
   getBuildingsAction,
   getCoursesAction,
   getDisciplinesAction,
@@ -137,6 +138,10 @@ export class PlannerStoreFacade {
 
   updateBuilding(building: BuildingRequestInterface) {
     this.store.dispatch(updateBuildingAction({building}));
+  }
+
+  deleteBuilding(buildingId: string) {
+    this.store.dispatch(deleteBuildingAction({buildingId}));
   }
 
 

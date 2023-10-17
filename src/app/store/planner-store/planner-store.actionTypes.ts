@@ -30,4 +30,8 @@ export enum ActionTypes {
   UPDATE_BUILDING = '[MAINTENANCE_PAGE] Update building',
   UPDATE_BUILDING_SUCCESS = '[CREATE_BUILDING_API] Update building success',
   UPDATE_BUILDING_FAILURE = '[CREATE_BUILDING_API] Update building failure',
+
+  DELETE_BUILDING = '[MAINTENANCE_PAGE] Delete building',
+  DELETE_BUILDING_SUCCESS = '[DELETE_BUILDING_API] Delete building success',
+  DELETE_BUILDING_FAILURE = '[DELETE_BUILDING_API] Delete building failure',
 }

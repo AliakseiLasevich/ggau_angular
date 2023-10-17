@@ -6,13 +6,8 @@ import {Store} from '@ngrx/store';
 import {Observable, Subscription} from 'rxjs';
 import {LessonRequestInterface} from '../../../core/models/lesson.interface';
 import {LessonsFormInterface} from '../../../core/models/lessons-form.interfaces';
-
-import {createLessonAction} from '../../../store/lessons-store/lesson.actions';
 import {LessonState} from '../../../store/lessons-store/lesson.reducer';
-import {
-
-  selectLessonForm,
-} from '../../../store/lessons-store/lesson.selectors';
+import {selectLessonForm,} from '../../../store/lessons-store/lesson.selectors';
 import {DisciplineResponseInterface} from 'src/app/core/models/disciplines.interfaces';
 import {TeacherResponseInterface} from 'src/app/core/models/teachers.interfaces';
 import {FacultyResponseInterface} from 'src/app/core/models/faculties.interfaces';

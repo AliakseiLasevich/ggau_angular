@@ -5,6 +5,7 @@ import {
     MatDialogRef,
 } from '@angular/material/dialog';
 import { BuildingResponseInterface } from 'src/app/core/models/buildings.interfaces';
+import {PlannerStoreFacade} from "../../../store/planner-store/planner-store.facade";
 
 @Component({
   selector: 'app-confirmation-dialog',
@@ -13,6 +14,7 @@ import { BuildingResponseInterface } from 'src/app/core/models/buildings.interfa
 })
 export class ConfirmationDialogComponent {
   constructor(
+    private plannerStoreFacade: PlannerStoreFacade,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
@@ -20,6 +22,6 @@ export class ConfirmationDialogComponent {
   ) {}
 
   confirmDelete() {
-    console.log(this.data.building + 'was deleted');
+    this.plannerStoreFacade.deleteBuilding(this.data.building.publicId)
   }
 }

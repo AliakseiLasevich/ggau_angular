@@ -1,9 +1,6 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {EffectsModule} from '@ngrx/effects';
-import {StoreModule} from '@ngrx/store';
-import {plannerReducer} from 'src/app/store/planner-store/planner-store.reducer';
 import {SharedModule} from 'src/app/shared/shared.module';
 import {BuildingFormComponent} from './building-form/building-form.component';
 import {BuildingsComponent} from './buildings/buildings.component';
@@ -12,7 +9,6 @@ import {MaterialModule} from "../../shared/material/material.module";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MaintenanceComponent} from './maintenance/maintenance.component';
 import {HeaderModule} from "../header/header.module";
-
 const routes: Routes = [{
   path: 'maintenance', component: MaintenanceComponent, children: [
     {path: 'buildings', component: BuildingsComponent}
@@ -29,11 +25,13 @@ const routes: Routes = [{
   imports: [
     CommonModule,
     SharedModule,
-    RouterModule.forChild(routes), HeaderModule,
+    RouterModule.forChild(routes),
+    HeaderModule,
     // EffectsModule.forFeature(PlannerStoreEffects),
     MaterialModule,
     ReactiveFormsModule
   ],
+  exports: [RouterModule],
 })
 export class MaintenanceModule {
 }

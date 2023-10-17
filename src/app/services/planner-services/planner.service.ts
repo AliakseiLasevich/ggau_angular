@@ -71,6 +71,12 @@ export class PlannerService {
     );
   }
 
+  deleteBuilding(buildingId: string) {
+    return this.http.delete(
+      this.url + 'buildings/' + buildingId
+    );
+  }
+
   getLessonsByDateRange(
     from: Date,
     to: Date

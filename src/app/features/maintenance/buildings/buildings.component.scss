@@ -1,22 +1,15 @@
-:host ::ng-deep .p-cell-editing {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-.card {
-  min-width: 50%;
-}
-
-.mat-mdc-row:hover .mat-mdc-cell {
-  border-color: currentColor;
+.buildings-table {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  min-height: 300px;
+  min-width: 800px;
 }
 
 .mat-mdc-row .mat-mdc-cell {
-  border-bottom: 1px solid transparent;
-  border-top: 1px solid transparent;
   cursor: pointer;
 }
 
-.formFieldWidth480 .mat-form-field-infix {
-  width: 480px;
+.striped-row {
+  background-color: #ececec;
 }

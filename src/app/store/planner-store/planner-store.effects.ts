@@ -1,17 +1,18 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, exhaustMap, map, of, switchMap } from 'rxjs';
-import { BuildingResponseInterface } from '../../core/models/buildings.interfaces';
-import { DisciplineResponseInterface } from '../../core/models/disciplines.interfaces';
-import { FacultyResponseInterface } from '../../core/models/faculties.interfaces';
-import { SpecialtyResponseInterface } from '../../core/models/specialty.interfaces';
-import { StudentCourseResponseInterface } from '../../core/models/studentCourse.interfaces';
-import { TeacherResponseInterface } from '../../core/models/teachers.interfaces';
-import { ActionTypes } from './planner-store.actionTypes';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {catchError, exhaustMap, map, of, switchMap} from 'rxjs';
+import {BuildingResponseInterface} from '../../core/models/buildings.interfaces';
+import {DisciplineResponseInterface} from '../../core/models/disciplines.interfaces';
+import {FacultyResponseInterface} from '../../core/models/faculties.interfaces';
+import {SpecialtyResponseInterface} from '../../core/models/specialty.interfaces';
+import {StudentCourseResponseInterface} from '../../core/models/studentCourse.interfaces';
+import {TeacherResponseInterface} from '../../core/models/teachers.interfaces';
+import {ActionTypes} from './planner-store.actionTypes';
 import {
   createBuildingFailure,
   createBuildingSuccess,
+  deleteBuildingSuccess,
   getBuildingsFailure,
   getBuildingsSuccess,
   getCoursesFailure,
@@ -39,7 +40,8 @@ export class PlannerEffects {
   constructor(
     private actions$: Actions,
     private plannerService: PlannerService
-  ) {}
+  ) {
+  }
 
   getTeachers$ = createEffect(() =>
     this.actions$.pipe(
@@ -47,7 +49,7 @@ export class PlannerEffects {
       exhaustMap(() => {
         return this.plannerService.getTeachers().pipe(
           map((response: TeacherResponseInterface[]) =>
-            getTeachersActionSuccess({ teachers: response })
+            getTeachersActionSuccess({teachers: response})
           ),
           catchError((error) => {
             return of(getTeachersActionFailure(error));
@@ -63,7 +65,7 @@ export class PlannerEffects {
       exhaustMap(() => {
         return this.plannerService.getDisciplines().pipe(
           map((response: DisciplineResponseInterface[]) =>
-            getDisciplinesSuccess({ disciplines: response })
+            getDisciplinesSuccess({disciplines: response})
           ),
           catchError((error) => {
             return of(getDisciplinesFailure(error));
@@ -79,7 +81,7 @@ export class PlannerEffects {
       exhaustMap(() => {
         return this.plannerService.getFaculties().pipe(
           map((response: FacultyResponseInterface[]) =>
-            getFacultiesSuccess({ faculties: response })
+            getFacultiesSuccess({faculties: response})
           ),
           catchError((error) => {
             return of(getFacultiesFailure(error));
@@ -92,10 +94,10 @@ export class PlannerEffects {
   getSpecialties$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ActionTypes.GET_SPECIALTIES),
-      switchMap(({ publicId }) => {
+      switchMap(({publicId}) => {
         return this.plannerService.getSpecialtiesByFaculty(publicId).pipe(
           map((response: SpecialtyResponseInterface[]) =>
-            getSpecialtiesSuccess({ specialties: response })
+            getSpecialtiesSuccess({specialties: response})
           ),
           catchError((error) => {
             return of(getSpecialtiesFailure(error));
@@ -108,10 +110,10 @@ export class PlannerEffects {
   getStudentCourses$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ActionTypes.GET_COURSES),
-      switchMap(({ specialtyId }) => {
+      switchMap(({specialtyId}) => {
         return this.plannerService.getCoursesBySpecialty(specialtyId).pipe(
           map((response: StudentCourseResponseInterface[]) =>
-            getCoursesSuccess({ courses: response })
+            getCoursesSuccess({courses: response})
           ),
           catchError((error) => {
             return of(getCoursesFailure(error));
@@ -127,7 +129,7 @@ export class PlannerEffects {
       exhaustMap(() => {
         return this.plannerService.getBuildings().pipe(
           map((response: BuildingResponseInterface[]) =>
-            getBuildingsSuccess({ buildings: response })
+            getBuildingsSuccess({buildings: response})
           ),
           catchError((error) => {
             return of(getBuildingsFailure(error));
@@ -156,7 +158,7 @@ export class PlannerEffects {
   createBuilding$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ActionTypes.CREATE_BUILDING),
-      switchMap(({ building }) => {
+      switchMap(({building}) => {
         return this.plannerService.createBuilding(building).pipe(
           map((response: BuildingResponseInterface) =>
             createBuildingSuccess({
@@ -174,12 +176,28 @@ export class PlannerEffects {
   updateBuilding$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ActionTypes.UPDATE_BUILDING),
-      switchMap(({ building }) => {
+      switchMap(({building}) => {
         return this.plannerService.updateBuilding(building).pipe(
           map((response: BuildingResponseInterface) =>
             updateBuildingSuccess({
               response,
             })
+          ),
+          catchError((error) => {
+            return of(updateBuildingFailure(error));
+          })
+        );
+      })
+    )
+  );
+
+  deleteBuilding$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ActionTypes.DELETE_BUILDING),
+      switchMap(({buildingId}) => {
+        return this.plannerService.deleteBuilding(buildingId).pipe(
+          map(() =>
+            deleteBuildingSuccess({buildingId})
           ),
           catchError((error) => {
             return of(updateBuildingFailure(error));

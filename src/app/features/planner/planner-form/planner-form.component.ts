@@ -96,24 +96,24 @@ export class PlannerFormComponent implements OnInit {
 
   private declareFieldsErasingStrategy(dynamicFormGroup: FormGroup<any>) {
     //Занулять специальность при смене факультета и далее по цепочке
-    dynamicFormGroup.get('facultyId')?.valueChanges.subscribe((newValue) => {
+    dynamicFormGroup.get('facultyId')?.valueChanges.subscribe(() => {
       dynamicFormGroup.get('specialtyId')?.setValue(null);
     });
 
     //Занулять курс при смене специальности
-    dynamicFormGroup.get('specialtyId')?.valueChanges.subscribe((newValue) => {
+    dynamicFormGroup.get('specialtyId')?.valueChanges.subscribe(() => {
       dynamicFormGroup.get('studentCourse')?.setValue(null);
     });
 
     //Занулять группу при смене курса
     dynamicFormGroup
       .get('studentCourse')
-      ?.valueChanges.subscribe((newValue) => {
+      ?.valueChanges.subscribe(() => {
       dynamicFormGroup.get('groupId')?.setValue(null);
     });
 
     //Занулять подгруппы при смене группы
-    dynamicFormGroup.get('groupId')?.valueChanges.subscribe((newValue) => {
+    dynamicFormGroup.get('groupId')?.valueChanges.subscribe(() => {
       dynamicFormGroup.get('subgroupIds')?.setValue([]);
     });
   }

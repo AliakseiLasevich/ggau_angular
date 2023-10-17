@@ -1,16 +1,13 @@
-import { createAction, props } from '@ngrx/store';
+import {createAction, props} from '@ngrx/store';
 
-import { BackendErrorInterface } from 'src/app/core/models/backendErrors.interface';
-import {
-  BuildingRequestInterface,
-  BuildingResponseInterface,
-} from '../../core/models/buildings.interfaces';
-import { DisciplineResponseInterface } from '../../core/models/disciplines.interfaces';
-import { FacultyResponseInterface } from '../../core/models/faculties.interfaces';
-import { SpecialtyResponseInterface } from '../../core/models/specialty.interfaces';
-import { StudentCourseResponseInterface } from '../../core/models/studentCourse.interfaces';
-import { TeacherResponseInterface } from '../../core/models/teachers.interfaces';
-import { ActionTypes } from './planner-store.actionTypes';
+import {BackendErrorInterface} from 'src/app/core/models/backendErrors.interface';
+import {BuildingRequestInterface, BuildingResponseInterface,} from '../../core/models/buildings.interfaces';
+import {DisciplineResponseInterface} from '../../core/models/disciplines.interfaces';
+import {FacultyResponseInterface} from '../../core/models/faculties.interfaces';
+import {SpecialtyResponseInterface} from '../../core/models/specialty.interfaces';
+import {StudentCourseResponseInterface} from '../../core/models/studentCourse.interfaces';
+import {TeacherResponseInterface} from '../../core/models/teachers.interfaces';
+import {ActionTypes} from './planner-store.actionTypes';
 
 // TEACHERS
 export const getTeachersAction = createAction(ActionTypes.GET_TEACHERS);
@@ -120,5 +117,20 @@ export const updateBuildingSuccess = createAction(
 
 export const updateBuildingFailure = createAction(
   ActionTypes.UPDATE_BUILDING_FAILURE,
+  props<{ error: BackendErrorInterface }>()
+);
+
+export const deleteBuildingAction = createAction(
+  ActionTypes.DELETE_BUILDING,
+  props<{ buildingId: string }>()
+);
+
+export const deleteBuildingSuccess = createAction(
+  ActionTypes.DELETE_BUILDING_SUCCESS,
+  props<{ buildingId: string }>()
+);
+
+export const deleteBuildingFailure = createAction(
+  ActionTypes.DELETE_BUILDING_FAILURE,
   props<{ error: BackendErrorInterface }>()
 );
