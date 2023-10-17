@@ -4,3 +4,8 @@ export interface CabinetResponseInterface {
     type: string;
     maxStudents: number;
 }
+
+export interface CabinetDto extends CabinetResponseInterface{
+  buildingName: string;
+  buildingId: string;
+}

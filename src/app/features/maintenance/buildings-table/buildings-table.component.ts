@@ -1,41 +1,47 @@
-import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import { selectAllBuildings } from 'src/app/store/planner-store/planner-store.selectors';
-import { BuildingResponseInterface } from '../../../core/models/buildings.interfaces';
-import { MatDialog } from '@angular/material/dialog';
-import { BuildingFormComponent } from '../building-form/building-form.component';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Observable, Subscription} from 'rxjs';
+import {BuildingResponseInterface} from '../../../core/models/buildings.interfaces';
+import {MatDialog} from '@angular/material/dialog';
+import {BuildingFormComponent} from '../building-form/building-form.component';
+import {PlannerStoreFacade} from "../../../store/planner-store/planner-store.facade";
 
 @Component({
   selector: 'app-buildings-table',
   templateUrl: './buildings-table.component.html',
   styleUrls: ['./buildings-table.component.scss'],
 })
-export class BuildingsTableComponent implements OnInit {
+export class BuildingsTableComponent implements OnInit, OnDestroy {
   columnsSchema: any = COLUMNS_SCHEMA;
   displayedColumns: string[] = COLUMNS_SCHEMA.map((col) => col.key);
+  buildings$: Observable<BuildingResponseInterface[]> = this.plannerStoreFacade.buildings$;
   buildings: BuildingResponseInterface[];
+  subscriptions: Subscription[] = [];
 
-  buildingsSubscription: Subscription;
-
-  constructor(private store: Store, public dialog: MatDialog) {}
+  constructor(private plannerStoreFacade: PlannerStoreFacade, public dialog: MatDialog) {
+  }
 
   ngOnInit(): void {
-    this.buildingsSubscription = this.store
-      .select(selectAllBuildings)
-      .subscribe((buildings) => {
-        this.buildings = buildings;
-      });
+    this.initializeSubscriptions();
+    this.fetchData();
   }
 
   ngOnDestroy(): void {
-    this.buildingsSubscription.unsubscribe();
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   openBuildingForm(building?: BuildingResponseInterface): void {
     this.dialog.open(BuildingFormComponent, {
-      data: { building: building || null },
+      data: {building: building || null},
     });
+  }
+
+  private fetchData() {
+    this.plannerStoreFacade.fetchBuildings();
+  }
+
+  private initializeSubscriptions() {
+    const buildingsSubscription = this.buildings$.subscribe(buildings => this.buildings = buildings)
+    this.subscriptions.push(buildingsSubscription);
   }
 }
 

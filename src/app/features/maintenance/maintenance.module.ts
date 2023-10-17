@@ -9,9 +9,13 @@ import {MaterialModule} from "../../shared/material/material.module";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MaintenanceComponent} from './maintenance/maintenance.component';
 import {HeaderModule} from "../header/header.module";
+import {CabinetsTableComponent} from './cabinets-table/cabinets-table.component';
+import { CabinetFormComponent } from './cabinet-form/cabinet-form.component';
+
 const routes: Routes = [{
   path: 'maintenance', component: MaintenanceComponent, children: [
-    {path: 'buildings', component: BuildingsTableComponent}
+    {path: 'buildings', component: BuildingsTableComponent},
+    {path: 'cabinets', component: CabinetsTableComponent},
   ]
 }]
 
@@ -21,6 +25,8 @@ const routes: Routes = [{
     BuildingFormComponent,
     ConfirmationDialogComponent,
     MaintenanceComponent,
+    CabinetsTableComponent,
+    CabinetFormComponent,
   ],
   imports: [
     CommonModule,

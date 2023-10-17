@@ -1,0 +1,84 @@
+<h1 class="dialog-title">
+  <ng-container *ngIf="data?.cabinet?.publicId; else fallback">
+    Редактировать кабинет
+  </ng-container>
+  <ng-template #fallback> Создать новый кабинет</ng-template>
+</h1>
+
+<div class="dialog-content">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Номер кабинета</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="number"
+        placeholder="Номер кабинета"
+        autocomplete="new-password"
+      />
+      <mat-error *ngIf="form.controls['number'].hasError('required')">
+        Введите номер кабинета
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Тип кабинета</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="type"
+        placeholder="Тип кабинета"
+        autocomplete="new-password"
+      />
+      <mat-error *ngIf="form.controls['type'].hasError('required')">
+        Введите тип кабинета
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Кол-во мест</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="maxStudents"
+        placeholder="Кол-во мест"
+        autocomplete="new-password"
+      />
+      <mat-error *ngIf="form.controls['maxStudents'].hasError('required')">
+        Введите кол-во мест
+      </mat-error>
+    </mat-form-field>
+
+
+    <mat-form-field>
+      <mat-label>Корпус</mat-label>
+      <mat-select formControlName="buildingId">
+        <mat-option *ngFor="let building of (buildings$ | async)"
+                    [value]="building.publicId">{{building.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+
+    <div class="dialog-actions">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [mat-dialog-close]="true"
+      >
+        Сохранить
+      </button>
+
+      <ng-container *ngIf="data?.cabinet?.publicId">
+        <button
+          mat-raised-button
+          color="warn"
+          (click)="openDeleteDialog()"
+          [mat-dialog-close]="true"
+        >
+          Удалить
+        </button>
+      </ng-container>
+    </div>
+  </form>
+</div>

@@ -1,7 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef,} from '@angular/material/dialog';
-import {Store} from '@ngrx/store';
 import {BuildingRequestInterface, BuildingResponseInterface,} from 'src/app/core/models/buildings.interfaces';
 import {ConfirmationDialogComponent} from '../confirmation-dialog/confirmation-dialog.component';
 import {PlannerStoreFacade} from "../../../store/planner-store/planner-store.facade";
@@ -17,7 +16,6 @@ export class BuildingFormComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
-    private store: Store,
     private plannerStateFacade: PlannerStoreFacade,
     public dialogRef: MatDialogRef<BuildingResponseInterface>,
     @Inject(MAT_DIALOG_DATA)
