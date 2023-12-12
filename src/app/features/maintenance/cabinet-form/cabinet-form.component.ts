@@ -1,21 +1,30 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {PlannerStoreFacade} from "../../../store/planner-store/planner-store.facade";
-import {BuildingRequestInterface, BuildingResponseInterface} from "../../../core/models/buildings.interfaces";
-import {CabinetDto} from "../../../core/models/cabinet.interfaces";
-import {ConfirmationDialogComponent} from "../confirmation-dialog/confirmation-dialog.component";
-import {Observable} from "rxjs";
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { CabinetTypes } from 'src/app/core/enums/cabinet-types.enum';
+import {
+  BuildingRequestInterface,
+  BuildingResponseInterface,
+} from '../../../core/models/buildings.interfaces';
+import { CabinetDto } from '../../../core/models/cabinet.interfaces';
+import { PlannerStoreFacade } from '../../../store/planner-store/planner-store.facade';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-cabinet-form',
   templateUrl: './cabinet-form.component.html',
-  styleUrls: ['./cabinet-form.component.scss']
+  styleUrls: ['./cabinet-form.component.scss'],
 })
 export class CabinetFormComponent implements OnInit {
-
   form: FormGroup;
-  buildings$: Observable<BuildingResponseInterface[]> = this.plannerStoreFacade.buildings$;
+  buildings$: Observable<BuildingResponseInterface[]> =
+    this.plannerStoreFacade.buildings$;
+  cabinetTypes = CabinetTypes;
 
   constructor(
     public dialog: MatDialog,
@@ -24,11 +33,17 @@ export class CabinetFormComponent implements OnInit {
     public dialogRef: MatDialogRef<CabinetDto>,
     @Inject(MAT_DIALOG_DATA)
     public data: { cabinet: CabinetDto | null }
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.initializeForm();
+  }
+
+  getLessonTypesArray() {
+    return Object.keys(this.cabinetTypes).map((key) => ({
+      key,
+      value: this.cabinetTypes[key],
+    }));
   }
 
   initializeForm() {
@@ -54,16 +69,15 @@ export class CabinetFormComponent implements OnInit {
     };
 
     if (this.form.valid && this.data.cabinet?.publicId) {
-      this.plannerStoreFacade.updateBuilding(request)
+      this.plannerStoreFacade.updateBuilding(request);
     } else if (this.form.valid) {
-      this.plannerStoreFacade.createBuilding(request)
+      this.plannerStoreFacade.createBuilding(request);
     }
   }
 
   openDeleteDialog() {
     this.dialog.open(ConfirmationDialogComponent, {
-      data: {cabinet: this.data.cabinet},
+      data: { cabinet: this.data.cabinet },
     });
   }
-
 }
